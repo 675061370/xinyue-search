@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>{$node.node_title}</title>
+    {include file="common/header"/}
+    <el-card class="box-card" shadow="never">
+        <div slot="header" class="clearfix">
+            <span>修改我的资料</span>
+        </div>
+        <div class="text item">
+            <el-form :model="form" status-icon :rules="rules" ref="form" label-width="80px">
+                <el-form-item label="昵称" prop="admin_name">
+                    <el-input v-model="form.admin_name" placeholder="请输入你的昵称"></el-input>
+                </el-form-item>
+                <el-form-item label="姓名" prop="admin_truename">
+                    <el-input v-model="form.admin_truename" placeholder="请输入你的真实姓名"></el-input>
+                </el-form-item>
+                <el-form-item label="邮箱" prop="admin_email">
+                    <el-input v-model="form.admin_email" placeholder="请输入你的邮箱"></el-input>
+                </el-form-item>
+                <el-form-item label="身份证" prop="admin_idcard">
+                    <el-input v-model="form.admin_idcard" placeholder="请输入你的身份证"></el-input>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" @click="onSubmit">更新资料</el-button>
+                </el-form-item>
+            </el-form>
+        </div>
+    </el-card>
+    {include file="common/footer"/}
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data() {
+                this.getData();
+                return {
+                    form: {
+                    },
+                    rules: {
+                        admin_name: [
+                            { required: true, message: '昵称必须填写', trigger: 'blur' },
+                        ],
+                        admin_email: [
+                            { pattern: /^([a-zA-Z]|[0-9])(\w|\-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/, message: '邮箱格式不正确', trigger: 'blur' },
+                        ],
+                        admin_idcard: [
+                            { pattern: /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/, message: '身份证格式不正确', trigger: 'blur' },
+                        ],
+                    }
+                }
+            },
+            methods: {
+                getData() {
+                    var that = this;
+                    axios.post('/admin/admin/getmyinfo', Object.assign({}, PostBase))
+                        .then(function (response) {
+                            if (response.data.code == CODE_SUCCESS) {
+                                that.form = response.data.data;
+                            } else {
+                                that.$message.error(response.data.message);
+                            }
+                        })
+                        .catch(function (error) {
+                            that.$message.error('服务器内部错误');
+                            console.log(error);
+                        });
+                },
+                onSubmit() {
+                    var that = this;
+                    that.$refs['form'].validate((valid) => {
+                        if (!valid) {
+                            that.$message.error('仔细检查检查，是不是有个地方写得不对？');
+                            return;
+                        }
+                        if (that.form.newPassword != that.form.checkPassword) {
+                            that.$message.error('两次密码输入不一致，请确认');
+                            return;
+                        }
+                        axios.post('/admin/admin/updateMyInfo', Object.assign({}, PostBase, that.form))
+                            .then(function (response) {
+                                if (response.data.code == CODE_SUCCESS) {
+                                    that.$message({
+                                        message: response.data.message,
+                                        type: 'success'
+                                    });
+                                } else {
+                                    that.$message.error(response.data.message);
+                                }
+                            })
+                            .catch(function (error) {
+                                that.$message.error('服务器内部错误');
+                                console.log(error);
+                            });
+
+                    });
+                },
+            }
+        });
+    </script>
+
+
+</html>
