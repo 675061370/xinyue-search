@@ -8,6 +8,10 @@
 
 <https://pan.xinyuedh.com>
 
+[前端项目地址](https://ext.dcloud.net.cn/plugin?id=17278)
+
+<https://ext.dcloud.net.cn/plugin?id=17278>
+
 ## 后台安装教程
 
 0、PHP（7.2）
