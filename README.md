@@ -40,6 +40,13 @@
 ![image](https://pan.xinyuedh.com/3.png)
 
 
+## 如何获取夸克网盘Cookie
+
+登录夸克网盘后，按下F12，刷新页面
+
+![image](https://pan.xinyuedh.com/cookie.jpg)
+
+
 # 免费交流社群
 
 请加微信l1417716300，请备注来源
