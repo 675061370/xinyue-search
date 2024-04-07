@@ -20,6 +20,8 @@ class Tool extends QfShop
         $data = [
             'app_name'        => Config('qfshop.app_name'),
             'qcode'   => getimgurl(Config('qfshop.qcode')),
+            'logo'   => getimgurl(Config('qfshop.logo')),
+            'app_description'   => Config('qfshop.app_description'),
         ];
         return jok('获取成功',$data);
     }
