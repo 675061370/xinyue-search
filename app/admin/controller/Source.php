@@ -162,6 +162,22 @@ class Source extends QfShop
         return jok('删除成功');
     }
     
+    // 判断文件编码
+    function detectFileEncoding($filename) {
+        $handle = fopen($filename, 'r');
+        $firstLine = fread($handle, 1024); // 读取文件的开头一部分内容
+        fclose($handle);
+        // 尝试使用不同的编码进行解码，并检查是否成功
+        if (mb_check_encoding($firstLine, 'UTF-8')) {
+            return 'UTF-8';
+        } elseif (mb_check_encoding($firstLine, 'GBK')) {
+            return 'GBK';
+        } else {
+            // 如果无法确定编码，则返回默认编码
+            return 'UTF-8'; // 或者根据需要返回其他默认编码
+        }
+    }
+        
     
     /**
      * Excel导入
@@ -186,8 +202,9 @@ class Source extends QfShop
                 $file_name = app()->getRootPath()."public/uploads/".$saveName;
                 //读取excel文件
                 $PHPReader = new \PHPExcel_Reader_CSV();
-                //默认输入字符集
-                $PHPReader->setInputEncoding('utf-8');
+                //默认输入字符集// 判断文件编码
+                $encoding = $this->detectFileEncoding($file_name);
+                $PHPReader->setInputEncoding($encoding);
                 //默认的分隔符
                 $PHPReader->setDelimiter(',');
                 //载入文件
@@ -203,7 +220,7 @@ class Source extends QfShop
 
                  // 生成二维码
                 foreach ($excel_array as $k => $v) {
-                    $patterns = '/^\d+\./';
+                    $patterns = '/^\d+\.|\d+\-/';
                     $title = '';
                     if (preg_match('/http[^ ]+/', $v[2], $matches)) {
                         $title = preg_replace($patterns, '', $v[1]);
