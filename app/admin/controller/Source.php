@@ -320,7 +320,7 @@ class Source extends QfShop
         if ($error) {
             return $error;
         }
-        ini_set('max_execution_time', -1);
+        @set_time_limit(999999);
         //分页转存
         $page_no = 1;
         $dataList = '';
@@ -335,7 +335,6 @@ class Source extends QfShop
             $res = json_decode($res, true);
 
             if($res['code'] !== 200){
-                ini_set('max_execution_time', 300);
                 return jerr($res['message']);
             }
             $dataList = $res['data'];
@@ -395,7 +394,6 @@ class Source extends QfShop
         }
 
         $this->SourceLogModel->editLog($logId,$dataList['total_result'],'','',3);
-        ini_set('max_execution_time', 300);
         return jok('已提交任务，稍后查看结果',$dataList);
     }
 
