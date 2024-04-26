@@ -1,0 +1,8 @@
+5.1
+更新数据库
+记得先备份！记得先备份！记得先备份！
+执行以下sql语句
+ALTER TABLE `qf_source` ADD COLUMN `is_time` int(11) NOT NULL DEFAULT 0 COMMENT '是否临时文件',
+ADD COLUMN `fid` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '网盘文件标识';
+
+文件替换整个app文件(除了app/index这个文件夹不要替换，如果替换了重新传前端文件即可)
