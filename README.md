@@ -35,6 +35,16 @@
 该操作用时很长，请设置最大值86400
 宝塔设置教程 https://www.kancloud.cn/loveouu/bthelp/1541867
 
+2、nginx 404 Not Found  伪静态设置
+location ~* (runtime|application)/{
+	return 403;
+}
+location / {
+	if (!-e $request_filename){
+		rewrite  ^(.*)$  /index.php?s=$1  last;   break;
+	}
+}
+
 ## 后台管理截图
 
 1、一键转存他人链接：就是将别人的分享链接转为你自己的

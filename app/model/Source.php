@@ -73,6 +73,7 @@ class Source extends QfShop
         empty($data['title']) ?: $map[] = ['title', 'like', '%' . $data['title'] . '%'];
 
         $map[] = ['status', '=', 1];
+        $map[] = ['is_time', '=', 0];
 
         if(!empty($data['day']) && $data['day']==2){
             // 获取今天的时间戳范围
@@ -83,6 +84,10 @@ class Source extends QfShop
             $yesterdayEnd = $todayStart;
             // 添加日期范围条件
             $map[] = ['create_time', 'between', [$yesterdayStart, $todayEnd]];
+        }
+
+        if(!empty($data['is_time']) && $data['is_time']==1){
+            unset($map[array_search(['is_time', '=', 0], $map)]);
         }
 
         $result['total_result'] = $this->where($map)->count();
@@ -96,7 +101,7 @@ class Source extends QfShop
         }
 
         $result['items'] = $this->setDefaultOrder($order)
-            ->field('source_id as id,title,url,update_time as time')
+            ->field('source_id as id,title,url,update_time as time,is_time')
             ->where($map)
             ->withSearch(['page', 'order'], $data)
             ->select()->each(function($item,$key){
@@ -122,6 +127,7 @@ class Source extends QfShop
         $map = [];
 
         $map[] = ['status', '=', 1];
+        $map[] = ['is_time', '=', 0];
 
         $result['total_result'] = $this->where($map)->count();
         if ($result['total_result'] <= 0) {
@@ -155,6 +161,7 @@ class Source extends QfShop
         $map = [];
 
         $map[] = ['status', '=', 1];
+        $map[] = ['is_time', '=', 0];
 
         $result['total_result'] = $this->where($map)->count();
         if ($result['total_result'] <= 0) {
