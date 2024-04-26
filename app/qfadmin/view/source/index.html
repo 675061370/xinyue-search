@@ -9,6 +9,7 @@
         <el-form-item>
             <el-button icon="el-icon-plus" size="small" @click="clickAdd" plain>添加资源</el-button>
             <el-button icon="el-icon-plus" size="small" @click="ImportShow" plain>导入资源</el-button>
+            <el-button icon="el-icon-document-copy" size="small" @click="getExport" plain>导出资源</el-button>
         </el-form-item>
         <div style="float:right">
             <el-form-item>
@@ -311,6 +312,18 @@
                     this.$nextTick(() => {
                         this.$refs.ImportUpload.submit();
                     })
+                },
+
+                //数据导出
+                getExport(){
+                    var that = this;
+                    var filters = Object.assign({}, PostBase, that.search);
+                    var url = '/admin/source/excel?';
+                    for (let key in filters) {
+                        url += key + "=" + filters[key] + "&";
+                    }
+                    window.open(url);
+                    that.$message.success('数据导出成功');
                 },
             }
         })

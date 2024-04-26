@@ -217,16 +217,15 @@ class Source extends QfShop
 
                  //删除这个文件
                 unlink("./uploads/".$saveName);
-
                  // 生成二维码
                 foreach ($excel_array as $k => $v) {
                     $patterns = '/^\d+\.|\d+\-/';
                     $title = '';
-                    if (preg_match('/http[^ ]+/', $v[2], $matches)) {
+                    if (!empty($v[2]) && preg_match('/http[^ ]+/', $v[2], $matches)) {
                         $title = preg_replace($patterns, '', $v[1]);
                         $url = $matches[0];
                     } else {
-                        if (preg_match('/http[^ ]+/', $v[3], $matches)) {
+                        if (!empty($v[3]) && preg_match('/http[^ ]+/', $v[3], $matches)) {
                             $title = preg_replace($patterns, '', $v[2]);
                             $url = $matches[0];
                         } else {
@@ -419,6 +418,56 @@ class Source extends QfShop
             return jerr($res['message']);
         }
         return jok('获取成功',$res['data']);
+    }
+
+
+    /**
+     * 导出
+     *
+     * @return void
+     */
+    public function excel()
+    {
+        $error = $this->access();
+        if ($error) {
+            return $error;
+        }
+
+        //查询数据
+        $map = [];
+        $filter = input('');
+        foreach ($filter as $k => $v) {
+            if ($k == 'filter') {
+                $k = input('filter');
+                $v = input('keyword');
+            }
+            if ($v === '' || $v === null) {
+                continue;
+            }
+            if (array_key_exists($k, $this->searchFilter)) {
+                switch ($this->searchFilter[$k]) {
+                    case "like":
+                        array_push($map, [$k, 'like', "%" . $v . "%"]);
+                        break;
+                    case "=":
+                        array_push($map, [$k, '=', $v]);
+                        break;
+                    default:
+                }
+            }
+        }
+
+        $field = 'title,url';
+        $dataList = $this->model->field($field)->where($map)->select();
+        $excelField = [
+            "title" => "资源名称",
+            "url" => "资源地址",
+        ];
+        $data = $dataList->toArray();
+
+        $this->excelField = $excelField;
+        $this->exportExcelData($dataList);
+        print_r(12);
     }
     
 }

@@ -631,44 +631,26 @@ abstract class QfShop
             ->setDescription("Export by qfshop"); //设置备注  
 
         $PHPSheet = $PHPExcel->getActiveSheet();
-        $PHPSheet->setTitle($this->excelTitle); //给当前活动sheet设置名称
 
-        $PHPSheet->mergeCells('A1:' . $this->excelCells[count($excelField) - 1] . "1");
-        $PHPSheet->setCellValue('A1', $this->excelTitle);
-        $PHPSheet->getRowDimension(1)->setRowHeight(40);
-        $PHPSheet->getStyle('A1')->getFont()->setSize(16)->setBold(true); //字体大小
-
-        $PHPSheet->getStyle('A1')->getAlignment()->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER);    //水平方向上对齐  
-        $PHPSheet->getStyle('A1')->getAlignment()->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);       //垂直方向上中间居中  
-        $PHPSheet->getStyle('A1')->getAlignment()->setVertical(\PHPExcel_Style_Alignment::VERTICAL_CENTER);       //垂直方向上中间居中  
 
         if (count($excelField) > count($this->excelCells)) {
             echo 'Error and you need check Excel Cells Keys...';
             die;
         }
-        $PHPSheet->getRowDimension(2)->setRowHeight(30);
+        $PHPSheet->getRowDimension(1)->setRowHeight(30);
         for ($column = 0; $column < count($excelField); $column++) {
-            $PHPSheet->setCellValue($this->excelCells[$column] . "2", $excelField[$column][1]);
+            $PHPSheet->setCellValue($this->excelCells[$column] . "1", $excelField[$column][1]);
             $PHPSheet->getStyle($this->excelCells[$column])->getNumberFormat()
                 ->setFormatCode(\PHPExcel_Style_NumberFormat::FORMAT_TEXT);
             for ($line = 0; $line < count($datalist); $line++) {
                 $string = $datalist[$line][$excelField[$column][0]];
                 $PHPSheet->getColumnDimension($this->excelCells[$column])->setWidth(20);
-                $PHPSheet->setCellValueExplicit($this->excelCells[$column] . ($line + 3), $string, \PHPExcel_Cell_DataType::TYPE_STRING);
+                $PHPSheet->setCellValueExplicit($this->excelCells[$column] . ($line + 2), $string, \PHPExcel_Cell_DataType::TYPE_STRING);
             }
         }
         //***********************画出单元格边框*****************************
         $styleArray = array(
-            'borders' => array(
-                'inside' => array(
-                    'style' => \PHPExcel_Style_Border::BORDER_THIN, //细边框
-                    //'color' => array('argb' => 'FFFF0000'),
-                ),
-                'outline' => array(
-                    'style' => \PHPExcel_Style_Border::BORDER_THICK, //边框是粗的
-                    //'color' => array('argb' => 'FFFF0000'),
-                ),
-            ),
+            
         );
         $PHPSheet->getStyle('A2:' . $this->excelCells[count($excelField) - 1] . (count(
             $datalist
