@@ -116,7 +116,7 @@ class Other extends QfShop
                 $res = curlHelper("https://drive-pc.quark.cn/1/clouddrive/file/delete?pr=ucpro&fr=pc&uc_param_str=", "POST", $urlData, $urlHeader)['body'];
                 $res = json_decode($res, true);
                 if($res['status'] == 200){
-                    $this->model->where('source_id', $deles['source_id'])->delete();
+                    $this->model->where('fid', $deles['fid'])->delete();
                 }
             }
         });
