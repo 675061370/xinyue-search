@@ -266,6 +266,8 @@ CREATE TABLE `qf_source` (
   `page_views` int(11) NOT NULL DEFAULT '0' COMMENT '浏览量',
   `status` tinyint(3) NOT NULL DEFAULT '1' COMMENT '状态 0=禁用 1=启用',
   `is_delete` tinyint(3) NOT NULL DEFAULT '0' COMMENT '是否删除 0=正常 1=软删除',
+  `is_time` int(11) NOT NULL DEFAULT '0' COMMENT '是否临时文件',
+  `fid` varchar(255) NOT NULL DEFAULT '' COMMENT '网盘文件标识',
   `create_time` int(11) NOT NULL DEFAULT '0' COMMENT '创建时间',
   `update_time` int(11) NOT NULL DEFAULT '0' COMMENT '修改时间'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='会议管理表';
