@@ -36,6 +36,7 @@
 宝塔设置教程 https://www.kancloud.cn/loveouu/bthelp/1541867
 
 2、nginx 404 Not Found  伪静态设置
+```shell
 location ~* (runtime|application)/{
 	return 403;
 }
@@ -44,6 +45,8 @@ location / {
 		rewrite  ^(.*)$  /index.php?s=$1  last;   break;
 	}
 }
+```
+
 
 ## 后台管理截图
 
