@@ -6,3 +6,25 @@ ALTER TABLE `qf_source` ADD COLUMN `is_time` int(11) NOT NULL DEFAULT 0 COMMENT 
 ADD COLUMN `fid` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '网盘文件标识';
 
 文件替换整个app文件(除了app/index这个文件夹不要替换，如果替换了重新传前端文件即可)
+
+
+
+6.17  更新资源分类
+更新数据库
+记得先备份！记得先备份！记得先备份！
+执行以下sql语句
+ALTER TABLE `qf_source` ADD COLUMN `source_category_id` int(11) NOT NULL DEFAULT 0 COMMENT '分类ID';
+ALTER TABLE `qf_source` ADD COLUMN `sort` int(11) NOT NULL DEFAULT 99 COMMENT '排序';
+ALTER TABLE `qf_source` ADD COLUMN `is_top` int(11) NOT NULL DEFAULT 0 COMMENT '是否置顶';
+INSERT INTO `qf_node` VALUES (118, '分类管理', '', 'qfadmin', 'source', 'category', 108, 0, 1, 'el-icon-s-operation', NULL, 0, 0, 0);
+CREATE TABLE `qf_source_category`  (
+  `source_category_id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '分类名称',
+  `sort` int(11) NOT NULL DEFAULT 0 COMMENT '排序',
+  `status` int(11) NOT NULL DEFAULT 0 COMMENT '状态',
+  `create_time` int(11) NOT NULL DEFAULT 0 COMMENT '创建时间',
+  `update_time` int(11) NOT NULL DEFAULT 0 COMMENT '修改时间',
+  PRIMARY KEY (`source_category_id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 9 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '分类表' ROW_FORMAT = Dynamic;
+
+文件替换整个app文件(除了app/index这个文件夹不要替换，如果替换了重新传前端文件即可)

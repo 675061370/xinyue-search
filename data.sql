@@ -249,9 +249,28 @@ INSERT INTO `qf_node` (`node_id`, `node_title`, `node_desc`, `node_module`, `nod
 (109, '资源管理', '', 'qfadmin', 'source', 'index', 108, 1, 1, 'el-icon-folder-opened', NULL, 0, 1622538567, 1712213423),
 (112, '转存管理', '', 'qfadmin', 'source', 'deposit', 108, 1, 1, 'el-icon-crop', NULL, 0, 1712112542, 1712213455),
 (113, '转存日志', '', 'qfadmin', 'source', 'log', 108, 1, 1, 'el-icon-discover', NULL, 0, 1712208103, 1712213467),
-(114, '用户需求', '', 'qfadmin', 'source', 'feedback', 108, 1, 1, 'el-icon-edit', NULL, 0, 1712230638, 1712230717);
+(114, '用户需求', '', 'qfadmin', 'source', 'feedback', 108, 1, 1, 'el-icon-edit', NULL, 0, 1712230638, 1712230717),
+(118, '分类管理', '', 'qfadmin', 'source', 'category', 108, 0, 1, 'el-icon-s-operation', NULL, 0, 1712230638, 1712230717);
 
 -- --------------------------------------------------------
+
+--
+-- 表的结构 `qf_source_category`
+--
+
+CREATE TABLE `qf_source_category`  (
+  `source_category_id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '分类名称',
+  `sort` int(11) NOT NULL DEFAULT 0 COMMENT '排序',
+  `status` int(11) NOT NULL DEFAULT 0 COMMENT '状态',
+  `create_time` int(11) NOT NULL DEFAULT 0 COMMENT '创建时间',
+  `update_time` int(11) NOT NULL DEFAULT 0 COMMENT '修改时间',
+  PRIMARY KEY (`source_category_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='分类表';
+
+
+-- --------------------------------------------------------
+
 
 --
 -- 表的结构 `qf_source`
@@ -268,6 +287,9 @@ CREATE TABLE `qf_source` (
   `is_delete` tinyint(3) NOT NULL DEFAULT '0' COMMENT '是否删除 0=正常 1=软删除',
   `is_time` int(11) NOT NULL DEFAULT '0' COMMENT '是否临时文件',
   `fid` varchar(255) NOT NULL DEFAULT '' COMMENT '网盘文件标识',
+  `source_category_id` int(11) NOT NULL DEFAULT 0 COMMENT '分类ID',
+  `sort` int(11) NOT NULL DEFAULT 99 COMMENT '排序',
+  `is_top` int(11) NOT NULL DEFAULT 0 COMMENT '是否置顶',
   `create_time` int(11) NOT NULL DEFAULT '0' COMMENT '创建时间',
   `update_time` int(11) NOT NULL DEFAULT '0' COMMENT '修改时间'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='会议管理表';

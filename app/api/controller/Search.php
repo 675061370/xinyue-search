@@ -4,6 +4,7 @@ namespace app\api\controller;
 
 use app\api\QfShop;
 use app\model\Source as SourceModel;
+use app\model\SourceCategory as SourceCategoryModel;
 
 class Search extends QfShop
 {
@@ -32,6 +33,13 @@ class Search extends QfShop
     {
         $SourceModel = new SourceModel();
         $data = $SourceModel->getHot(input(''));
+        return jok('获取成功',$data);
+    }
+    
+    public function getCategory()
+    {
+        $SourceCategoryModel = new SourceCategoryModel();
+        $data = $SourceCategoryModel->getList(input(''));
         return jok('获取成功',$data);
     }
 }

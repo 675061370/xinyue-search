@@ -26,11 +26,11 @@ class Source extends QfShop
         ];
         $this->insertFields = [
             //允许添加的字段列表
-            "title","url","status","is_delete"
+            "source_category_id","title","url","status","is_delete","sort","is_top"
         ];
         $this->updateFields = [
             //允许更新的字段列表
-            "title","url","status","is_delete"
+            "source_category_id","title","url","status","is_delete","sort","is_top"
         ];
         $this->insertRequire = [
             //添加时必须填写的字段
@@ -65,8 +65,11 @@ class Source extends QfShop
         //从请求中获取筛选数据的数组
         $map = $this->getDataFilterFromRequest();
         $map[] = ['is_delete','=',0];
+        if(!empty(input('source_category_id'))){
+            $map[] = ['source_category_id','=',input('source_category_id')];
+        }
         //从请求中获取排序方式
-        $order = $this->getorderfromRequest();
+        $order = ['is_top' => 'desc','sort' => 'desc','source_id' => 'desc'];
         //设置Model中的 per_page
         $this->setGetListPerPage();
         //查询数据
@@ -217,6 +220,7 @@ class Source extends QfShop
 
                  //删除这个文件
                 unlink("./uploads/".$saveName);
+                
                  // 生成二维码
                 foreach ($excel_array as $k => $v) {
                     $patterns = '/^\d+\.|\d+\-/';
@@ -238,6 +242,7 @@ class Source extends QfShop
                     if (empty($res) && $url) {
                         $data[$k]['title'] = $title;
                         $data[$k]['url'] = $url;
+                        $data[$k]['source_category_id'] = input('source_category_id')??0;
                         $data[$k]['update_time'] = time();
                         $data[$k]['create_time'] = time();
                         $i++;

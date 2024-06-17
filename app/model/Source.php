@@ -37,6 +37,19 @@ class Source extends QfShop
         'time'  =>  'timestamp',
     ];
 
+    /**
+     * hasOne qf_source_category
+     * @access public
+     * @return mixed
+     */
+    public function category()
+    {
+        return $this
+            ->hasOne(SourceCategory::class, 'source_category_id', 'source_category_id')
+            ->joinType('left')
+            ->field('source_category_id,name');
+    }
+
 
     /**
      * @description: 获取一个信息
@@ -48,8 +61,8 @@ class Source extends QfShop
         $map[] = ['status', '=', 1];
         $map[] = ['is_delete', '=', 0];
         $map[] = ['source_id', '=', $data['id']];
-        $field = 'source_id as id,title,url,update_time as time';
-        $result = $this->where($map)->field($field)->find();
+        $field = 'source_id as id,source_category_id,title,url,update_time as time';
+        $result = $this->with('category')->where($map)->field($field)->find();
         if(!is_null($result)){
             $result->inc('page_views')->update();
         }
@@ -90,6 +103,10 @@ class Source extends QfShop
             unset($map[array_search(['is_time', '=', 0], $map)]);
         }
 
+        if(!empty($data['category_id'])){
+            $map[] = ['source_category_id', '=', $data['category_id']];
+        }
+
         $result['total_result'] = $this->where($map)->count();
         if ($result['total_result'] <= 0) {
             return $result;
@@ -101,7 +118,8 @@ class Source extends QfShop
         }
 
         $result['items'] = $this->setDefaultOrder($order)
-            ->field('source_id as id,title,url,update_time as time,is_time')
+            ->field('source_id as id,source_category_id,title,url,update_time as time,is_time')
+            ->with('category')
             ->where($map)
             ->withSearch(['page', 'order'], $data)
             ->select()->each(function($item,$key){

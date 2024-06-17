@@ -12,6 +12,12 @@
             <el-button icon="el-icon-document-copy" size="small" @click="getExport" plain>导出资源</el-button>
         </el-form-item>
         <div style="float:right">
+            <el-form-item style="width:120px;">
+                <el-select size="small" v-model="search.source_category_id" placeholder="筛选分类">
+                    <el-option v-for="item in category" :key="item.source_category_id" :label="item.name" :value="item.source_category_id">
+                    </el-option>
+                </el-select>
+            </el-form-item>
             <el-form-item>
                 <el-input placeholder="输入关键词搜索" size="small" v-model="search.keyword" @keyup.enter.native="getList_search"></el-input>
             </el-form-item>
@@ -27,11 +33,22 @@
         </el-table-column>
         <el-table-column prop="title" label="资源名称">
         </el-table-column>
+        <el-table-column prop="source_category_id_name" label="资源分类">
+        </el-table-column>
         <el-table-column prop="url" label="资源地址" align="center">
         </el-table-column>
-        <el-table-column prop="create_time" label="入库时间" align="center" width="200">
+        <el-table-column prop="is_top" label="置顶"  width="90" align="center">
+            <template slot-scope="scope">
+                <p v-if="scope.row.is_top">
+                    <el-tag size="mini">置顶</el-tag>
+                </p>
+            </template>
         </el-table-column>
-        <el-table-column prop="update_time" label="更新时间" align="center" width="200">
+        <el-table-column prop="sort" label="排序"  width="90" align="center">
+        </el-table-column>
+        <el-table-column prop="create_time" label="入库时间" align="center" width="160">
+        </el-table-column>
+        <el-table-column prop="update_time" label="更新时间" align="center" width="160">
         </el-table-column>
         <el-table-column label="操作" width="180" align="center">
             <template slot-scope="scope">
@@ -61,11 +78,24 @@
     <el-dialog title="添加资源" :visible.sync="dialogFormAdd" :modal-append-to-body='false' append-to-body
         :close-on-click-modal='false' width="680px">
         <el-form :model="formAdd" :rules="rules" ref="formAdd">
+            <el-form-item prop="source_category_id" label="资源分类" :label-width="formLabelWidth">
+                <el-select size="medium" v-model="formAdd.source_category_id" placeholder="请选择分类">
+                    <el-option v-for="item in category" :key="item.source_category_id" :label="item.name" :value="item.source_category_id">
+                    </el-option>
+                </el-select>
+            </el-form-item>
             <el-form-item prop="title" label="资源名称" :label-width="formLabelWidth">
                 <el-input size="medium" autocomplete="off" placeholder="请输入资源名称" v-model="formAdd.title"></el-input>
             </el-form-item>
             <el-form-item prop="url" label="资源地址" :label-width="formLabelWidth">
                 <el-input size="medium" autocomplete="off" placeholder="请输入资源地址" v-model="formAdd.url"></el-input>
+            </el-form-item>
+            <el-form-item prop="sort" label="排序" :label-width="formLabelWidth">
+                <el-input-number v-model="formAdd.sort" :min="0" :max="999" size="medium" style="width: 120px;"
+                    controls-position="right" />
+            </el-form-item>
+            <el-form-item prop="is_top" label="置顶" :label-width="formLabelWidth">
+                <el-switch v-model="formAdd.is_top"></el-switch>
             </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -76,11 +106,25 @@
     <el-dialog title="修改资源" :visible.sync="dialogFormEdit" :modal-append-to-body='false' append-to-body
         :close-on-click-modal='false' width="680px">
         <el-form :model="formEdit" :rules="rules" ref="formEdit">
+            <el-form-item prop="source_category_id" label="资源分类" :label-width="formLabelWidth">
+                <el-select size="medium" v-model="formEdit.source_category_id" placeholder="请选择分类">
+                    <el-option v-for="item in category" :key="item.source_category_id" :label="item.name"
+                        :value="item.source_category_id">
+                    </el-option>
+                </el-select>
+            </el-form-item>
             <el-form-item prop="title" label="资源名称" :label-width="formLabelWidth">
                 <el-input size="medium" autocomplete="off" placeholder="请输入资源名称" v-model="formEdit.title"></el-input>
             </el-form-item>
             <el-form-item prop="url" label="资源地址" :label-width="formLabelWidth">
                 <el-input size="medium" autocomplete="off" placeholder="请输入资源地址" v-model="formEdit.url"></el-input>
+            </el-form-item>
+            <el-form-item prop="sort" label="排序" :label-width="formLabelWidth">
+                <el-input-number v-model="formEdit.sort" :min="0" :max="999" size="medium" style="width: 120px;"
+                    controls-position="right" />
+            </el-form-item>
+            <el-form-item prop="is_top" label="置顶" :label-width="formLabelWidth">
+                <el-switch v-model="formEdit.is_top"></el-switch>
             </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -92,7 +136,13 @@
     <el-dialog title="导入资源" :visible.sync="dialogImport" :modal-append-to-body='false' append-to-body
         :close-on-click-modal='false' width="600px">
         <el-form :model="Importform">
-            
+            <el-form-item prop="source_category_id" label="资源分类" :label-width="formLabelWidth">
+                <el-select size="medium" v-model="Importform.source_category_id" placeholder="请选择分类">
+                    <el-option v-for="item in category" :key="item.source_category_id" :label="item.name"
+                        :value="item.source_category_id">
+                    </el-option>
+                </el-select>
+            </el-form-item>
             <el-form-item label="" :label-width="formLabelWidth">
                 <el-upload class="upload-demo" :data="Importform" name="file" 
                 ref="ImportUpload"
@@ -122,7 +172,8 @@
                 return {
                     search: {
                         keyword: "",
-                        filter: "title"
+                        filter: "title",
+                        source_category_id: ''
                     },
                     formLabelWidth: '120px',
                     dialogFormAdd: false,
@@ -146,17 +197,20 @@
                     Importform: {
                         
                     },
+
+                    category: [],
                 }
             },
             created() {
-                this.getList();
+                this.getcategory();
             },
             methods: {
                 getList_search(val) {
                     if (val == 0) {
                         this.search = {
                             keyword: "",
-                            filter: "title"
+                            filter: "title",
+                            source_category_id: ''
                         }
                     }
                     this.form.page = 1;
@@ -253,6 +307,8 @@
                     }))
                         .then(function (response) {
                             if (response.data.code == CODE_SUCCESS) {
+                                response.data.data.source_category_id = response.data.data.source_category_id || undefined
+                                response.data.data.is_top = response.data.data.is_top?true:false
                                 that.formEdit = response.data.data;
                                 that.dialogFormEdit = true;
                             } else {
@@ -267,6 +323,24 @@
                     this.form.page = page;
                     this.getList();
                 },
+                getcategory(){
+                    var that = this;
+                    axios.post('/admin/source_category/getList', Object.assign({}, PostBase))
+                        .then(function (response) {
+                            that.loading = false;
+                            if (response.data.code == CODE_SUCCESS) {
+                                that.category = response.data.data;
+                                that.getList();
+                            } else {
+                                that.$message.error(response.data.message);
+                            }
+                        })
+                        .catch(function (error) {
+                            that.loading = false;
+                            that.$message.error('服务器内部错误');
+                            console.log(error);
+                        });
+                },
                 getList() {
                     var that = this;
                     that.loading = true;
@@ -275,6 +349,7 @@
                             that.loading = false;
                             if (response.data.code == CODE_SUCCESS) {
                                 that.dataList = response.data.data;
+                                that.setcategory()
                             } else {
                                 that.$message.error(response.data.message);
                             }
@@ -283,6 +358,15 @@
                             that.loading = false;
                             that.$message.error('服务器内部错误');
                         });
+                },
+                setcategory(){
+                    for (let item of this.dataList.data) {
+                        for (let items of this.category) {
+                            if(item.source_category_id == items.source_category_id){
+                                item.source_category_id_name = items.name
+                            }
+                        }
+                    }
                 },
                 
                 //导入数据
