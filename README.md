@@ -14,7 +14,7 @@
 
 ## 后台安装教程
 
-0、PHP（7.2）
+0、PHP（选择7.2，其它版本不兼容） 
 
 1、上传源码到服务器
 
@@ -35,7 +35,9 @@
 该操作用时很长，请设置最大值86400   设置后需重启下服务
 宝塔设置教程 https://www.kancloud.cn/loveouu/bthelp/1541867
 
-2、nginx 404 Not Found  伪静态设置
+2、非7.2版本导致的报错，请自行解决，不要再问！！！不会就百度或者老老实实用7.2
+
+3、nginx 404 Not Found  伪静态设置
 ```shell
 location ~* (runtime|application)/{
 	return 403;
