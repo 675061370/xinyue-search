@@ -11,6 +11,7 @@
 [前端项目地址](https://ext.dcloud.net.cn/plugin?id=17278)
 
 <https://ext.dcloud.net.cn/plugin?id=17278>
+注：鉴于太多人不会uniapp，默认项目搭建后已打包好前端，可正常使用；如需修改前端页面可自行查看以上地址。
 
 ## 后台安装教程
 

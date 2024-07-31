@@ -31,10 +31,10 @@ class Source extends QfShop
 
         // 检查缓存中是否存在该键
         if (Cache::has($cacheKey)) {
-            return jerr("该接口今天已经执行过，请明天再试！");
+            return jerr("请勿频繁调用，一个小时后再试！");
         }
 
-        Cache::set($cacheKey, time(), 43200);
+        Cache::set($cacheKey, time(), 3600);
 
         ini_set('max_execution_time', -1);
         //分页转存
