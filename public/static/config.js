@@ -1,1 +1,1 @@
-const baseURL = "https://pan.xinyuedh.com/"
+const baseURL = "/"
