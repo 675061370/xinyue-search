@@ -203,13 +203,20 @@ class Source extends QfShop
                 ini_set("memory_limit",-1);
                 
                 $file_name = app()->getRootPath()."public/uploads/".$saveName;
-                //读取excel文件
-                $PHPReader = new \PHPExcel_Reader_CSV();
-                //默认输入字符集// 判断文件编码
-                $encoding = $this->detectFileEncoding($file_name);
-                $PHPReader->setInputEncoding($encoding);
-                //默认的分隔符
-                $PHPReader->setDelimiter(',');
+
+                $extension = pathinfo($file_name, PATHINFO_EXTENSION);
+                if ($extension == 'csv') {
+                    $PHPReader = new \PHPExcel_Reader_CSV();
+                    $PHPReader->setInputEncoding($encoding);
+                    $PHPReader->setDelimiter(',');
+                } elseif ($extension == 'xlsx') {
+                    $PHPReader = new \PHPExcel_Reader_Excel2007();
+                } elseif ($extension == 'xls') {
+                    $PHPReader = new \PHPExcel_Reader_Excel5();
+                } else {
+                    return jerr('不支持的文件类型');
+                }
+                
                 //载入文件
                 $objExcel = $PHPReader->load($file_name);
                 $excel_array = $objExcel ->getSheet(0)->toArray();
