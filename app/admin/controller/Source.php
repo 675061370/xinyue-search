@@ -207,6 +207,7 @@ class Source extends QfShop
                 $extension = pathinfo($file_name, PATHINFO_EXTENSION);
                 if ($extension == 'csv') {
                     $PHPReader = new \PHPExcel_Reader_CSV();
+                    $encoding = $this->detectFileEncoding($file_name);
                     $PHPReader->setInputEncoding($encoding);
                     $PHPReader->setDelimiter(',');
                 } elseif ($extension == 'xlsx') {
