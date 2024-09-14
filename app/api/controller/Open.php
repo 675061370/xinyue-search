@@ -139,13 +139,7 @@ class Open extends QfShop
             $this->transferQuark(strtok($pwd_id, '#'));
         } else if($url_type == 1){
             //阿里
-            if(empty($this->Authorization) && $this->isType==0){
-                jerr("参数有误");
-            }
             $this->transferAlipan($pwd_id);
-        } else if($url_type == 2){
-            //百度
-            // $this->transferBaidu($pwd_id);
         } else if($url_type == 3){
             //UC
             $this->transferUc($pwd_id);
@@ -275,6 +269,8 @@ class Open extends QfShop
             $urls['title'] = $infos['share_name'];
             $urls['share_url'] = $this->url;
             return jok('检验成功', $urls);
+        }else{
+            return jerr('阿里暂不支持转存');
         }
         
         
@@ -332,7 +328,7 @@ class Open extends QfShop
             $urls['share_url'] = $this->url;
             return jok('检验成功', $urls);
         }else{
-            return jerr('暂不支持转存');
+            return jerr('UC暂不支持转存');
         }
     }
     
