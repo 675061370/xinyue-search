@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    </head>
+    <body>
+        <div>
+            <h4>【{$day} | 短剧每日更新】</h4>
+            {volist name="list" id="vo"}
+                {$key+1}、{$vo.title}<br/>
+            {/volist}
+            <br/>
+        </div>
+    </body>
+</html>

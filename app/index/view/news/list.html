@@ -1,0 +1,121 @@
+{include file="common/header"}
+</head>
+<body>
+    <div class="headBg" style="background-image: url({$config.home_bg});"></div>
+    <div id="app" v-cloak>
+        {include file="common/head"}
+        <div class="searchBox searchList">
+            <div class="search">
+                 <div class="select" @click="selectBtn">
+                    {if condition="$category_id == ''"}全部{/if}
+                    {foreach $category as $key=>$vo }
+                        {if condition='$category_id == $vo.id'}{$vo.name}{/if}
+                    {/foreach}
+                    <i class="iconfont icon-xiala" style="font-size: 3vw"></i>
+                 </div> 
+                <input type="text" v-model="keyword" placeholder="输入关键字进行搜索" @keyup.enter="searchBtn" confirm-type="search" @confirm="searchBtn">
+                <div class="btn" @click="searchBtn">
+                    <i class="iconfont icon-sousuo"></i>
+                </div>
+            </div>
+        </div>
+        <div class="listBox">
+            <div class="screen">
+                <div class="fixed">
+                    <h3>筛选</h3>
+                    <div class="box">
+                        <a href="/s/{$keyword}.html" class="{eq name="category_id" value=""}active{/eq}">全部</a>
+                        {foreach $category as $key=>$vo }
+                        <a href="/s/{$keyword}-1-{$vo.id}.html" class="{if condition='$category_id == $vo.id'}active{/if}">{$vo.name}</a>
+                        {/foreach}
+                    </div>
+                </div>
+            </div>
+            <div class="left">
+                <h3>为您找到【<span>{$keyword}</span>】相关资源<span> {$list.total_result} </span>条</h3>
+                <div class="box">
+                    {if condition="$list.total_result>0"}
+                    <div class="list">
+                        {foreach $list.items as $key=>$vo }
+                        <a class="item" target="_blank" href="{$vo.url}">
+                            <div class="title">
+                                {$vo.name|raw}
+                            </div>
+                            <div class="type time">{$vo.times}</div>
+                            <div class="type">
+                                {if condition="$vo.is_type==1"}
+                                <span>来源：阿里云盘</span>
+                                {elseif condition="$vo.is_type==2"/}
+                                <span>来源：百度网盘</span>
+                                {elseif condition="$vo.is_type==3"/}
+                                <span>来源：UC网盘</span>
+                                {elseif condition="$vo.is_type==4"/}
+                                <span>来源：迅雷网盘</span>
+                                {else /}
+                                <span>来源：夸克网盘</span>
+                                {/if}
+                                {notempty name="vo.code"}
+                                <span>提取码：<span>{$vo.code}</span></span>
+                                {/notempty}
+                            </div>
+                            <div class="btns">
+                                <div class="btn" @click.stop="copyText($event,'{$vo.title}','{$vo.url}','{$vo.code}')"><i class="iconfont icon-fenxiang1"></i>复制分享</div>
+                                <div class="btn" @click.stop="goLink($event,'{$vo.id}')"><i class="iconfont icon-fangwen"></i>查看详情</div>
+                                <div class="btn">
+                                    <img src="/static/index/images/{$vo.is_type}.png" class="icon" />
+                                    立即访问
+                                </div>
+                            </div>
+                        </a>
+                        {/foreach}
+                    </div>
+                    <div class="page">
+                        {notempty name="list.total_result"}
+                        <el-pagination background layout="prev, pager, next" :pager-count="3" :default-current-page="{$page_no}" :default-page-size="{$page_size}" :total="{$list.total_result}" @change="changeBtn"></el-pagination>
+                        {/notempty}
+                    </div>
+                    {else /}
+                    <el-empty style="margin-top: 10%;" :image-size="200" image="{$config.search_bg??''}" description="{$config.search_tips|default='未找到，可换个关键词尝试哦~'}"></el-empty>
+                    {/if}
+                </div>
+            </div>
+            <div class="right">
+                <block v-for="(item,index) in rankList" :key="index">
+                    <div class="nav">
+                        <img :src="item.image" v-if="item.image">
+                        {{item.name}}
+                    </div>
+                    <div class="box" v-if="item.list && item.list.length>0">
+                        <div class="list">   
+                            <a :href="'/s/'+vo.title+'.html'" v-for="(vo,i) in item.list" :key="i" class="item" v-show="i<5">
+                                <p>
+                                    <span>{{i+1}}</span>
+                                    {{vo.title}}
+                                </p>
+                            </a>
+                        </div>
+                    </div>
+                </block>
+            </div>
+        </div>
+        {include file="common/foot"}
+    </div>
+    {include file="common/footer"}
+    <script type="text/javascript" charset="utf-8">
+        // if(!app.is_m){
+            app.rankList = JSON.parse('<?php echo json_encode($rankList, JSON_UNESCAPED_UNICODE); ?>');
+            for (const item of app.rankList) {
+                axios.get('/api/tool/ranking',{
+                    params: {
+                      channel: item.name,
+                      is_m: app.is_m
+                    }
+                })
+                  .then(function (res) {
+                        item.list = res.data.data
+                  })
+            }
+        // }
+    </script>
+</body>
+</html>

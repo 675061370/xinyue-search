@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>{$node.node_title}</title>
+    <style>
+        textarea{
+            height: 300px;
+        }
+    </style>
+    {include file="common/header"/}
+    <el-card class="box-card" shadow="never">
+        <div slot="header" class="clearfix">
+            <span>目前仅支持夸克</span>
+        </div>
+        <div class="text item">
+            <el-card class="box-card">
+                <div slot="header" class="clearfix">
+                    <span>设置夸克cookie</span>
+                </div>
+                <div style="font-size:14px;color:#666;">
+                    <el-form :model="form">
+                        <el-form-item>
+                          <el-input style="width: 100%;" v-model="form.cookie" placeholder="夸克云盘网页版的cookie"></el-input>
+                        </el-form-item>
+                        <el-form-item>
+                          <el-button type="primary" @click="onSubmit">保存</el-button>
+                        </el-form-item>
+                    </el-form>
+                    <p>Tips：夸克云盘网页版的cookie,不懂如何获取请百度；填写并保存后才能使用下面功能</p>
+                </div>
+            </el-card>
+        </div>
+    </el-card>
+    {include file="common/footer"/}
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data() {
+                return {
+                    form: {
+                        cookie: '',
+                    },
+                    file: '',
+                    files: [],
+                };
+            },
+            created() {
+                this.getData();
+                // this.getFile()
+            },
+            methods: {
+                getData(){
+                    let that = this
+                    axios.post('/admin/conf/getBaseConfig', Object.assign({}, PostBase))
+                        .then(function (response) {
+                            if (response.data.code == 200) {
+                                for (let item of response.data.data) {
+                                    if(item.conf_key === 'quark_cookie'){
+                                        that.form.cookie = item.conf_value
+                                    }
+                                    if(item.conf_key === 'quark_file'){
+                                        that.file = item.conf_value
+                                    }
+                                }
+                            } else {
+                                that.$message.error(response.data.message);
+                            }
+                        })
+                        .catch(function (error) {
+                            that.$message.error('服务器内部错误');
+                        });
+                },
+                onSubmit(){
+                    let that = this
+                    axios.post('/admin/conf/updateBaseConfig', Object.assign({}, PostBase, {
+                        quark_cookie: that.form.cookie
+                    }))
+                        .then(function (response) {
+                            if (response.data.code == 200) {
+                                that.$message({
+                                    message: response.data.message,
+                                    type: 'success'
+                                });
+                                that.getFile()
+                            } else {
+                                that.$message.error(response.data.message);
+                            }
+                        })
+                        .catch(function (error) {
+                            that.$message.error('服务器内部错误');
+                            console.log(error);
+                        });
+                },
+
+                getFile(){
+                    let that = this
+                    axios.post('/admin/source/getFiles', Object.assign({}, PostBase))
+                        .then(function (res) {
+                            if (res.data.code == 200) {
+                                that.files = res.data || []
+                            } else {
+                                that.$message.error(res.data.message);
+                            }
+                        })
+                        .catch(function (error) {
+                            that.$message.error('服务器内部错误');
+                            console.log(error);
+                        });
+                },
+            }
+        })
+    </script>
+
+
+</html>

@@ -1,0 +1,286 @@
+@media screen and (max-width: 768px) {
+    html, body {
+        font-size: 4vw;
+        width: 100%;
+        -webkit-tap-highlight-color:transparent
+    }
+    a:hover {
+      color: inherit;
+    }
+    .headerBox,.headerKox{
+        height: 15vw;
+    }
+    
+    .headerBox .box {
+        width: 100%;
+        padding: 0 3vw;
+    }
+    .headerBox .box .logoBox .logo {
+        height: 10vw;
+    }
+    .headerBox .box .logoBox .title {
+        margin-left: 3vw;
+        font-size: 4.8vw;
+    }
+    .headerBox .box .search {
+        display: none;
+    }
+    .headerBox .box .navs .item,.headerBox .box .navs .btns {
+        display: none;
+    }
+    .headerBox .box .navs .iconfont {
+        display: block;
+        font-weight: bold;
+        font-size: 20px;
+    }
+    .drawer .item{
+        font-size: 4vw;
+        color: var(--theme-color);
+    }
+    .drawer .item,.drawer a{
+        display: block;
+        height: 10vw;
+        line-height: 10vw;
+        font-size: 4vw;
+        color: var(--theme-color);
+        text-align: center;
+    }
+    .homeBox{
+        width: 100%;
+        padding: 6vw 5vw 0;
+    }
+    
+    .homeBox .box {
+        width: 100%;
+    }
+    .homeBox .logoBox .logo {
+        height: 13.2vw;
+    }
+    .homeBox .logoBox .title {
+        margin-left: 3.4vw;
+        font-size: 5.4vw;
+    }
+    
+    .searchBox .search {
+        margin-top: 5vw;
+        height: 12.5vw;
+        border-radius: 12.5vw;
+    }
+    .searchBox .search input {
+        border-radius: 12.5vw;
+        font-size: 4.2vw;
+        padding-left: 5vw;
+    }
+    .searchBox .search .btn {
+        width: 15vw;
+        height: 12.5vw;
+    }
+    .searchBox .search .btn .iconfont{
+        font-size: 5.8vw;
+    }
+    .home {
+        flex-wrap: wrap;
+        margin-top: 10vw;
+    }
+    .home .nav{
+        font-size: 4.2vw;
+        padding: 0 3vw 2vw;
+    }
+    .home .nav img {
+        width: 6vw;
+        height: 6vw;
+        margin-right: 2.6vw;
+    }
+    .home .content {
+        min-height: auto;
+    }
+    
+    .home .content .list{
+        padding: 0 0 2vw 2vw;
+    }
+    .home .content .list .item {
+        width: 26.8vw;
+        margin: 1vw;
+        padding: 1vw 0;
+    }
+    
+    .home .content .list .item .img {
+        height: 40vw;
+    }
+    .home .content .list .item p{
+        margin-top: 2vw;
+    }
+    
+    
+    .home .content .list .item:hover{
+        transform: translateY(0);
+    }
+    
+    .home.homeNO .block {
+        margin: 0;
+        margin-bottom: 5vw;
+        width: 100%;
+        flex: auto;
+    }
+    
+    .home.homeNO .content .list {
+        padding: 0 3vw 3vw;
+    }
+    
+    
+    .footerBox {
+        padding: 5vw;
+    }
+    .footerBox .box {
+        width: 100%;
+    }
+    
+    
+    .listBox {
+        width: 100%;
+        min-height: calc(100vh - 60vw);
+        display: flex;
+        flex-wrap: wrap;
+        align-content: flex-start;
+    }
+    .listBox .screen{
+        width: 100%;
+        margin: 0 3vw;
+    }
+    .listBox .screen .fixed h3{
+        display: none;
+    }
+    
+    .listBox .right {
+        display: none;
+    }
+    .listBox .left {
+        padding: 0 4vw;
+    }
+    
+    .listBox h3 {
+        position: relative;
+        padding: 20.4vw 0 0;
+        font-size: 3.8vw;
+        text-align: center;
+    }
+    .listBox h3:after {
+        display: none;
+    }
+    .listBox .box {
+        padding: 0 4vw 6vw;
+        margin-top: 4vw;
+        text-align: justify;
+        min-height: calc(100% - 50vw);
+    }
+    .listBox .left .list {
+        padding: 0;
+    }
+    .listBox .left .list .item {
+        padding: 5vw 0;
+    }
+    .listBox .left .list .item .title {
+        font-size: 4.2vw;
+        padding-right: 7vw;
+        padding-bottom: 1.5vw;
+    }
+    .listBox .left .list .item .btns{
+        justify-content: space-between;
+    }
+        
+    .listBox .left .list .item .btns .btn{
+        margin-right: 0;    
+    }
+    .listBox .left .list .item .btns .btn .iconfont{
+        font-size: 4.5vw;
+        margin-right: 1vw;
+    }
+    .listBox .left .list .item .btns .btn .icon{
+        width: 4.6vw;
+        margin-right: 1vw;
+    }
+    .listBox .left .list .item .type{
+        margin-top: 2vw;
+    }
+    .listBox .left .list .item .type::after{
+    	top: -1vw;
+    	font-size: 5.3vw;
+    }
+    
+    
+    .listBox .details{
+        padding-top: 5vw;
+    }
+    .details .title {
+        font-size: 4.3vw;
+        margin-bottom: 4vw;
+    }
+    .details .cat {
+        display: flex;
+        font-size: 4.2vw;
+    }
+    .details .pic {
+        width: 30vw;
+        height: 40vw;
+        margin: 2vw auto 5vw;
+    }
+    
+    
+    .searchList{
+        position: fixed;
+        left: 0;
+        right: 0;
+        z-index: 10;
+        padding: 0 5vw 2vw;
+        display: block;
+        background-color: var(--theme-background);
+    }
+    .searchList .search {
+        margin-top: 3vw;
+    }
+    .searchList .search .select{
+        font-size: 3.8vw;
+        line-height: 13.2vw;
+        height: 12.5vw;
+        width: 20vw;
+        text-align: center;
+        opacity: .8;
+    }
+    .searchList .search input {
+        padding-left: 3vw;
+    }
+    
+    .listBox .screen .box{
+        padding: 0 4vw 6vw;
+        margin-top: 17.5vw;
+        display: none;
+    }
+    
+    
+    .searchDetail{
+        position: fixed;
+        left: 0;
+        right: 0;
+        z-index: 10;
+        padding: 0 5vw 2vw;
+        display: block;
+        background-color: var(--theme-background);
+    }
+    .searchDetail .search {
+        margin-top: 3vw;
+    }
+    .searchDetail .search input {
+        padding-left: 5vw;
+    }
+    .detailBox h3{
+        display: none;
+    }
+    .detailBox .details {
+        padding-top: 5vw;
+        margin-top: 20vw;
+    }
+    
+    
+    
+  
+}

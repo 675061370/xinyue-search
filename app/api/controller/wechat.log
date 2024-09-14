@@ -1,0 +1,4 @@
+[2024-04-07T15:46:10.672053+08:00] EasyWeChat.DEBUG: Request received: {"method":"GET","uri":"https://pan.xinyuedh.com/api/wechat?s=%2Fapi%2Fwechat","content-type":null,"content":""} 
+[2024-04-07T15:46:10.719415+08:00] EasyWeChat.DEBUG: Server response created: {"content":"success"} 
+[2024-04-07T15:46:38.369913+08:00] EasyWeChat.DEBUG: Request received: {"method":"GET","uri":"https://pan.xinyuedh.com/api/wechat?s=%2Fapi%2Fwechat","content-type":null,"content":""} 
+[2024-04-07T15:46:38.377289+08:00] EasyWeChat.DEBUG: Server response created: {"content":"success"} 

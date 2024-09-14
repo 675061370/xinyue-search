@@ -1,0 +1,123 @@
+{include file="common/header"}
+</head>
+<body>
+    <div class="headBg" style="background-image: url({$config.home_bg});"></div>
+    <div id="app" v-cloak>
+        {include file="common/head"}
+        <div class="searchBox searchDetail">
+            <div class="search">
+                <input type="text" v-model="keyword" placeholder="输入关键字进行搜索" @keyup.enter="searchBtn" confirm-type="search" @confirm="searchBtn">
+                <div class="btn" @click="searchBtn">
+                    <i class="iconfont icon-sousuo"></i>
+                </div>
+            </div>
+        </div>
+        <div class="listBox detailBox">
+            <div class="left">
+                <h3>详情</h3>
+                <div class="box details">
+                    {notempty name="detail.vod_pic"}
+                    <div class="pic">
+                        <img src="{$detail.vod_pic}" />
+                    </div>
+                    {/notempty}
+                    <div class="title">{$detail.title}</div>
+                    <div class="cat">
+                        <div class="l">资源分类</div>
+                        <div class="r">
+                            {if condition="$detail.category && $detail.category.name"}
+                            {$detail.category.name}
+                            {else /}
+                            其它
+                            {/if}
+                        </div>
+                    </div>
+                    <div class="cat">
+                        <div class="l">资源描述</div>
+                        <div class="r">
+                            {if condition="$detail.vod_content"}
+                            {$detail.vod_content}
+                            {else /}
+                            -
+                            {/if}
+                        </div>
+                    </div>
+                    <div class="cat">
+                        <div class="l">更新时间</div>
+                        <div class="r">{$detail.times}</div>
+                    </div>
+                    <div class="cat">
+                        <div class="l">资源类型</div>
+                        <div class="r">
+                            <img src="/static/index/images/{$detail.is_type}.png" class="icon" />
+                            {if condition="$detail.is_type==1"}
+                            <span>阿里云盘</span>
+                            {elseif condition="$detail.is_type==2"/}
+                            <span>百度网盘</span>
+                            {elseif condition="$detail.is_type==3"/}
+                            <span>UC网盘</span>
+                            {elseif condition="$detail.is_type==4"/}
+                            <span>迅雷网盘</span>
+                            {else /}
+                            <span>夸克网盘</span>
+                            {/if}
+                        </div>
+                    </div>
+                    <div class="cat">
+                        <div class="l">资源地址</div>
+                        <div class="r">
+                            <a href="{$detail.url}" target="_blank">{$detail.url}</a>
+                        </div>
+                    </div>
+                    {notempty name="detail.code"}
+                    <div class="cat">
+                        <div class="l">提取码</div>
+                        <div class="r" style="color: #FF3F3D;">{$detail.code}</div>
+                    </div>
+                    {/notempty}
+                    <div class="btns">
+                        <div class="btn btnCol" @click.stop="copyText($event,'{$detail.title}','{$detail.url}','{$detail.code}')"><i class="iconfont icon-fenxiang1"></i>复制分享</div>
+                        <a  href="{$detail.url}" target="_blank" class="btn"><i class="iconfont icon-yun_o"></i>立即访问</a>
+                    </div>
+                </div>
+            </div>
+            <div class="right">
+                <block v-for="(item,index) in rankList" :key="index">
+                    <div class="nav">
+                        <img :src="item.image" v-if="item.image">
+                        {{item.name}}
+                    </div>
+                    <div class="box" v-if="item.list && item.list.length>0">
+                        <div class="list">   
+                            <a :href="'/s/'+vo.title+'.html'" v-for="(vo,i) in item.list" :key="i" class="item" v-show="i<5">
+                                <p>
+                                    <span>{{i+1}}</span>
+                                    {{vo.title}}
+                                </p>
+                            </a>
+                        </div>
+                    </div>
+                </block>
+            </div>
+        </div>
+        {include file="common/foot"}
+    </div>
+    {include file="common/footer"}
+    <script type="text/javascript" charset="utf-8">
+        if(!app.is_m){
+            app.rankList = JSON.parse('<?php echo json_encode($rankList, JSON_UNESCAPED_UNICODE); ?>');
+            for (const item of app.rankList) {
+                axios.get('/api/tool/ranking',{
+                    params: {
+                      channel: item.name,
+                      is_m: app.is_m
+                    }
+                })
+                  .then(function (res) {
+                        item.list = res.data.data
+                  })
+            }
+        }
+    </script>
+</body>
+</html>

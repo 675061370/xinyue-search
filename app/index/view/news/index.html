@@ -1,0 +1,113 @@
+{include file="common/header"}
+</head>
+<body>
+    <div class="headBg" style="background-image: url({$config.home_bg});"></div>
+    <div id="app" v-cloak>
+        {include file="common/head"}
+        <div class="homeBox searchBox">
+            <div class="box">
+                <div class="logoBox">
+                    {notempty name="config.logo"}
+                    <img class="logo" src="{$config.logo}"></img>
+                    {/notempty}
+                    {if condition="$config.app_name && $config.app_name_hide!=1"}
+                     <span class="title">{$config.app_name}</span>
+                    {/if}
+                </div>
+                {notempty name="config.app_subname"}
+                 <div class="subTitle">{$config.app_subname}</div> 
+                {/notempty}
+                <div class="search">
+                    <input type="text" v-model="keyword" placeholder="输入关键字进行搜索" @keyup.enter="searchBtn" confirm-type="search" @confirm="searchBtn">
+                    <div class="btn" @click="searchBtn">
+                        <i class="iconfont icon-sousuo"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="home {if $config.ranking_type != 1}homeNO{/if}">
+                <div class="block" v-if="newList.length>0">
+                    <div class="nav">
+                         {notempty name="config.home_new_img"}
+                        <img src="{$config.home_new_img}"></img>
+                        {/notempty}
+                        最新更新
+                    </div>
+                    <div class="content">
+                        {if $config.ranking_type == 1 } 
+                        <div class="list">
+                            <a :href="'/s/'+vo.title+'.html'" target="_blank" class="item" v-for="(vo,i) in newList" :key="i">
+                                <div class="img">
+                                    <img :src="vo.src" />
+                                    <span>Loading...</span>
+                                </div>
+                                <p>{{vo.title}}</p>
+                            </a>
+                        </div>
+                        {else /} 
+                        <div class="list">
+                            <a :href="'/s/'+vo.title+'.html'" target="_blank" class="item" v-for="(vo,i) in newList" :key="i">
+                                <p>
+                                    <span>{{i+1}}</span>
+                                    {{vo.title}}
+                                </p>
+                            </a>
+                        </div>
+                        {/if}
+                        
+                    </div>
+                </div>
+                <div class="block" v-for="(item,index) in rankList" :key="index">
+                    <div class="nav">
+                        <img :src="item.image" v-if="item.image">
+                        {{item.name}}
+                    </div>
+                    <div class="content">
+                        {if $config.ranking_type == 1 } 
+                        <div class="list">
+                            <a :href="'/s/'+vo.title+'.html'" target="_blank" class="item" v-for="(vo,i) in item.list" :key="i">
+                                <div class="img">
+                                    <img :src="vo.src" />
+                                    <span>Loading...</span>
+                                </div>
+                                <p>{{vo.title}}</p>
+                            </a>
+                        </div>
+                        {else /} 
+                        <div class="list">
+                            <a :href="'/s/'+vo.title+'.html'" target="_blank" class="item" v-for="(vo,i) in item.list" :key="i">
+                                <p>
+                                    <span>{{i+1}}</span>
+                                    {{vo.title}}
+                                </p>
+                            </a>
+                        </div>
+                        {/if}
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        {include file="common/foot"}
+    </div>
+    {include file="common/footer"}
+    <script type="text/javascript" charset="utf-8">
+        app.newList = JSON.parse('<?php echo json_encode($newList, JSON_UNESCAPED_UNICODE); ?>');
+        let num = '{$config.ranking_m_num}';
+        if(app.is_m){
+            app.newList = app.newList.slice(0, num);
+        }
+        app.rankList = JSON.parse('<?php echo json_encode($rankList, JSON_UNESCAPED_UNICODE); ?>');
+        for (const item of app.rankList) {
+            axios.get('/api/tool/ranking',{
+                params: {
+                  channel: item.name,
+                  is_m: app.is_m
+                }
+            })
+              .then(function (res) {
+                    item.list = res.data.data
+              })
+        }
+    </script>
+</body>
+</html>
