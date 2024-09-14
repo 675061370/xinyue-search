@@ -152,7 +152,7 @@ INSERT INTO `qf_conf` VALUES (36, 'home_color', NULL, '文字颜色', '默认文
 INSERT INTO `qf_conf` VALUES (37, 'home_theme', NULL, '主题色', '默认：#1e80ff', 0, 7, NULL, 3, 1, 72, 1, 1725027499, 1725027504);
 INSERT INTO `qf_conf` VALUES (38, 'other_background', NULL, '其它元素背景', '搜索框及其它元素北背景色 默认：#ffffff', 0, 7, NULL, 3, 1, 71, 1, 1725028468, 1725028478);
 INSERT INTO `qf_conf` VALUES (39, 'ranking_type', '0', '显示模式', '', 0, 2, '无图模式=>0\n有图模式=>1', 3, 1, 79, 1, 1725159933, 1725160022);
-INSERT INTO `qf_conf` VALUES (40, 'ranking_num', '10', '排行榜数量', '下次更新生效；排行榜数据每12个小时更新一次', 0, 0, NULL, 3, 1, 78, 1, 1725160003, 1725171288);
+INSERT INTO `qf_conf` VALUES (40, 'ranking_num', '10', '排行榜数量', '下次更新生效；排行榜数据每12个小时更新一次；右上角清除缓存立即生效', 0, 0, NULL, 3, 1, 78, 1, 1725160003, 1725171288);
 INSERT INTO `qf_conf` VALUES (41, 'home_css', '', '自定义CSS', '直接写css样式就行', 0, 1, NULL, 3, 1, 70, 1, 1725324697, 1725324697);
 INSERT INTO `qf_conf` VALUES (42, 'seo_statistics', '', '统计代码', '直接填写统计代码即可，如51LA： <script charset=\"UTF-8\" id=\"XXXXX\" src=\"//sdk.51.la/js-sdk-pro.min.js\"></script> 	<script>LA.init({id:\"XXXXX\",ck:\"XXXX\",hashMode:true})</script>', 0, 1, NULL, 9, 1, 995, 1, 1725325341, 1725411486);
 INSERT INTO `qf_conf` VALUES (43, 'app_icon', '', '网站icon', '', 0, 4, NULL, 0, 1, 92, 1, 1725326071, 1725326071);
