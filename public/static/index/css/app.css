@@ -477,8 +477,12 @@ a:hover {
     font-weight: bold;
     padding-right: 42px;
     padding-bottom: 4px;
+    color: var(--theme-theme);
 }
-.listBox .left .list .item .title span{
+.listBox .left .list .item .title p{
+    color: var(--theme-color);
+}
+.listBox .left .list .item .title p span{
     color: var(--theme-theme);
 }
 .listBox .left .list .item .btns{
@@ -489,11 +493,11 @@ a:hover {
 .listBox .left .list .item .btns .btn{
     position: relative;
     margin-right: 35px;
-    color: var(--theme-theme);
-    opacity: .95;
     cursor: pointer;
     display: inline-flex;
     align-items: center;
+    font-weight: 500;
+	color: var(--theme-color);
 }
 .listBox .left .list .item .btns .btn .iconfont{
     font-size: 18px;

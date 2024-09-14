@@ -754,9 +754,16 @@ function filterAndExtractWords(array $result)
  */
 function highlightKeywords($title, $searchTitle)
 {
+    $originalTitle = $title; // 保存原始标题
+
     // 使用正则表达式来高亮所有关键词
     foreach ($searchTitle as $keyword) {
         $title = preg_replace('/(' . preg_quote($keyword, '/') . ')/i', '<span>$1</span>', $title);
+    }
+
+    // 如果有关键词被高亮，添加<p>标签
+    if ($title !== $originalTitle) {
+        $title = '<p>' . $title . '</p>';
     }
 
     return $title;
