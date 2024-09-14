@@ -126,6 +126,9 @@
     .home.homeNO .content .list {
         padding: 0 3vw 3vw;
     }
+    .home.homeNO .content .list .item{
+        max-width: 100%;
+    }
     
     
     .footerBox {

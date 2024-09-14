@@ -358,6 +358,7 @@ a:hover {
     margin: 0;
     border-radius: 0;
     text-align: left;
+    max-width: 282px;
 }
 .home.homeNO .content .list .item p {
     margin-top: 0;
