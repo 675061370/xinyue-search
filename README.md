@@ -61,6 +61,14 @@ location / {
 }
 ```
 
+## 前台截图
+
+![image](https://pan.xinyuedh.com/github/p1.png)
+
+![image](https://pan.xinyuedh.com/github/p2.png)
+
+![image](https://pan.xinyuedh.com/github/p3.png)
+
 ## 后台管理截图
 
 1、一键转存他人链接：就是将别人的分享链接转为你自己的
