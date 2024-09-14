@@ -63,11 +63,11 @@ location / {
 
 ## 前台截图
 
-![image](https://pan.xinyuedh.com/github/p1.png)
+![image](https://pan.xinyuedh.com/github/p3.png)
 
 ![image](https://pan.xinyuedh.com/github/p2.png)
 
-![image](https://pan.xinyuedh.com/github/p3.png)
+![image](https://pan.xinyuedh.com/github/p1.png)
 
 ## 后台管理截图
 
