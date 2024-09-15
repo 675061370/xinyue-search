@@ -209,7 +209,7 @@ class QuarkPlugin
                 $title = $value['title'];
             }
             
-            if(empty($this->source_category_id)){
+            if(!empty($value['source_category_id'])){
                 $source_category_id = $value['source_category_id']??0;
             }else{
                 $source_category_id = $this->source_category_id;
