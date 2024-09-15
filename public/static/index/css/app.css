@@ -1,6 +1,6 @@
 html, body {
     margin: 0;
-    font-size: 14px;
+    font-size: 15px;
     font-family: v-sans, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", Segoe UI Symbol;
     line-height: 1.6;
     color: var(--theme-color);
@@ -19,7 +19,7 @@ html, body {
     top: 0;
     opacity: .3;
     background-repeat: repeat-x;
-    background-size: auto;
+    background-size: 100% auto;
 }
 
 form, input, textarea {
@@ -191,7 +191,7 @@ a:hover {
 }
 .homeBox .logoBox .title{
     margin: 0 8px;
-    font-size: 28px;
+    font-size: 30px;
     font-weight: bold;
 }
 .homeBox .subTitle{
@@ -271,7 +271,7 @@ a:hover {
 
 .home .nav{
     position: relative;
-    font-size: 16px;
+    font-size: 18px;
     font-weight: bold;
     color: var(--theme-color);
     padding: 0 20px 4px;
@@ -445,7 +445,7 @@ a:hover {
 
 .listBox .nav{
     position: relative;
-    font-size: 15px;
+    font-size: 18px;
     font-weight: bold;
     color: var(--theme-color);
     padding: 30px 0 14px;
@@ -473,7 +473,7 @@ a:hover {
     border-bottom: 1px dashed #e6e6e6;
 }
 .listBox .left .list .item .title{
-    font-size: 16px;
+    font-size: 17px;
     font-weight: bold;
     padding-right: 42px;
     padding-bottom: 4px;
@@ -520,7 +520,7 @@ a:hover {
 .listBox .left .list .item .type::after{
 	content: "\e619";
 	position: absolute;
-	top: -5.4px;
+	top: -3.4px;
 	left: 0;
 	font-family: 'iconfont';
 	font-size: 20px;
@@ -635,6 +635,7 @@ a:hover {
     font-size: 20px;
     font-weight: bold;
     margin-bottom: 25px;
+    color: var(--theme-theme);
 }
 .details .cat{
     display: flex;

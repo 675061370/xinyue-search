@@ -66,7 +66,7 @@ class Index extends QfShop
     public function list($name,$page=1,$cate='')
     {
         $data['page_no'] = $page;
-        $data['page_size'] = 40;
+        $data['page_size'] = 10;
         $data['title'] = $name;
         $data['category_id'] = $cate;
         $list = $this->SourceModel->getList($data);

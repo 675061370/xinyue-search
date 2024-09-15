@@ -58,7 +58,7 @@
     }
     .homeBox .logoBox .title {
         margin-left: 3.4vw;
-        font-size: 5.4vw;
+        font-size: 5.6vw;
     }
     
     .searchBox .search {
@@ -183,9 +183,9 @@
         padding: 5vw 0;
     }
     .listBox .left .list .item .title {
-        font-size: 4.2vw;
+        font-size: 4.6vw;
         padding-right: 7vw;
-        padding-bottom: 1.5vw;
+        padding-bottom: 1.2vw;
     }
     .listBox .left .list .item .btns{
         justify-content: space-between;
@@ -215,7 +215,7 @@
         padding-top: 5vw;
     }
     .details .title {
-        font-size: 4.3vw;
+        font-size: 4.8vw;
         margin-bottom: 4vw;
     }
     .details .cat {
