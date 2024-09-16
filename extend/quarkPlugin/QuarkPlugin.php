@@ -107,7 +107,7 @@ class QuarkPlugin
         $this->SourceLogModel->editLog($logId,$dataList['total_result'],'','',3);
     }
     
-    function processDataConcurrently($allData, $logId=0, $total_result=0,$batchSize=3,$isType=0) {
+    function processDataConcurrently($allData, $logId=0, $total_result=0,$batchSize=1,$isType=0) {
         // $batchSize每批最多处理 5 个请求，并发量切勿设置过大 防止风控
         $multiCurl = curl_multi_init();
         $curlHandles = [];
