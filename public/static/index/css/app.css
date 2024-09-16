@@ -5,6 +5,7 @@ html, body {
     line-height: 1.6;
     color: var(--theme-color);
     background-color: var(--theme-background);
+    word-wrap: break-word;
 }
 * {
   margin: 0;
@@ -475,7 +476,6 @@ a:hover {
 .listBox .left .list .item .title{
     font-size: 17px;
     font-weight: bold;
-    padding-right: 42px;
     padding-bottom: 4px;
     color: var(--theme-theme);
 }
