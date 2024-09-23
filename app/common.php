@@ -788,3 +788,192 @@ function determineIsType($url) {
         return 0;
     }
 }
+
+
+/**
+ * 网络资源搜索源一
+ * @return array
+ */   
+    
+ function source1($title)
+ {
+     $d = [];
+     
+     return $d;
+ }
+ 
+ /**
+  * 网络资源搜索源二(5条线路)
+  * 每个线路只取第一个
+  * @return array
+  */
+ function source2($title)
+ {
+     $urlDefault = "http://s.kkkob.com"; //http://s.kkkob.com
+     $url2 = [];
+     $res = curlHelper($urlDefault."/v/api/getToken", "GET")['body'];
+     $res = json_decode($res, true);
+     $token = $res['token'] ?? '';
+     if(empty($token)){
+         return $url2;
+     }
+     
+     $urlData = array(
+         'name' => $title, 
+         'token' => $token
+     );
+     $urlHeader = array('Content-Type: application/json');
+     // 定义正则表达式模式
+     $pattern = '/https:\/\/pan\.quark\.cn\/[^\s]*/';
+     
+     //线路2
+     $res = curlHelper($urlDefault."/v/api/getJuzi", "POST", json_encode($urlData), $urlHeader)['body'];
+     $res = json_decode($res, true);
+     if (!empty($res['list'] ?? [])) {
+         foreach ($res['list'] as $key => $value) {
+             if(preg_match($pattern, $value['answer'], $matches)){
+                 // 匹配成功，$matches[0] 包含了匹配到的链接
+                 $link = $matches[0];
+                 $url2[] = [
+                     'title' => preg_replace('/\s*[\(（]?(夸克)?[\)）]?\s*/u', '', $value['question']),
+                     'url' => $link
+                 ];
+                 break;
+             }
+         }
+     }
+     
+     if(!empty($url2)){
+         return $url2;
+     }
+     
+     //线路4
+     $res = curlHelper($urlDefault."/v/api/getXiaoyu", "POST", json_encode($urlData), $urlHeader)['body'];
+     $res = json_decode($res, true);
+     if (!empty($res['list'] ?? [])) {
+         foreach ($res['list'] as $key => $value) {
+             if(preg_match($pattern, $value['answer'], $matches)){
+                 // 匹配成功，$matches[0] 包含了匹配到的链接
+                 $link = $matches[0];
+                 $url2[] = [
+                     'title' => preg_replace('/\s*[\(（]?(夸克)?[\)）]?\s*/u', '', $value['question']),
+                     'url' => $link
+                 ];
+                 break;
+             }
+         }
+     }
+     
+     
+     // //线路1
+     // $res = curlHelper($urlDefault."/v/api/search", "POST", json_encode($urlData), $urlHeader)['body'];
+     // $res = json_decode($res, true);
+     // if (!empty($res['list'] ?? [])) {
+     //     $item = $res['list'][0];
+     //     // 使用正则表达式进行匹配
+     //     if (preg_match($pattern, $item['answer'], $matches)) {
+     //         // 匹配成功，$matches[0] 包含了匹配到的链接
+     //         $link = $matches[0];
+     //         $url2[] = [
+     //             'title' => '①'.preg_replace('/\s*[\(（]?(夸克)?[\)）]?\s*/u', '', $item['question']),
+     //             'url' => $link
+     //         ];
+     //     }
+     // }
+     
+     return $url2;
+ }
+ 
+ 
+ /**
+  * 网络资源搜索源三
+  * @return array
+  */
+ function source3($title)
+ {
+     $url3 = [];
+     $url = 'https://www.qileso.com/tag/quark?s='.$title;
+     $dom = getDom($url);
+     $finder = new DomXPath($dom);
+     // 查询class值为list-group post-list mt-3的元素
+     $nodes =$finder->query("//*[contains(concat(' ', normalize-space(@class), ' '), ' list-group post-list mt-3 ')]//a");
+     
+     if ($nodes->length > 0) {
+         $firstNode =$nodes->item(0);
+         $href = $firstNode->getAttribute('href');
+         
+         $dom = getDom($href);
+         $finder = new DomXPath($dom);
+         
+         // 查询包含特定前缀的href属性的所有<a>标签
+         $nodes =$finder->query("//@*[starts-with(., 'https://pan.quark.cn/s/')]");
+         if ($nodes->length > 0) {
+             $firstNode =$nodes->item(0);
+             $value = $firstNode->value;
+             
+             // 查询<title>元素
+             $nodes =$finder->query("/html/head/title");
+             
+             if ($nodes->length > 0) {
+                 $titleNode =$nodes->item(0);
+                 $titleText =$titleNode->textContent;
+                 // 去掉 " - 奇乐搜" 部分
+                 $title = preg_replace('/ - 奇乐搜|网盘|夸克/', '', $titleText);
+             }
+             
+             $url3[] = [
+                 'title' => '②'.$title,
+                 'url' => $value
+             ];
+         }
+     }
+     
+     return $url3;
+ }
+ 
+ 
+ /**
+  * 网络资源搜索源四
+  * @return array
+  */
+ function source4($title)
+ {
+     $url = 'https://www.pansearch.me/search?keyword='.urlencode($title).'&pan=quark';
+     $dom = getDom($url);
+     $finder = new DomXPath($dom);
+     
+     // 使用 XPath 查询选择具有特定类名的元素
+     $nodes =$finder->query('//div[contains(concat(" ", normalize-space(@class), " "), " whitespace-pre-wrap ") and contains(concat(" ", normalize-space(@class), " "), " break-all ")]');
+ 
+     $results = [];
+     foreach ($nodes as $node) {
+         // 获取元素的内容，包括其子元素
+         $content = $node->textContent;
+         
+         // Initialize an associative array to store parsed data
+         $parsedItem = [
+             'title' => '',
+             'url' => ''
+         ];
+ 
+         // Use regular expressions to extract the title and url
+         if (preg_match('/名称：(.*?)\n\n描述：/s', $content, $titleMatch)) {
+             $parsedItem['title'] = '「推荐」'.trim($titleMatch[1]);
+         }
+ 
+         if (preg_match('/链接：(https:\/\/pan\.quark\.cn\/s\/[a-zA-Z0-9]+)/', $content, $urlMatch)) {
+             $parsedItem['url'] = trim($urlMatch[1]);
+         }
+ 
+         if ($parsedItem['title'] && $parsedItem['url']) {
+             $results[] = $parsedItem;
+         }
+         
+         if (count($results) >= 3) {
+             break;
+         }
+     }
+     
+     return $results;
+ }
+ 
