@@ -93,7 +93,12 @@ location / {
 
 # 免费交流社群
 
-请加微信l1417716300，请备注来源
+可以进交流群,一起交流学习，添加时请备注来源（如果项目对你有所帮助，也可以请我喝杯咖啡 ☕️ ~）
+请加微信l1417716300
+
+
+| <img src="https://pan.xinyuedh.com/github/qr1.jpg" width="180px"> | <img src="https://pan.xinyuedh.com/github/qr2.jpg" width="180px"> |
+| --- | --- |
 
 程序使用不收费，但不负责搭建，搭建过程遇到问题，可以私聊或群里咨询
 
