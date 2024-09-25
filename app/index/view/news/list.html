@@ -37,10 +37,10 @@
                     {if condition="$list.total_result>0"}
                     <div class="list">
                         {foreach $list.items as $key=>$vo }
-                        <a class="item" target="_blank" href="{$vo.url}">
-                            <div class="title">
+                        <div class="item">
+                            <a target="_blank" href="{$vo.url}" class="title">
                                 {$vo.name|raw}
-                            </div>
+                            </a>
                             <div class="type time">{$vo.times}</div>
                             <div class="type">
                                 {if condition="$vo.is_type==1"}
@@ -60,13 +60,13 @@
                             </div>
                             <div class="btns">
                                 <div class="btn" @click.stop="copyText($event,'{$vo.title}','{$vo.url}','{$vo.code}')"><i class="iconfont icon-fenxiang1"></i>复制分享</div>
-                                <div class="btn" @click.stop="goLink($event,'{$vo.id}')"><i class="iconfont icon-fangwen"></i>查看详情</div>
-                                <div class="btn">
+                                <a href="/d/{$vo.id}.html" class="btn"><i class="iconfont icon-fangwen"></i>查看详情</a>
+                                <a target="_blank" href="{$vo.url}" class="btn">
                                     <img src="/static/index/images/{$vo.is_type}.png" class="icon" />
                                     立即访问
-                                </div>
+                                </a>
                             </div>
-                        </a>
+                        </div>
                         {/foreach}
                     </div>
                     <div class="page">
