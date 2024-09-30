@@ -48,12 +48,16 @@ class Index extends QfShop
                 });
         }
         
+        $config = config("qfshop");
         
         View::assign('newList', $newList);
-        View::assign('config', config("qfshop"));
+        View::assign('config', $config);
         View::assign('rankList', $rankList);
         View::assign('fixed', 1);
         View::assign('category_id', 0);
+        View::assign('seo_title', $config['app_name'].' - '.$config['app_title']);
+        View::assign('seo_keywords', $config['app_keywords']);
+        View::assign('seo_description', $config['app_description']);
         return View::fetch('/news/index');
     }
     
@@ -76,15 +80,20 @@ class Index extends QfShop
         
         $category = $this->SourceCategoryModel->field('name,source_category_id as id')->where([['status','=',0]])->order('sort desc')->select();
         
+
+        $config = config("qfshop");
         
         View::assign('rankList', $rankList);
         View::assign('category', $category);
         View::assign('list', $list);
-        View::assign('config', config("qfshop"));
+        View::assign('config', $config);
         View::assign('keyword', $data['title']);
         View::assign('page_size', $data['page_size']);
         View::assign('page_no', $data['page_no']);
         View::assign('category_id', $data['category_id']);
+        View::assign('seo_title', $data['title'].' - '.$config['app_name']);
+        View::assign('seo_keywords', $data['title'].','.$config['app_keywords']);
+        View::assign('seo_description', $data['title'].' - '.$config['app_description']);
         return View::fetch('/news/list');
     }
     
@@ -107,15 +116,25 @@ class Index extends QfShop
         if(empty($detail)){
             return redirect('/');
         }
-       
         
         $rankList = $this->SourceCategoryModel->field('name,image')->where([['status','=',0],['is_sys','=',1]])->order('sort desc')->select();
 
+        $config = config("qfshop");
         
         View::assign('rankList', $rankList);
         View::assign('detail', $detail);
-        View::assign('config', config("qfshop"));
+        View::assign('config', $config);
         View::assign('category_id', 0);
+
+        if($detail['category'] && $detail['category']['name']){
+            View::assign('seo_title', $detail['title'].'_'.$detail['category']['name'].' - '.$config['app_name']);
+            View::assign('seo_keywords', $detail['title'].'_'.$detail['category']['name'].','.$config['app_keywords']);
+            View::assign('seo_description', $detail['title'].'_'.$detail['category']['name'].' - '.$config['app_description']);
+        }else{
+            View::assign('seo_title', $detail['title'].' - '.$config['app_name']);
+            View::assign('seo_keywords', $detail['title'].','.$config['app_keywords']);
+            View::assign('seo_description', $detail['title'].' - '.$config['app_description']);
+        }
         return View::fetch('/news/detail');
     }
     

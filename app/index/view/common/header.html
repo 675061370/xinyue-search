@@ -7,9 +7,9 @@
     {/notempty}
     <meta name="renderer" content="webkit">
     <meta name="viewport" content="width=device-width,user-scalable=no,maximum-scale=1.0">
-    <title>{if condition="isset($detail) && $detail.title"}{$detail.title} - {$config.app_name}{elseif condition="isset($keyword) && $keyword"}{$keyword} - {$config.app_name}{else /}{$config.app_name}{notempty name="$config.app_title"} - {$config.app_title}{/notempty}{/if}</title>
-    <meta name="keywords" content="{notempty name="keyword"}{$keyword},{/notempty}{notempty name="detail"}{$detail.title},{/notempty}{$config.app_keywords}" />
-    <meta name="description" content="{notempty name="keyword"}{$keyword} - {/notempty}{notempty name="detail"}{$detail.title} - {/notempty}{$config.app_description}" />
+    <title>{$seo_title}</title>
+    <meta name="keywords" content="{$seo_keywords}" />
+    <meta name="description" content="{$seo_description}" />
     <link rel="stylesheet" href="/static/index/css/index.min.css">
     <link rel="stylesheet" href="/static/index/css/app.css">
     <link rel="stylesheet" href="/static/index/css/m.css">
