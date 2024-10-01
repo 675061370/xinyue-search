@@ -253,13 +253,15 @@ class Source extends QfShop
                         }
                     }
                     
+                    $is_type = $url?determineIsType($url):0;
                     $map = [];
                     $map[] = ['title', '=',$title];
+                    $map[] = ['is_type', '=',$is_type];
                     $res = $this->model->where($map)->find();
                     if (empty($res) && $url) {
                         $data[$k]['title'] = $title;
                         $data[$k]['url'] = $url;
-                        $data[$k]["is_type"] = determineIsType($url);
+                        $data[$k]["is_type"] = $is_type;
                         $data[$k]['source_category_id'] = input('source_category_id')??0;
                         $data[$k]['update_time'] = time();
                         $data[$k]['create_time'] = time();
