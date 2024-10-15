@@ -207,6 +207,9 @@ class Source extends QfShop
                 if ($extension == 'csv') {
                     $PHPReader = new \PHPExcel_Reader_CSV();
                     $encoding = $this->detectFileEncoding($file_name);
+                    if (!$encoding || strtoupper($encoding) == 'UTF-8') {
+                        $encoding = 'GBK'; // 尝试将其强制转为GBK
+                    }
                     $PHPReader->setInputEncoding($encoding);
                     $PHPReader->setDelimiter(',');
                 } elseif ($extension == 'xlsx') {
@@ -217,21 +220,20 @@ class Source extends QfShop
                     return jerr('不支持的文件类型');
                 }
                 
-                // //读取excel文件
-                // $PHPReader = new \PHPExcel_Reader_CSV();
-                // //默认输入字符集// 判断文件编码
-                // $encoding = $this->detectFileEncoding($file_name);
-                // $PHPReader->setInputEncoding($encoding);
-                // //默认的分隔符
-                // $PHPReader->setDelimiter(',');
-                
-                
                 //载入文件
                 $objExcel = $PHPReader->load($file_name);
                 $excel_array = $objExcel ->getSheet(0)->toArray();
                 array_shift($excel_array);  //删除第一个数组(标题);
                 $data = [];
                 $i = 0;
+                $existing_data = [];
+
+                // 先查询数据库中所有已存在的 title 和 is_type 组合
+                $existing_records = $this->model->field('title, is_type')->select()->toArray();
+                // 将查询结果转换为关联数组用于快速查找
+                foreach ($existing_records as $record) {
+                    $existing_data[$record['title'] . '_' . $record['is_type']] = true;
+                }
 
                  //删除这个文件
                 unlink("./uploads/".$saveName);
@@ -254,17 +256,20 @@ class Source extends QfShop
                     }
                     
                     $is_type = $url?determineIsType($url):0;
-                    $map = [];
-                    $map[] = ['title', '=',$title];
-                    $map[] = ['is_type', '=',$is_type];
-                    $res = $this->model->where($map)->find();
-                    if (empty($res) && $url) {
+
+                    $key = $title . '_' . $is_type;
+
+                    // 先检查内存缓存的 existing_data，避免重复插入
+                    if (!isset($existing_data[$key]) && $url) {
                         $data[$k]['title'] = $title;
                         $data[$k]['url'] = $url;
                         $data[$k]["is_type"] = $is_type;
                         $data[$k]['source_category_id'] = input('source_category_id')??0;
                         $data[$k]['update_time'] = time();
                         $data[$k]['create_time'] = time();
+
+                        // 将新插入的记录加入缓存，防止后续重复处理
+                        $existing_data[$key] = true;
                         $i++;
                     }
                 }
