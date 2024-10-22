@@ -1,0 +1,36 @@
+{
+    "debug": true,
+    "duanju_url": "https://pan.xinyuedh.com",
+    "channel_type": "wx",
+    "model": "gpt-4",
+    "open_ai_api_key": "",
+    "open_ai_api_base": "",
+    "text_to_image": "dall-e-3",
+    "claude_api_key": "YOUR API KEY",
+    "voice_to_text": "openai",
+    "text_to_voice": "openai",
+    "proxy": "",
+    "hot_reload": true,
+    "single_chat_prefix": [""],
+    "single_chat_reply_prefix": "[bot]",
+    "group_chat_prefix": [
+        "@bot"
+    ],
+    "group_name_white_list": [
+        "测试群群群",
+        "测试群群群2"
+    ], 
+    "image_create_prefix": [],
+    "speech_recognition": true,
+    "group_speech_recognition": false,
+    "voice_reply_voice": false,
+    "conversation_max_tokens": 2500,
+    "expires_in_seconds": 3600,
+    "character_desc": "你是基于大语言模型的AI智能助手，旨在回答并解决人们的任何问题，并且可以使用多种语言与人交流。",
+    "temperature": 0.7,
+    "subscribe_msg": "感谢您的关注！\n这里是AI智能助手，可以自由对话。\n支持语音对话。\n支持图片输入。\n支持图片输出，画字开头的消息将按要求创作图片。\n支持tool、角色扮演和文字冒险等丰富的插件。",
+    "use_linkai": false,
+    "linkai_api_key": "",
+    "linkai_app_code": "",
+    "linkai_api_base": ""
+}
