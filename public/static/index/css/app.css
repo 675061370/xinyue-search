@@ -536,6 +536,9 @@ a:hover {
 .listBox .left .list .item .type.time::after{
 	content: "\ebb1";
 }
+.listBox .left .list .item .type.cate::after{
+	content: "\e65f";
+}
 
 
 .listBox .right{
