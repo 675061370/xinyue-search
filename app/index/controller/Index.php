@@ -40,7 +40,7 @@ class Index extends QfShop
             $map[] = ['is_delete', '=', 0];
             
             $newList = $this->SourceModel->order(['create_time' => 'desc'])
-                ->field('title,create_time as time')
+                ->field('title,create_time as time,source_id as id')
                 ->where($map)
                 ->limit(Config('qfshop.ranking_num') ?? 1)
                 ->select()->each(function($item,$key){

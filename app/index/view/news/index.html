@@ -26,7 +26,8 @@
                 </div>
             </div>
             <div class="home {if $config.ranking_type != 1}homeNO{/if}">
-                <div class="block" v-if="newList.length>0">
+                {if !empty($newList)}
+                <div class="block">
                     <div class="nav">
                          {notempty name="config.home_new_img"}
                         <img src="{$config.home_new_img}" alt="最新更新"></img>
@@ -38,7 +39,7 @@
                         <div class="list">
                             {volist name="newList" id="vos"}
                             {if condition="strpos($_SERVER['HTTP_USER_AGENT'], 'Mobile') === false || $key < $config.ranking_m_num"}
-                            <a href="/s/{$vos.title}.html" target="_blank" class="item">
+                            <a href="/d/{$vos.id}.html" target="_blank" class="item">
                                 <div class="img">
                                     <img src="{$vos.src}" alt="{$vos.title}" />
                                     <span>Loading...</span>
@@ -52,7 +53,7 @@
                         <div class="list">
                             {volist name="newList" id="vos"}
                             {if condition="strpos($_SERVER['HTTP_USER_AGENT'], 'Mobile') === false || $key < $config.ranking_m_num"}
-                            <a href="/s/{$vos.title}.html" target="_blank" class="item">
+                            <a href="/d/{$vos.id}.html" target="_blank" class="item">
                                 <p>
                                     <span>{$key+1}</span>
                                     {$vos.title}
@@ -65,6 +66,7 @@
                         
                     </div>
                 </div>
+                {/if}
                 
                 {volist name="hotList" id="vo"}
                 <div class="block">
