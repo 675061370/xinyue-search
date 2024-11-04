@@ -153,14 +153,18 @@ class Source extends QfShop
         if (!$this->pk_value) {
             return jerr($this->pk . "必须填写", 400);
         }
-        
-        //根据主键获取一行数据
-        $item = $this->getRowByPk();
-        if (empty($item)) {
-            return jerr("数据查询失败", 404);
-        }
-        $this->model->where($this->pk, $this->pk_value)->delete();
 
+        if (isInteger($this->pk_value)){
+            //根据主键获取一行数据
+            $item = $this->getRowByPk();
+            if (empty($item)) {
+                return jerr("数据查询失败", 404);
+            }
+            $this->model->where($this->pk, $this->pk_value)->delete();
+        }else{
+            $list = explode(',', $this->pk_value);
+            $this->model->where($this->pk, 'in', $list)->delete();
+        }
         return jok('删除成功');
     }
     
@@ -192,7 +196,7 @@ class Source extends QfShop
         if ($error) {
             return $error;
         }
-        // try {
+        try {
             $file = request()->file('file');
             try {
                 validate(['file' => 'filesize:' . config("qfshop.upload_max_file") . '|fileExt:' . config("qfshop.upload_file_type")])
@@ -205,11 +209,12 @@ class Source extends QfShop
                 
                 $extension = pathinfo($file_name, PATHINFO_EXTENSION);
                 if ($extension == 'csv') {
+                    return jerr('转成xlsx格式吧');
                     $PHPReader = new \PHPExcel_Reader_CSV();
                     $encoding = $this->detectFileEncoding($file_name);
-                    if (!$encoding || strtoupper($encoding) == 'UTF-8') {
-                        $encoding = 'GBK'; // 尝试将其强制转为GBK
-                    }
+                    // if (!$encoding || strtoupper($encoding) == 'UTF-8') {
+                    //     $encoding = 'GBK'; // 尝试将其强制转为GBK
+                    // }
                     $PHPReader->setInputEncoding($encoding);
                     $PHPReader->setDelimiter(',');
                 } elseif ($extension == 'xlsx') {
@@ -284,9 +289,9 @@ class Source extends QfShop
             } catch (ValidateException $e) {
                 return jerr($e->getMessage());
             }
-        // } catch (\Exception $error) {
-        //     return jerr('上传文件失败，请检查你的文件！');
-        // }
+        } catch (\Exception $error) {
+            return jerr('上传文件失败，请检查你的文件！');
+        }
     }
 
     

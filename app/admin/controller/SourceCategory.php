@@ -22,11 +22,11 @@ class SourceCategory extends QfShop
         ];
         $this->insertFields = [
             //允许添加的字段列表
-            "name","sort","status","image"
+            "name","sort","status","image","is_update"
         ];
         $this->updateFields = [
             //允许更新的字段列表
-            "name","sort","status","image"
+            "name","sort","status","image","is_update"
         ];
         $this->insertRequire = [
             //添加时必须填写的字段
@@ -196,6 +196,19 @@ class SourceCategory extends QfShop
         if (!$source_category_id) {
             return jerr("ID参数必须填写", 400);
         }
+
+        
+        $d = [
+            "status" => 1,
+            "update_time" => time(),
+        ];
+        if(input("type") == 1){
+            $d = [
+                "is_update" => 0,
+                "update_time" => time(),
+            ];
+        }
+
         if (isInteger($source_category_id)) {
             //根据主键获取一行数据
             $item = $this->model->where("source_category_id", $source_category_id)->field($this->selectDetail)->find();
@@ -204,17 +217,11 @@ class SourceCategory extends QfShop
             }
             //单个操作
             $map = ["source_category_id" => $source_category_id];
-            $this->model->where($map)->update([
-                "status" => 1,
-                "update_time" => time(),
-            ]);
+            $this->model->where($map)->update($d);
         } else {
             //批量操作
             $list = explode(',', $source_category_id);
-            $this->model->where("source_category_id", 'in', $list)->update([
-                "status" => 1,
-                "update_time" => time(),
-            ]);
+            $this->model->where("source_category_id", 'in', $list)->update($d);
         }
         return jok("禁用成功");
     }
@@ -236,6 +243,18 @@ class SourceCategory extends QfShop
         if (!$source_category_id) {
             return jerr("ID参数必须填写", 400);
         }
+
+        $d = [
+            "status" => 0,
+            "update_time" => time(),
+        ];
+        if(input("type") == 1){
+            $d = [
+                "is_update" => 1,
+                "update_time" => time(),
+            ];
+        }
+
         if (isInteger($source_category_id)) {
             //根据主键获取一行数据
             $item = $this->model->where("source_category_id", $source_category_id)->field($this->selectDetail)->find();
@@ -244,17 +263,11 @@ class SourceCategory extends QfShop
             }
             //单个操作
             $map = ["source_category_id" => $source_category_id];
-            $this->model->where($map)->update([
-                "status" => 0,
-                "update_time" => time(),
-            ]);
+            $this->model->where($map)->update($d);
         } else {
             //批量操作
             $list = explode(',', $source_category_id);
-            $this->model->where("source_category_id", 'in', $list)->update([
-                "status" => 0,
-                "update_time" => time(),
-            ]);
+            $this->model->where("source_category_id", 'in', $list)->update($d);
         }
         return jok("启用成功");
     }

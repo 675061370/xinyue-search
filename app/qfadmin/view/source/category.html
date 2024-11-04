@@ -29,14 +29,14 @@
         <el-table-column label="是否每日更新" width="150" align="center">
             <template slot-scope="scope">
                 <el-switch v-model="scope.row.is_update==1?true:false"
-                    @change="clickStatus(scope.row)">
+                    @change="clickStatus(scope.row,1)">
                 </el-switch>
             </template>
         </el-table-column>
         <el-table-column label="是否前台展示" width="150" align="center">
             <template slot-scope="scope">
                 <el-switch v-model="scope.row.status==1?false:true"
-                    @change="clickStatus(scope.row)">
+                    @change="clickStatus(scope.row,0)">
                 </el-switch>
             </template>
         </el-table-column>
@@ -228,10 +228,15 @@ console.log(error);
                     }).catch(() => {
                     });
                 },
-                clickStatus(row) {
+                clickStatus(row,type) {
                     var that = this;
-                    axios.post(row.status ? '/admin/source_category/enable' : '/admin/source_category/disable', Object.assign({}, PostBase, {
-                        source_category_id: row.source_category_id
+                    let url = row.status ? '/admin/source_category/enable' : '/admin/source_category/disable'
+                    if(type==1){
+                        url = !row.is_update ? '/admin/source_category/enable' : '/admin/source_category/disable'
+                    }
+                    axios.post(url, Object.assign({}, PostBase, {
+                        source_category_id: row.source_category_id,
+                        type: type
                     }))
                         .then(function (response) {
                             that.getList();

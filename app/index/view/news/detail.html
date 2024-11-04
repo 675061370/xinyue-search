@@ -76,47 +76,58 @@
                     </div>
                     {/notempty}
                     <div class="btns">
-                        <div class="btn btnCol" @click.stop="copyText($event,'{$detail.title}','{$detail.url}','{$detail.code}')"><i class="iconfont icon-fenxiang1"></i>复制分享</div>
+                        <div class="btn btnCol" @click.stop="copyText($event,'{$detail.title|trim}','{$detail.url}','{$detail.code}')"><i class="iconfont icon-fenxiang1"></i>复制分享</div>
                         <a  href="{$detail.url}" target="_blank" class="btn"><i class="iconfont icon-yun_o"></i>立即访问</a>
+                    </div>
+                </div>
+                <h3 class="samelistNav">相关资源</h3>
+                <div class="box details samelistBox">
+                    <div class="samelist">
+                        {volist name="sameList" id="vo"}
+                        <a href="/d/{$vo.source_id}.html" class="item">
+                            <p>
+                                <span>{$key+1}</span>
+                                {$vo.title}
+                            </p>
+                        </a>
+                        {/volist}
                     </div>
                 </div>
             </div>
             <div class="right">
-                <block v-for="(item,index) in rankList" :key="index">
+                {volist name="hotList" id="vo"}
                     <div class="nav">
-                        <img :src="item.image" v-if="item.image">
-                        {{item.name}}
+                        {notempty name="vo.image"}
+                        <img src="{$vo.image}" :alt="{$vo.name}">
+                        {/notempty}
+                        {$vo.name}
                     </div>
-                    <div class="box" v-if="item.list && item.list.length>0">
-                        <div class="list">   
-                            <a :href="'/s/'+vo.title+'.html'" v-for="(vo,i) in item.list" :key="i" class="item" v-show="i<5">
+                    <div class="box">
+                        <div class="list">
+                            {volist name="vo.list" id="vos" length="5"}
+                            <a href="/s/{$vos.title}.html" class="item">
                                 <p>
-                                    <span>{{i+1}}</span>
-                                    {{vo.title}}
+                                    <span>{$key+1}</span>
+                                    {$vos.title}
                                 </p>
                             </a>
+                            {/volist}
                         </div>
                     </div>
-                </block>
+                {/volist}
             </div>
         </div>
         {include file="common/foot"}
     </div>
     {include file="common/footer"}
     <script type="text/javascript" charset="utf-8">
-        if(!app.is_m){
-            app.rankList = JSON.parse('<?php echo json_encode($rankList, JSON_UNESCAPED_UNICODE); ?>');
-            for (const item of app.rankList) {
-                axios.get('/api/tool/ranking',{
-                    params: {
-                      channel: item.name,
-                      is_m: app.is_m
-                    }
-                })
-                  .then(function (res) {
-                        item.list = res.data.data
-                  })
-            }
+        app.rankList = JSON.parse('<?php echo json_encode($rankList, JSON_UNESCAPED_UNICODE); ?>');
+        for (const item of app.rankList) {
+            axios.get('/api/tool/ranking',{
+                params: {
+                  channel: item.name
+                }
+            })
         }
     </script>
 </body>

@@ -3,6 +3,8 @@
 namespace app\api\controller;
 
 use think\App;
+use think\facade\Request;
+use think\facade\Cache;
 use app\api\QfShop;
 use app\model\User as Usermodel;
 use app\model\Ads as Adsmodel;
@@ -146,5 +148,38 @@ class Tool extends QfShop
         return jok('获取成功', $data);
     }
 
+
+    /**
+     * 网页端全网搜接口
+     *
+     * @return void
+     */
+    public function Qsearch()
+    {
+        $title = input('title');
+        $list = [];
+
+        if (empty($title)) {
+            return jok('临时资源获取成功', $list);
+        }
+        
+        $keys = Request::ip()."_".$title;
+        if(Cache::get($keys) == 1){
+            return jerr('调用太过频繁啦');
+        }
+        Cache::set($keys, 1, 10);
+
+        $urlData = array(
+            'title' => $title,
+        );
+        $res = curlHelper(Request::domain()."/api/other/all_search", "POST", $urlData)['body'];
+        $res = json_decode($res, true);
+        
+        if($res['code'] === 200){
+            $list = $res['data']??[];
+        }
+        Cache::delete($keys); 
+        return jok('临时资源获取成功', $list);
+    }
 
 }

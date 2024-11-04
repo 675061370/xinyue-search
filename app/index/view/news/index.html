@@ -36,78 +36,92 @@
                     <div class="content">
                         {if $config.ranking_type == 1 } 
                         <div class="list">
-                            <a :href="'/s/'+vo.title+'.html'" target="_blank" class="item" v-for="(vo,i) in newList" :key="i">
+                            {volist name="newList" id="vos"}
+                            {if condition="strpos($_SERVER['HTTP_USER_AGENT'], 'Mobile') === false || $key < $config.ranking_m_num"}
+                            <a href="/s/{$vos.title}.html" target="_blank" class="item">
                                 <div class="img">
-                                    <img :src="vo.src" :alt="vo.title"/>
+                                    <img src="{$vos.src}" alt="{$vos.title}" />
                                     <span>Loading...</span>
                                 </div>
-                                <p>{{vo.title}}</p>
+                                <p>{$vos.title}</p>
                             </a>
+                            {/if}
+                            {/volist}
                         </div>
                         {else /} 
                         <div class="list">
-                            <a :href="'/s/'+vo.title+'.html'" target="_blank" class="item" v-for="(vo,i) in newList" :key="i">
+                            {volist name="newList" id="vos"}
+                            {if condition="strpos($_SERVER['HTTP_USER_AGENT'], 'Mobile') === false || $key < $config.ranking_m_num"}
+                            <a href="/s/{$vos.title}.html" target="_blank" class="item">
                                 <p>
-                                    <span>{{i+1}}</span>
-                                    {{vo.title}}
+                                    <span>{$key+1}</span>
+                                    {$vos.title}
                                 </p>
                             </a>
+                            {/if}
+                            {/volist}
                         </div>
                         {/if}
                         
                     </div>
                 </div>
-                <div class="block" v-for="(item,index) in rankList" :key="index">
+                
+                {volist name="hotList" id="vo"}
+                <div class="block">
                     <div class="nav">
-                        <img :src="item.image" :alt="item.name" v-if="item.image">
-                        {{item.name}}
+                        {notempty name="vo.image"}
+                        <img src="{$vo.image}" :alt="{$vo.name}">
+                        {/notempty}
+                        {$vo.name}
                     </div>
                     <div class="content">
                         {if $config.ranking_type == 1 } 
                         <div class="list">
-                            <a :href="'/s/'+vo.title+'.html'" target="_blank" class="item" v-for="(vo,i) in item.list" :key="i">
+                            {volist name="vo.list" id="vos"}
+                            {if condition="strpos($_SERVER['HTTP_USER_AGENT'], 'Mobile') === false || $key < $config.ranking_m_num"}
+                            <a href="/s/{$vos.title}.html" target="_blank" class="item">
                                 <div class="img">
-                                    <img :src="vo.src" :alt="vo.title" />
+                                    <img src="{$vos.src}" alt="{$vos.title}" />
                                     <span>Loading...</span>
                                 </div>
-                                <p>{{vo.title}}</p>
+                                <p>{$vos.title}</p>
                             </a>
+                            {/if}
+                            {/volist}
                         </div>
                         {else /} 
                         <div class="list">
-                            <a :href="'/s/'+vo.title+'.html'" target="_blank" class="item" v-for="(vo,i) in item.list" :key="i">
+                            {volist name="vo.list" id="vos"}
+                            {if condition="strpos($_SERVER['HTTP_USER_AGENT'], 'Mobile') === false || $key < $config.ranking_m_num"}
+                            <a href="/s/{$vos.title}.html" target="_blank" class="item">
                                 <p>
-                                    <span>{{i+1}}</span>
-                                    {{vo.title}}
+                                    <span>{$key+1}</span>
+                                    {$vos.title}
                                 </p>
                             </a>
+                            {/if}
+                            {/volist}
                         </div>
                         {/if}
                         
                     </div>
                 </div>
+                {/volist}
+                
+                
             </div>
         </div>
         {include file="common/foot"}
     </div>
     {include file="common/footer"}
     <script type="text/javascript" charset="utf-8">
-        app.newList = JSON.parse('<?php echo json_encode($newList, JSON_UNESCAPED_UNICODE); ?>');
-        let num = '{$config.ranking_m_num}';
-        if(app.is_m){
-            app.newList = app.newList.slice(0, num);
-        }
         app.rankList = JSON.parse('<?php echo json_encode($rankList, JSON_UNESCAPED_UNICODE); ?>');
         for (const item of app.rankList) {
             axios.get('/api/tool/ranking',{
                 params: {
-                  channel: item.name,
-                  is_m: app.is_m
+                  channel: item.name
                 }
             })
-              .then(function (res) {
-                    item.list = res.data.data
-              })
         }
     </script>
 </body>

@@ -164,6 +164,8 @@ INSERT INTO `qf_conf` VALUES (48, 'search_tips', '', '未搜索提示词', '为�
 INSERT INTO `qf_conf` VALUES (49, 'search_bg', '', '未搜索提示图', '', 0, 4, NULL, 1, 1, 0, 1, 1726108851, 1726108851);
 INSERT INTO `qf_conf` VALUES (50, 'home_new', '1', '最新列表', '仅无图模式有效', 0, 2, '开启=>0\n关闭=>1', 3, 1, 79, 1, 1726299605, 1726299605);
 INSERT INTO `qf_conf` VALUES (51, 'home_new_img', '', '最新图标', '', 0, 4, NULL, 3, 1, 79, 1, 1726302688, 1726302688);
+INSERT INTO `qf_conf` VALUES (52, 'is_quan', '0', '全网搜', '', 0, 2, '关闭=>0\n开启=>1', 1, 1, 1, 1, 1729928547, 1729928547);
+
 
 -- ----------------------------
 -- Table structure for qf_days

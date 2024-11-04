@@ -32,9 +32,50 @@
                 </div>
             </div>
             <div class="left">
-                <h3>为您找到【<span>{$keyword}</span>】相关资源<span> {$list.total_result} </span>条</h3>
-                <div class="box">
+                <h3 v-if="total_result>0">为您找到【<span>{$keyword}</span>】相关资源<span>&nbsp;{{total_result}}&nbsp;</span>条</h3>
+                <h3 v-else>为您找到【<span>{$keyword}</span>】相关资源<span>&nbsp;{$list.total_result}&nbsp;</span>条</h3>
+                
+                {if condition="$config.is_quan == 1"}
+                <div class="Ebox" v-if="QStatus">
+                    <div class="Qloading" v-if="QLoading">
+                        <div class="loader"></div>
+                    </div>
+                    <div class="list">
+                        <div class="item" v-for="(item,index) in QList" :key="index">
+                            <a target="_blank" :href="item.url" class="title">
+                                {{item.title}}
+                            </a>
+                            <div class="type time">30分钟后自动删除，请及时保存</div>
+                            <div class="type">
+                                <span>来源：网络资源</span>
+                            </div>
+                            <div class="btns">
+                                <div class="btn" @click.stop="copyText($event,item.title,item.url,'')"><i class="iconfont icon-fenxiang1"></i>复制分享</div>
+                                <a :href="'/d/'+item.id+'.html'" class="btn"><i class="iconfont icon-fangwen"></i>查看详情</a>
+                                <a target="_blank" :href="item.url" class="btn">
+                                    <img src="/static/index/images/0.png" class="icon" />
+                                    立即访问
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <block v-if="!QLoading && QList.length==0">
+                        <div class="Qtips" v-if="QStatus==1">
+                            <p>未找到更多的资源~</p>
+                        </div>
+                        <el-empty v-else style="margin-top: 10%;padding-bottom: 10%;" :image-size="200" image="{$config.search_bg??''}" description="{$config.search_tips|default='未找到，可换个关键词尝试哦~'}"></el-empty>
+                    </block>  
+                </div>
+                {/if}
+
+                <div class="box" v-if="QStatus!=2">
                     {if condition="$list.total_result>0"}
+                    {if condition="$config.is_quan == 1"}
+                    <div class="Qbtn">
+                        <div class="btn" onclick="getMore()">以下资源不是你想要的？点击尝试获取新资源</div>
+                    </div>
+                    {/if}
                     <div class="list">
                         {foreach $list.items as $key=>$vo }
                         <div class="item">
@@ -59,7 +100,7 @@
                                 {/notempty}
                             </div>
                             <div class="btns">
-                                <div class="btn" @click.stop="copyText($event,'{$vo.title}','{$vo.url}','{$vo.code}')"><i class="iconfont icon-fenxiang1"></i>复制分享</div>
+                                <div class="btn" @click.stop="copyText($event,'{$vo.title|trim}','{$vo.url}','{$vo.code}')"><i class="iconfont icon-fenxiang1"></i>复制分享</div>
                                 <a href="/d/{$vo.id}.html" class="btn"><i class="iconfont icon-fangwen"></i>查看详情</a>
                                 <a target="_blank" href="{$vo.url}" class="btn">
                                     <img src="/static/index/images/{$vo.is_type}.png" class="icon" />
@@ -80,42 +121,78 @@
                 </div>
             </div>
             <div class="right">
-                <block v-for="(item,index) in rankList" :key="index">
+                {volist name="hotList" id="vo"}
                     <div class="nav">
-                        <img :src="item.image" v-if="item.image">
-                        {{item.name}}
+                        {notempty name="vo.image"}
+                        <img src="{$vo.image}" :alt="{$vo.name}">
+                        {/notempty}
+                        {$vo.name}
                     </div>
-                    <div class="box" v-if="item.list && item.list.length>0">
-                        <div class="list">   
-                            <a :href="'/s/'+vo.title+'.html'" v-for="(vo,i) in item.list" :key="i" class="item" v-show="i<5">
+                    <div class="box">
+                        <div class="list">
+                            {volist name="vo.list" id="vos" length="5"}
+                            <a href="/s/{$vos.title}.html" class="item">
                                 <p>
-                                    <span>{{i+1}}</span>
-                                    {{vo.title}}
+                                    <span>{$key+1}</span>
+                                    {$vos.title}
                                 </p>
                             </a>
+                            {/volist}
                         </div>
                     </div>
-                </block>
+                {/volist}
             </div>
         </div>
         {include file="common/foot"}
     </div>
     {include file="common/footer"}
     <script type="text/javascript" charset="utf-8">
-        // if(!app.is_m){
-            app.rankList = JSON.parse('<?php echo json_encode($rankList, JSON_UNESCAPED_UNICODE); ?>');
-            for (const item of app.rankList) {
-                axios.get('/api/tool/ranking',{
-                    params: {
-                      channel: item.name,
-                      is_m: app.is_m
-                    }
-                })
-                  .then(function (res) {
-                        item.list = res.data.data
-                  })
+        app.rankList = JSON.parse('<?php echo json_encode($rankList, JSON_UNESCAPED_UNICODE); ?>');
+        for (const item of app.rankList) {
+            axios.get('/api/tool/ranking',{
+                params: {
+                    channel: item.name
+                }
+            })
+        }
+
+        
+        var status
+        if({$list.total_result} == 0){
+            if('{$config.is_quan}' == 1) {
+                //默认资源没有直接执行
+                status = 2
+                app.QStatus = status
+                getAll()
             }
-        // }
+        }
+        function getMore(){
+            if('{$config.is_quan}' == 1){
+                status = 1
+                app.QStatus = status
+                getAll()
+            }
+        }
+        function getAll() {
+            if(app.QStatus==0 || app.QLoading || '{$config.is_quan}' != 1) return
+            app.QLoading = true
+            axios.post('/api/tool/Qsearch',{
+                title: app.keyword
+            })
+                .then(function (res) {
+                    app.QLoading = false
+                    app.QStatus = status
+                    app.QList = res.data.data
+                    app.total_result = {$list.total_result} + app.QList.length
+                })
+                .catch(function (error) {
+                    app.QLoading = false;
+                    app.QStatus = status
+                    app.QList = []
+                    app.total_result = {$list.total_result} + app.QList.length
+                });
+        } 
+        
     </script>
 </body>
 </html>

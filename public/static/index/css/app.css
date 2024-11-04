@@ -434,7 +434,7 @@ a:hover {
 .listBox h3:after{
     content: "";
     position: absolute;
-    bottom: 18px;
+    bottom: 20px;
     left: 0;
     width: 4px;
     background-color: var(--theme-theme);
@@ -462,6 +462,7 @@ a:hover {
 .listBox .left{
     width: 0;
     flex: 1;
+    overflow: hidden;
 }
 .listBox .left .list{
     padding: 0 15px;
@@ -614,6 +615,7 @@ a:hover {
 
 .listBox .details{
     padding: 40px 50px;
+    min-height: inherit;
 }
 
 .details .pic{
@@ -737,6 +739,96 @@ a:hover {
 
 .searchList{
     display: none;
+}
+
+.loader {
+    margin: auto;
+    width: fit-content;
+    font-weight: bold;
+    font-family: monospace;
+    font-size: 24px;
+    background: radial-gradient(circle closest-side,var(--theme-theme) 94%,#0000) right/calc(200% - 1em) 100%;
+    animation: l24 1s infinite alternate linear;
+}
+.loader::before {
+    content: "全网检索中，请稍等...";
+    line-height: 1em;
+    color: #0000;
+    background: inherit;
+    background-image: radial-gradient(circle closest-side,#fff 94%,var(--theme-theme));
+    -webkit-background-clip:text;
+            background-clip:text;
+}
+  
+@keyframes l24{
+    100%{background-position: left}
+}
+
+
+.listBox .Ebox{
+    border-radius: 12px;
+    background-color: var(--theme-other_background);
+    box-shadow: 0 4px 10px rgba(225, 225, 225, 0.3);
+    padding: 15px;
+    margin-bottom: 15px;
+}
+.listBox .left .Ebox .list .item:last-child{
+    border-bottom: none;
+}
+.Qtips{
+    text-align: center;
+    font-size: 14px;
+    color: #999;
+}
+.Qbtn{
+    text-align: center;
+    padding-top: 10px;
+}
+.Qbtn .btn{
+    display: inline-block;
+    color: #999999;
+    cursor: pointer;
+}
+
+
+
+/*//相关资源*/
+.listBox .details.samelistBox{
+    padding: 25px 30px;
+}
+.samelist {
+    display: flex;
+    flex-wrap: wrap;
+}
+.samelist .item {
+    width: 50%;
+    margin: 0;
+    border-radius: 0;
+    text-align: left;
+    padding: 3px 0;
+}
+.samelist .item p {
+    margin-top: 0;
+    padding: 4px 6px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.samelist .item:hover{
+    transform: translateY(0);
+}
+.samelist .item p span {
+    color: #c4c7ce;
+    margin-right: 6px;
+}
+.samelist .item:nth-child(1) p span {
+    color: #FE2D46;
+}
+.samelist .item:nth-child(2) p span {
+    color: #FF6600;
+}
+.samelist .item:nth-child(3) p span {
+    color: #FAA90E;
 }
 
 

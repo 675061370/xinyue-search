@@ -19,6 +19,10 @@
             const rankDj = ref([]);
             const is_m = ref(0);
             const newList = ref([]);
+            const QStatus = ref(0);
+            const QList = ref([]);
+            const QLoading = ref(false);
+            const total_result = ref(0);
             
             
             // 公共消息方法
@@ -167,7 +171,7 @@
             });
 
             // 返回数据和方法
-            return { elementOpacity, scrollThreshold, keyword, searchBtn, rankList,newList, setnum, qcodeVisible, layerVisible, content, saveBtn, rankDj,goLink,changeBtn,copyText,drawer,selectBtn,is_m };
+            return { elementOpacity, scrollThreshold, keyword, searchBtn, rankList,newList, setnum, qcodeVisible, layerVisible, content, saveBtn, rankDj,goLink,changeBtn,copyText,drawer,selectBtn,is_m,QList,QLoading,QStatus,total_result };
         }
     })
     .use(ElementPlus) // 使用 Element Plus

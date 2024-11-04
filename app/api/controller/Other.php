@@ -3,6 +3,7 @@
 namespace app\api\controller;
 
 use think\App;
+use think\facade\Cache;
 use think\facade\Request;
 use app\api\QfShop;
 use app\model\Source as SourceModel;
@@ -36,7 +37,7 @@ class Other extends QfShop
         $map[] = ['is_time', '=', 1];
         $map[] = ['title|description', 'like', '%' . trim($title) . '%'];
             
-        $urls = $this->model->where($map)->field('source_id as id, title, url')->order('update_time', 'desc')->limit(5)->select()->toArray();
+        $urls = $this->model->where($map)->field('source_id as id, title, url,is_time')->order('update_time', 'desc')->limit(5)->select()->toArray();
         if (!empty($urls)) {
         
             // 获取所有需要更新的ID
@@ -52,6 +53,33 @@ class Other extends QfShop
             
             return jok('临时资源获取成功',$urls);
         }
+
+
+         //同一个搜索内容锁机
+         if (Cache::has($title)) {
+            // 检查缓存中是否已有结果
+            return jok('临时资源获取成功1', Cache::get($title));
+        }
+        
+        
+        // 检查是否有正在处理的请求
+        if (Cache::has($title . '_processing')) {
+            // 如果当前正在处理相同关键词的请求，等待结果
+            $startTime = time(); // 记录开始时间
+            while (Cache::has($title . '_processing')) {
+                usleep(1000000); // 暂停1秒
+        
+                // 检查是否超过60秒
+                if (time() - $startTime > 60) {
+                    return jok('临时资源获取成功3', []); // 返回空数组
+                }
+            }
+            return jok('临时资源获取成功2', Cache::get($title));
+        }
+
+        
+        // 设置处理状态为正在处理
+        Cache::set($title . '_processing', true, 60); // 锁定60秒
         
         $searchList = []; //查询的结果集
         $datas = []; //最终数据
@@ -115,6 +143,9 @@ class Other extends QfShop
                 }
             }
         }
+
+        Cache::set($title, $datas, 60); // 缓存结果60秒
+        Cache::delete($title . '_processing'); // 解锁
         
         return jok('临时资源获取成功',$datas);
     }
@@ -176,7 +207,7 @@ class Other extends QfShop
         $data["is_time"] = 1;
         $data["update_time"] = time();
         $data["create_time"] = time();
-        $this->model->insertGetId($data);
+        $data["id"] = $this->model->insertGetId($data);
         $datas[] =$data;
         $num_success++;
     }
