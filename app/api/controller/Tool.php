@@ -169,15 +169,9 @@ class Tool extends QfShop
         }
         Cache::set($keys, 1, 10);
 
-        $urlData = array(
-            'title' => $title,
-        );
-        $res = curlHelper(Request::domain()."/api/other/all_search", "POST", $urlData)['body'];
-        $res = json_decode($res, true);
-        
-        if($res['code'] === 200){
-            $list = $res['data']??[];
-        }
+        $bController = app(\app\api\controller\Other::class);
+        $list = $bController->all_search($title);
+
         Cache::delete($keys); 
         return jok('临时资源获取成功', $list);
     }

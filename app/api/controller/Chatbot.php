@@ -122,18 +122,10 @@ class Chatbot extends QfShop
     
     private function Qsearch($newString)
     {
-        $list = [];
-        $urlData = array(
-            'title' => $newString,
-        );
-        $res = curlHelper(Request::domain()."/api/other/all_search", "POST", $urlData)['body'];
-        $res = json_decode($res, true);
+        $bController = app(\app\api\controller\Other::class);
+        $result = $bController->all_search($newString);
         
-        if($res['code'] === 200){
-            $list = $res['data']??[];
-        }
-        
-        return $list;
+        return $result;
     }
 
     // 解密消息

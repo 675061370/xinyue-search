@@ -23,14 +23,17 @@ class Other extends QfShop
      * 
      * @return void
      */
-    public function all_search()
+    public function all_search($param='')
     {
-        $searchdata = input('post.');
-        if (empty($searchdata['title'])) {
-            return jerr("请输入要看的内容");
+        if(empty($param)){
+            $searchdata = input('post.');
+            if (empty($searchdata['title'])) {
+                return jerr("请输入要看的内容");
+            }
+            $title = $searchdata['title'];
+        }else{
+            $title = $param;
         }
-        $title = $searchdata['title'];
-        
         
         $map[] = ['status', '=', 1];
         $map[] = ['is_delete', '=', 0];
@@ -51,14 +54,14 @@ class Other extends QfShop
                 $this->model->whereIn('source_id', $ids)->update(['update_time' => time()]);
             }
             
-            return jok('临时资源获取成功',$urls);
+            return !empty($param) ? $urls : jok('临时资源获取成功', $urls);
         }
 
 
          //同一个搜索内容锁机
          if (Cache::has($title)) {
             // 检查缓存中是否已有结果
-            return jok('临时资源获取成功1', Cache::get($title));
+            return !empty($param) ? Cache::get($title) : jok('临时资源获取成功', Cache::get($title));
         }
         
         
@@ -71,10 +74,10 @@ class Other extends QfShop
         
                 // 检查是否超过60秒
                 if (time() - $startTime > 60) {
-                    return jok('临时资源获取成功3', []); // 返回空数组
+                    return !empty($param) ? [] : jok('临时资源获取成功', []);
                 }
             }
-            return jok('临时资源获取成功2', Cache::get($title));
+            return !empty($param) ? Cache::get($title) : jok('临时资源获取成功', Cache::get($title));
         }
 
         
@@ -147,7 +150,7 @@ class Other extends QfShop
         Cache::set($title, $datas, 60); // 缓存结果60秒
         Cache::delete($title . '_processing'); // 解锁
         
-        return jok('临时资源获取成功',$datas);
+        return !empty($param) ? $datas : jok('临时资源获取成功', $datas);
     }
     
     // 检查 URL 是否已存在（忽略查询参数）
