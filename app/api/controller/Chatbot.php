@@ -9,7 +9,11 @@ use app\model\Source as SourceModel;
 
 class Chatbot extends QfShop
 {
-    // 应用管理 开放API 生成三个参数填在下方 回调地址：https://XXXX/api/chatbot 填在微信官方 即可
+    // 应用管理  回调地址：https://XXXX/api/chatbot 填在微信官方 即可
+    // 1、应用绑定-网页H5(获取配置)-开放API(申请权限、编辑填写回调地址保存)
+    // 2、开放API的三个参数填在下方
+    // 3、服务发布
+    // 以上三部完成 还不行  就是无缘
     private $appId = '';
     private $token = '';
     private $encodingAESKey = '';
