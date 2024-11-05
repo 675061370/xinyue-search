@@ -13,7 +13,7 @@ class Chatbot extends QfShop
     // 1、应用绑定-网页H5(获取配置)-开放API(申请权限、编辑填写回调地址保存)
     // 2、开放API的三个参数填在下方
     // 3、服务发布
-    // 以上三部完成 还不行  就是无缘
+    // 以上三步完成 还不行  就是无缘
     private $appId = '';
     private $token = '';
     private $encodingAESKey = '';
