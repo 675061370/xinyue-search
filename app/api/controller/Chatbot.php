@@ -14,6 +14,7 @@ class Chatbot extends QfShop
     // 2、开放API的三个参数填在下方
     // 3、服务发布
     // 以上三步完成 还不行  就是无缘
+    // 无法使用：ping chatbot.weixin.qq.com   延迟太高不行 或者 证书问题
     private $appId = '';
     private $token = '';
     private $encodingAESKey = '';
