@@ -63,7 +63,7 @@ class Chatbot extends QfShop
             Cache::set($msg['userid'], 1, 604800);
         }
         // 检查用户消息内容中开头第一个字是否包含“搜”关键字
-        if (strncmp($message, '搜', 1) === 0 || strncmp($message, '全网搜', 1) === 0) {
+        if (strpos($message, '搜') === 0 || strpos($message, '全网搜') === 0) {
             
             if(strncmp($message, '全网搜', 1) === 0){
                 $list = [];
