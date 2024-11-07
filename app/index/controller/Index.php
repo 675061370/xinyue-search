@@ -92,6 +92,8 @@ class Index extends QfShop
         $data['page_size'] = 10;
         $data['title'] = $name;
         $data['category_id'] = $cate;
+        $data['search_type'] = 1;
+        $data['is_time'] = 1;
         $list = $this->SourceModel->getList($data);
         
         
