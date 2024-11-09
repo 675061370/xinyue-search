@@ -151,7 +151,7 @@ class ChatChannel(Channel):
                             reply_text_final += "\n⚠️宁少写，不多写、错写~"
                             # reply_text_final += "\n--------------------"
                             # reply_text_final += "\n可访问以下链接提交资源需求"
-                            # reply_text_final += "\nhttps://pan.xinyuedh.com"
+                            # reply_text_final += "\nhttps://www.xinyueso.com"
                             # reply_text_final += "\n--------------------"
                             # reply_text_final += "\nGPT小助手分享"
                             # reply_text_final += "\n--------------------"

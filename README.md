@@ -29,9 +29,9 @@
 
 ## 演示
 
-[前端体验](https://pan.xinyuedh.com)
+[前端体验](https://www.xinyueso.com)
 
-<https://pan.xinyuedh.com>
+<https://www.xinyueso.com>
 
 
 ## 后台安装教程
@@ -73,11 +73,11 @@ location / {
 
 ## 前台截图
 
-![image](https://pan.xinyuedh.com/github/p3.png)
+![image](https://www.xinyueso.com/github/p3.png)
 
-![image](https://pan.xinyuedh.com/github/p2.png)
+![image](https://www.xinyueso.com/github/p2.png)
 
-![image](https://pan.xinyuedh.com/github/p1.png)
+![image](https://www.xinyueso.com/github/p1.png)
 
 ## 后台管理截图
 
@@ -87,18 +87,18 @@ location / {
 
 3、每日自动更新：自动转存每天的资源并入库
 
-![image](https://pan.xinyuedh.com/1.png)
+![image](https://www.xinyueso.com/1.png)
 
-![image](https://pan.xinyuedh.com/2.png)
+![image](https://www.xinyueso.com/2.png)
 
-![image](https://pan.xinyuedh.com/3.png)
+![image](https://www.xinyueso.com/3.png)
 
 
 ## 如何获取夸克网盘Cookie
 
 登录夸克网盘后，按下F12，刷新页面
 
-![image](https://pan.xinyuedh.com/cookie.jpg)
+![image](https://www.xinyueso.com/cookie.jpg)
 
 
 # 免费交流社群
@@ -107,7 +107,7 @@ location / {
 请加微信l1417716300
 
 
-| <img src="https://pan.xinyuedh.com/github/qr1.jpg" width="180px"> | <img src="https://pan.xinyuedh.com/github/qr9.jpg" width="180px"> |
+| <img src="https://www.xinyueso.com/github/qr1.jpg" width="180px"> | <img src="https://www.xinyueso.com/github/qr9.jpg" width="180px"> |
 | --- | --- |
 
 程序使用不收费，但不负责搭建，搭建过程遇到问题，可以私聊或群里咨询

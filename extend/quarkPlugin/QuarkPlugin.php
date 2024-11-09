@@ -17,7 +17,7 @@ class QuarkPlugin
     public function __construct()
     {
         //第三方转存接口地址
-        $this->url = "https://pan.xinyuedh.com";
+        $this->url = "https://www.xinyueso.com";
         $this->model = new SourceModel();
         $this->SourceLogModel = new SourceLogModel();
         $this->source_category_id = 0;
