@@ -159,6 +159,16 @@ class Tool extends QfShop
         $title = input('title');
         $list = [];
 
+
+        $userAgent = Request::header('user-agent');
+        // 定义常见爬虫的 User-Agent 关键字
+        $bots = ['Googlebot', 'Bingbot', 'Baiduspider'];
+        foreach ($bots as $bot) {
+            if (strpos($userAgent, $bot) !== false) {
+                return jerr('该接口禁止爬虫访问');
+            }
+        }
+
         if (empty($title)) {
             return jok('临时资源获取成功', $list);
         }
