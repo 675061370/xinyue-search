@@ -134,7 +134,8 @@ class Source extends QfShop
         
         // 如果存在 title，则进行分词
         if (!empty($data['title'])) {
-            $search_type = config('qfshop.search_type')??1;
+            $search_type = isset($data['search_type']) ? (config('qfshop.search_type') ?? 1) : 1; //默认除网页端其它均为模糊搜索，想开启机器人分词搜索注释该行，取消注释下一行
+            // $search_type = config('qfshop.search_type') ?? 1;
             
             if($search_type == 0){
                 $map[] = ['title|description', 'like', '%' . trim($data['title']) . '%'];
@@ -143,9 +144,13 @@ class Source extends QfShop
                 $fc = new VicWord();
                 $keywords = $fc->getAutoWord($data['title']);
                 $keywords = filterAndExtractWords($keywords);
+                $keywords = array_filter($keywords, function($keyword) {
+                    return mb_strlen($keyword, 'UTF-8') > 1;
+                });
+                $keywords = array_values($keywords);
                 
                 // 如果分词后有关键词
-                if (count($keywords) > 1) {
+                if (count($keywords) >= 1) {
                     if($search_type == 1){
                         //分词同时满足才搜索的到！
                         foreach ($keywords as $keyword) {

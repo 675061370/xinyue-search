@@ -152,7 +152,7 @@ class ChatChannel(Channel):
                             reply_text_final += "\n⚠️宁少写，不多写、错写~"
                             reply_text_final += "\n--------------------"
                             reply_text_final += "\n可访问以下链接提交资源需求"
-                            reply_text_final += "\nhttps://pan.xinyuedh.com"
+                            reply_text_final += "\nhttps://www.xinyueso.com"
                             # reply_text_final += "\n--------------------"
                             # reply_text_final += "\nGPT小助手分享"
                             # reply_text_final += "\n--------------------"
@@ -517,7 +517,7 @@ def process_string2(s):
 
 
 def search_question(question):
-    url = 'https://pan.xinyuedh.com/api/search'
+    url = 'https://www.xinyueso.com/api/search'
     params = {
         'is_time': '1',
         'page_no': '1',
@@ -534,7 +534,7 @@ def search_question(question):
         return []
 
 def search_alone(question):
-    url = 'https://pan.xinyuedh.com/api/other/all_search'
+    url = 'https://www.xinyueso.com/api/other/all_search'
     payload = {
         'title': question
     }
