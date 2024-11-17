@@ -109,7 +109,8 @@ class Source extends QfShop
             $ip = $_SERVER['REMOTE_ADDR'];
             $ips = Log::where(['ip'=>$ip])->find();
             if(empty($ips)){
-                Log::save(['name' => '访问记录','ip'=>$ip]);
+                $log = new Log();
+                $log->save(['name' => '访问记录','ip'=>$ip]);
             }else{
                 Log::where('id', $ips['id'])->update(['update_time' => time()]);
             }
