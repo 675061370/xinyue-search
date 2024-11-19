@@ -11,7 +11,8 @@
     "text_to_voice": "openai",
     "proxy": "",
     "hot_reload": true,
-    "single_chat_prefix": [""],
+    "group_at_off": false,
+    "single_chat_prefix": ["bot", "@bot"],
     "single_chat_reply_prefix": "[bot]",
     "group_chat_prefix": [
         "@bot"
