@@ -224,7 +224,8 @@ class QuarkPlugin
             $data["source_category_id"] = $source_category_id;
             $data["update_time"] = time();
             $data["create_time"] = time();
-            $data["fid"] = $res['data']['fid']??'';
+            $dataFid = $res['data']['fid']??'';
+            $data["fid"] = is_array($dataFid) ? json_encode($dataFid) : $dataFid;
             
             $this->model->insertGetId($data);
             if(!empty($logId)){

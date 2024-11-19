@@ -231,7 +231,7 @@ class Open extends QfShop
         } catch (Exception $e) {
         }
         
-
+        $shareFid = $myData['save_as']['save_as_top_fids'];
         //分享资源并拿到更新后的task_id
         $task_id = $this->getShareBtn($myData['save_as']['save_as_top_fids'],$title);
 
@@ -250,7 +250,8 @@ class Open extends QfShop
 
         //根据share_id  获取到分享链接
         $share = $this->getSharePassword($myData['share_id']);
-        $share['fid'] = $share['first_file']['fid'];
+        // $share['fid'] = $share['first_file']['fid'];
+        $share['fid'] = (is_array($shareFid) && count($shareFid) > 1) ? $shareFid : $share['first_file']['fid'];
 
         return jok('转存成功', $share);
     }

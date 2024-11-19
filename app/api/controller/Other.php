@@ -206,7 +206,8 @@ class Other extends QfShop
         $data["title"] =$title;
         $data["url"] =$res['data']['share_url'];
         $data["is_type"] = determineIsType($data["url"]);
-        $data["fid"] =$res['data']['fid']??'';
+        $dataFid = $res['data']['fid']??'';
+        $data["fid"] = is_array($dataFid) ? json_encode($dataFid) : $dataFid;
         $data["is_time"] = 1;
         $data["update_time"] = time();
         $data["create_time"] = time();
