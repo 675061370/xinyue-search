@@ -7,3 +7,7 @@ sudo docker compose up -d
 
 用python搭建的不用换，一段时间后该出现断开还是会出现无响应断开的情况
 不清楚啥原因，大概率服务器问题
+
+
+
+该项目地址：https://github.com/zhayujie/chatgpt-on-wechat
