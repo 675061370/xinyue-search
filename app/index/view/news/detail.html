@@ -18,7 +18,7 @@
                 <div class="box details">
                     {notempty name="detail.vod_pic"}
                     <div class="pic">
-                        <img src="{$detail.vod_pic}" />
+                        <img src="{$detail.vod_pic}" alt="{$detail.title}" />
                     </div>
                     {/notempty}
                     <div class="title">{$detail.title}</div>
@@ -49,7 +49,7 @@
                     <div class="cat">
                         <div class="l">资源类型</div>
                         <div class="r">
-                            <img src="/static/index/images/{$detail.is_type}.png" class="icon" />
+                            <img src="/static/index/images/{$detail.is_type}.png" class="icon" alt="网盘图标" />
                             {if condition="$detail.is_type==1"}
                             <span>阿里云盘</span>
                             {elseif condition="$detail.is_type==2"/}
@@ -98,7 +98,7 @@
                 {volist name="hotList" id="vo"}
                     <div class="nav">
                         {notempty name="vo.image"}
-                        <img src="{$vo.image}" :alt="{$vo.name}">
+                        <img src="{$vo.image}" alt="{$vo.name}">
                         {/notempty}
                         {$vo.name}
                     </div>

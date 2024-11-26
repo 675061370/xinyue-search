@@ -53,7 +53,7 @@
                                 <div class="btn" @click.stop="copyText($event,item.title,item.url,'')"><i class="iconfont icon-fenxiang1"></i>复制分享</div>
                                 <a :href="'/d/'+item.id+'.html'" class="btn"><i class="iconfont icon-fangwen"></i>查看详情</a>
                                 <a target="_blank" :href="item.url" class="btn">
-                                    <img src="/static/index/images/0.png" class="icon" />
+                                    <img src="/static/index/images/0.png" class="icon" alt="立即访问" />
                                     立即访问
                                 </a>
                             </div>
@@ -104,7 +104,7 @@
                                 <div class="btn" @click.stop="copyText($event,'{$vo.title|trim}','{$vo.url}','{$vo.code}')"><i class="iconfont icon-fenxiang1"></i>复制分享</div>
                                 <a href="/d/{$vo.id}.html" class="btn"><i class="iconfont icon-fangwen"></i>查看详情</a>
                                 <a target="_blank" href="{$vo.url}" class="btn">
-                                    <img src="/static/index/images/{$vo.is_type}.png" class="icon" />
+                                    <img src="/static/index/images/{$vo.is_type}.png" class="icon" alt="立即访问" />
                                     立即访问
                                 </a>
                             </div>
@@ -125,7 +125,7 @@
                 {volist name="hotList" id="vo"}
                     <div class="nav">
                         {notempty name="vo.image"}
-                        <img src="{$vo.image}" :alt="{$vo.name}">
+                        <img src="{$vo.image}" alt="{$vo.name}">
                         {/notempty}
                         {$vo.name}
                     </div>

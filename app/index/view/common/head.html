@@ -3,7 +3,7 @@
     <div class="box">
         <a href="/" class="logoBox" {notempty name="fixed"}:style="{ opacity: elementOpacity }"{/notempty}>
             {notempty name="config.logo"}
-            <img class="logo" src="{$config.logo}"></img>
+            <img class="logo" src="{$config.logo}" alt="{$config.app_name}"></img>
             {/notempty}
             
             {if condition="$config.app_name && $config.app_name_hide!=1"}

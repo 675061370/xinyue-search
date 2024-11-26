@@ -22,10 +22,10 @@ class Wechat extends QfShop
         消息加解密方式：推荐即可
     */
     private $config = [
-        'app_id' => 'wx7d0373771cf5e395',//公众号appid
-        'secret' => '3e9fefc1ccc573afb4141bf2e4e6ac3b',//公众号secret
-        'token'   => 'aDA3Ve61uNpn5xXKgPm49wtqL2ZlvDac', //Token 自行生成32字符串 英文或数字
-        'aes_key' =>  'r0HkOAEGKkaYdJLvaCy9ldtgzhMzDUJYPoLxUc62OMA' //微信公众平台生成后填写到这里
+        'app_id' => '',//公众号appid
+        'secret' => '',//公众号secret
+        'token'   => '', //Token 自行生成32字符串 英文或数字
+        'aes_key' =>  '' //微信公众平台生成后填写到这里
     ];
  
     public function serve()
