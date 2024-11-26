@@ -134,8 +134,13 @@ class Source extends QfShop
         
         // 如果存在 title，则进行分词
         if (!empty($data['title'])) {
-            $search_type = isset($data['search_type']) ? (config('qfshop.search_type') ?? 1) : 1; //默认除网页端其它均为模糊搜索，想开启机器人分词搜索注释该行，取消注释下一行
-            // $search_type = config('qfshop.search_type') ?? 1;
+            if(isset($data['search_type'])){
+                //网页搜索时
+                $search_type = config('qfshop.search_type')??1;
+            }else{
+                //其它：比如机器人搜索时
+                $search_type = config('qfshop.search_type')==0?0:1;
+            }
             
             if($search_type == 0){
                 $map[] = ['title|description', 'like', '%' . trim($data['title']) . '%'];
