@@ -68,6 +68,10 @@ class Source extends QfShop
         if(!is_null($result)){
             $result->inc('page_views')->update();
             $result['times'] = substr($result['time'], 0, 10);
+
+            $string = trim($result['title']);  // 去除前后空格
+            $string = str_replace("'", "", $string);  // 去除所有单引号
+            $result['title'] = $string;
         }
         unset($result['time']); 
         return $result;
@@ -215,6 +219,11 @@ class Source extends QfShop
                 $item['name'] = highlightKeywords($item['title'], $searchTitle);
                 $item['times'] = substr($item['time'], 0, 10);
                 unset($item['time']); 
+
+                $string = trim($item['title']);  // 去除前后空格
+                $string = str_replace("'", "", $string);  // 去除所有单引号
+                $item['title'] = $string;
+                
                 return $item;
             })
             ->toArray();
