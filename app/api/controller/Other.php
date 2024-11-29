@@ -233,8 +233,13 @@ class Other extends QfShop
         $this->model->where($map)->chunk(100, function ($order) {
             foreach ($order as $value) {
                 $deles = $value->toArray();
-                $filelist = [];
-                $filelist[] = $deles['fid'];
+                // $filelist = [];
+                // $filelist[] = $deles['fid'];
+
+                $fid = $deles['fid'];
+
+                // 尝试解码，如果是有效的 JSON 数组则使用，否则转为单元素数组
+                $filelist = (is_string($fid) && ($decodedFid = json_decode($fid, true)) && is_array($decodedFid)) ? $decodedFid : (array)$fid;
                 
                 
                 $urlData =  array(
