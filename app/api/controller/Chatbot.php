@@ -185,7 +185,7 @@ class Chatbot extends QfShop
         curl_setopt_array($ch, $options);
 
         // 禁用 CA 证书验证
-        curl_setopt($ch, CURLOPT_CAINFO, null);
+        // curl_setopt($ch, CURLOPT_CAINFO, null);
 
         $response = curl_exec($ch);
         
