@@ -715,7 +715,7 @@ function getDom($url)
     curl_close($ch);
     
     $dom = new DOMDocument();
-    @$dom->loadHTML($html);
+    @$dom->loadHTML('<?xml encoding="UTF-8">' . $html);
     
     return $dom;
 }
@@ -966,7 +966,10 @@ function determineIsType($url) {
          }
  
          if ($parsedItem['title'] && $parsedItem['url']) {
-             $results[] = $parsedItem;
+            //  $results[] = $parsedItem;
+             if (strpos($parsedItem['title'], $title) !== false || strpos($title, $parsedItem['title']) !== false) {
+                $results[] = $parsedItem;
+            }
          }
          
          if (count($results) >= 3) {
@@ -976,4 +979,62 @@ function determineIsType($url) {
      
      return $results;
  }
+
+
+ /**
+ * 网络资源搜索源五----音乐资源
+ * @return array
+ */
+function source5($title)
+{
+    $results = [];
+    $title = str_replace("音乐", "", $title);
+    $url = 'https://www.yym4.com/search/'.urlencode($title);
+    $dom = getDom($url);
+    $finder = new DomXPath($dom);
+    
+    // 使用 XPath 查询选择具有特定类名的元素
+    $nodes =$finder->query('//span[@class="search_result_item_dl_btn"]/a[@class="a-no-white"]');
+    // 检查是否有匹配的节点
+    if ($nodes->length > 0) {
+        // 获取第一个匹配的链接的 href 属性
+        $firstLink = $nodes->item(0)->getAttribute('href');
+        // echo "第一个链接: " . $firstLink;
+        $detailUrl = 'https://www.yym4.com'.$firstLink;
+        $dom = getDom($detailUrl);
+        $finder = new DomXPath($dom);
+        // 使用 XPath 获取网盘链接（详情页中的链接）
+        $panLinkNodes = $finder->query('//div[@class="detail_dl_btn"]/a[starts-with(@href, "https://pan.quark.cn")]');
+        // 获取名称
+        $nameNode = $finder->query('//div[@class="detail_info_detail_name"]');
+        
+        $parsedItem = [
+            'title' => '',
+            'url' => ''
+        ];
+        
+        // 检查是否找到网盘链接
+        if ($panLinkNodes->length > 0) {
+            // 获取第一个网盘链接的 href 属性
+            $panLink = $panLinkNodes->item(0)->getAttribute('href');
+            $parsedItem['url'] = $panLink;
+        }
+        
+        
+        if ($nameNode->length > 0) {
+            // 获取名称
+            $name = $nameNode->item(0)->nodeValue;
+            $parsedItem['title'] = '「音乐」'.$name;
+        }
+        
+        if ($parsedItem['title'] && $parsedItem['url']) {
+            if (strpos($parsedItem['title'], $title) !== false || strpos($title, $parsedItem['title']) !== false) {
+                $results[] = $parsedItem;
+            }
+        }
+        
+    }
+    
+    return $results;
+}
  

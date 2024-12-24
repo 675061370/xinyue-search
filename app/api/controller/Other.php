@@ -116,6 +116,20 @@ class Other extends QfShop
                 }
             }
         }
+
+        // 处理第5个源
+        if ($num_success < $num_total) {
+            foreach (source5($title) as $value) {
+                if ($num_success >= $num_total) {
+                    break; // 有效结果数量已达到，则跳出循环
+                }
+                // 如果 URL 不存在则新增 $value
+                if (!$this->urlExists($searchList, $value['url'])) {
+                    $searchList[] = $value;
+                    $this->processUrl($value, $num_success, $datas);
+                }
+            }
+        }
         
         
         // 处理第3个源
