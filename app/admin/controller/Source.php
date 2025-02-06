@@ -372,31 +372,30 @@ class Source extends QfShop
         // 过滤掉空值的数组元素
         $urls = array_filter($urls);
         
-        $allData = array_map(function($item) {
-            $url = $item;
-            $code = '';
-        
-            // 检查是否包含 '?pwd=' 提取码格式
-            if (strpos($item, '?pwd=') !== false) {
-                // 使用 '?pwd=' 分割链接和提取码
-                list($url, $code) = explode('?pwd=', $item, 2);
-                $url = trim($url);  // 去掉 URL 中的空白字符
-                $code = trim($code);  // 提取码去掉空白字符
-            } 
-            // 检查是否包含逗号 ',' 提取码格式
-            else if (strpos($item, ',') !== false) {
-                // 使用 ',' 分割链接和提取码
-                list($url, $code) = explode(',', $item, 2);
-                $url = trim($url);  // 去掉 URL 中的空白字符
-                $code = trim($code);  // 提取码去掉空白字符
+        $allData = array_values(array_filter(array_map(function ($item) {
+            // 提取 URL
+            if (!preg_match('/https?:\/\/[^\s]+/', $item, $matches)) {
+                return null; // 没有匹配到 URL，直接丢弃
             }
         
+            $url = trim($matches[0]);
+            $code = '';
+        
+            // 提取提取码（?pwd= 或 , 分割）
+            if (preg_match('/\?pwd=([^,\s]+)/', $item, $pwdMatch)) {
+                $code = trim($pwdMatch[1]);
+            } elseif (preg_match('/,(.+)$/', $item, $commaMatch)) {
+                $code = trim($commaMatch[1]);
+            }
+        
+            // 返回结果时，确保 title 保持为空字符串
             return [
-                'url' => $url,  // 只取链接部分
+                'url' => $url,
                 'title' => '',
-                'code' => $code,  // 提取码部分
+                'code' => $code
             ];
-        }, $urls);
+        }, $urls)));
+        
         
         // 去重，使用 'url' 字段来去重
         $uniqueUrls = [];
