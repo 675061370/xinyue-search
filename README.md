@@ -81,8 +81,6 @@ location / {
 
 ![image](github/2.png)
 
-![image](github/3.png)
-
 
 ## 如何获取夸克网盘Cookie
 
