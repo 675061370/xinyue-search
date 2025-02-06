@@ -147,7 +147,7 @@ INSERT INTO `qf_conf` VALUES (31, 'app_subname', 'Hello World', '网站宣传语
 INSERT INTO `qf_conf` VALUES (32, 'home_bg', '', '大图背景', '', 0, 4, '', 3, 1, 75, 1, 1725007588, 1725007613);
 INSERT INTO `qf_conf` VALUES (33, 'home_background', NULL, '背景颜色', '默认：#fafafa', 0, 7, NULL, 3, 1, 74, 1, 1725007770, 1725027349);
 INSERT INTO `qf_conf` VALUES (34, 'footer_dec', '声明：本站是网盘索引系统,所有内容均来自互联网所提供的公开引用资源，未提供资源上传、存储服务。', '底部介绍', '示例：声明：本站是网盘索引系统,所有内容均来自互联网所提供的公开引用资源，未提供资源上传、存储服务。', 0, 1, NULL, 0, 1, 90, 1, 1725025185, 1725325534);
-INSERT INTO `qf_conf` VALUES (35, 'footer_copyright', '© 2024 心悦搜剧 Powered by <a href=\"https://www.xinyuedh.com/\" target=\"_blank\">心悦导航</a>', '底部版权', '示例：© 2024 心悦搜剧 Powered by <a href=\"https://www.xinyuedh.com/\" target=\"_blank\">心悦导航</a>', 0, 1, NULL, 0, 1, 89, 1, 1725025262, 1725325624);
+INSERT INTO `qf_conf` VALUES (35, 'footer_copyright', '© 2024 心悦 Powered by <a href=\"https://github.com/675061370/xinyue-search/\" target=\"_blank\">心悦</a>', '底部版权', '示例：© 2024 心悦 Powered by <a href=\"https://github.com/675061370/xinyue-search/\" target=\"_blank\">心悦</a>', 0, 1, NULL, 0, 1, 89, 1, 1725025262, 1725325624);
 INSERT INTO `qf_conf` VALUES (36, 'home_color', NULL, '文字颜色', '默认文字颜色：#000000', 0, 7, NULL, 3, 1, 73, 1, 1725027432, 1725027445);
 INSERT INTO `qf_conf` VALUES (37, 'home_theme', NULL, '主题色', '默认：#1e80ff', 0, 7, NULL, 3, 1, 72, 1, 1725027499, 1725027504);
 INSERT INTO `qf_conf` VALUES (38, 'other_background', NULL, '其它元素背景', '搜索框及其它元素北背景色 默认：#ffffff', 0, 7, NULL, 3, 1, 71, 1, 1725028468, 1725028478);
@@ -157,7 +157,7 @@ INSERT INTO `qf_conf` VALUES (41, 'home_css', '', '自定义CSS', '直接写css�
 INSERT INTO `qf_conf` VALUES (42, 'seo_statistics', '', '统计代码', '直接填写统计代码即可，如51LA： <script charset=\"UTF-8\" id=\"XXXXX\" src=\"//sdk.51.la/js-sdk-pro.min.js\"></script> 	<script>LA.init({id:\"XXXXX\",ck:\"XXXX\",hashMode:true})</script>', 0, 1, NULL, 9, 1, 995, 1, 1725325341, 1725411486);
 INSERT INTO `qf_conf` VALUES (43, 'app_icon', '', '网站icon', '', 0, 4, NULL, 0, 1, 92, 1, 1725326071, 1725326071);
 INSERT INTO `qf_conf` VALUES (44, 'app_demand', '0', '提交需求', '前台是否开启此功能 ；  默认开启', 0, 2, '开启=>0\n关闭=>1', 3, 1, 81, 1, 1725326640, 1725326707);
-INSERT INTO `qf_conf` VALUES (45, 'app_links', '<a href=\"https://www.xinyuedh.com/\" target=\"_blank\">更多资源</a>', '顶部其他外链', '一行一个外链(a标签)：<a href=\"https://www.xinyuedh.com/\" target=\"_blank\">更多资源</a>', 0, 1, NULL, 3, 1, 80, 1, 1725326838, 1725326838);
+INSERT INTO `qf_conf` VALUES (45, 'app_links', '<a href=\"https://github.com/675061370/xinyue-search/\" target=\"_blank\">更多资源</a>', '顶部其他外链', '一行一个外链(a标签)：<a href=\"https://github.com/675061370/xinyue-search/\" target=\"_blank\">更多资源</a>', 0, 1, NULL, 3, 1, 80, 1, 1725326838, 1725326838);
 INSERT INTO `qf_conf` VALUES (46, 'app_name_hide', '0', '隐藏网站名称', '默认显示：logo包含文字的可以隐藏网站名称', 0, 2, '显示=>0\n隐藏=>1', 0, 1, 98, 1, 1725411632, 1725411763);
 INSERT INTO `qf_conf` VALUES (47, 'ranking_m_num', '6', '移动端限制数量', '释：移动端最多显示数量', 0, 0, NULL, 3, 1, 77, 1, 1725412329, 1725412329);
 INSERT INTO `qf_conf` VALUES (48, 'search_tips', '', '未搜索提示词', '为空时默认：未找到，可换个关键词尝试哦~', 0, 0, NULL, 1, 1, 0, 1, 1726108804, 1726108804);

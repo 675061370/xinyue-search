@@ -93,6 +93,7 @@
      <!-- 每日更新 -->
     <el-dialog title="每日更新" :visible.sync="dayShow" width="500px" :modal-append-to-body='false' append-to-body :close-on-click-modal='false'>
         <div style="margin-bottom: 20px;font-size:14px;color:#666;line-height: 2">
+            <font color=orangered>功能暂停使用</font>
             <p>自动更新：<font color=orangered>转存当日及昨天的资源数据；</font></p>
             <font color=orangered>将此接口添加到计划任务中，计划任务每日执行一次即可；</font>
             <p>接口地址：{{domain}}/api/source/day</p>
@@ -104,10 +105,10 @@
      <!-- 全部更新 -->
     <el-dialog title="全部转存" :visible.sync="allShow" width="500px" :modal-append-to-body='false' append-to-body :close-on-click-modal='false'>
         <div style="margin-bottom: 20px;font-size:14px;color:#666;line-height: 2">
-            <p>全部转存：<font color=orangered>一键转存心悦搜索所有资源到自己的网盘及系统中</font></p>
+            <font color=orangered>功能暂停使用</font>
+            <p>全部转存：<font color=orangered>一键转存所有资源到自己的网盘及系统中</font></p>
             <font color=orangered>全部转存速度比较慢，提交后请耐心等待；名称重复的资源会跳过转存；</font>
             <p>全部转存需要按类别转存：见下方列表一键转存按钮</p>
-            <p>Tips：心悦搜索：https://www.xinyueso.com；</p>
         </div>
     </el-dialog>
 
