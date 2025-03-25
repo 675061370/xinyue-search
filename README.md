@@ -109,7 +109,7 @@ https://XXXXX/api/other/delete_search
 请加微信l1417716300
 
 
-| <img src="github/qr1.jpg" width="180px"> | <img src="github/qr9.jpg" width="180px"> |
+| <img src="https://www.xinyueso.com/github/qr1.jpg" width="180px"> | <img src="https://www.xinyueso.com/github/qr9.jpg" width="180px"> |
 | --- | --- |
 
 程序使用不收费，但不负责搭建，搭建过程遇到问题，可以私聊或群里咨询
