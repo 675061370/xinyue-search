@@ -168,6 +168,7 @@ INSERT INTO `qf_conf` VALUES ('62', 'uc_file_time', '', 'UC临时资源目录', 
 INSERT INTO `qf_conf` VALUES ('63', 'xunlei_cookie', '', '迅雷Cookie', '', '0', '0', NULL, '4', '1', '59', '1', '1743149794', '1743149794');
 INSERT INTO `qf_conf` VALUES ('64', 'xunlei_file', '', '迅雷默认转存目录', '', '0', '0', NULL, '4', '1', '58', '1', '1743149819', '1743149819');
 INSERT INTO `qf_conf` VALUES ('65', 'xunlei_file_time', '', '迅雷临时资源目录', '', '0', '0', NULL, '4', '1', '57', '1', '1743149860', '1743149860');
+INSERT INTO `qf_conf` VALUES ('66', 'api_key', '', '接口api_key', '个别接口需要此参数方可调用', '0', '0', NULL, '1', '1', '0', '1', '1743154753', '1743154753');
 
 
 

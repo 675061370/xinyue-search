@@ -14,6 +14,9 @@ class Open extends QfShop
      */
     public function transfer()
     {
+        if(Config('qfshop.api_key') != input('api_key')){
+            return jerr('api_key错误');
+        }
         $urlData = [
             'expired_type' => input('expired_type')??1,  // 1正式资源 2临时资源
             'url' => input("url")?? '',
