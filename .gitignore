@@ -3,3 +3,4 @@
 runtime
 nginx.htaccess
 .env
+/public/install/install.lock
