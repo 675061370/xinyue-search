@@ -110,7 +110,7 @@ class QuarkPlugin
 
     function processSingleData($value, $logId = 0, $total_result = 0, $isType = 0)
     {
-        $detail = $this->model->where('title', $value['title'])->find();
+        $detail = $this->model->where('title', $value['title'])>where('is_type', determineIsType($value['url']))->find();
         if (!empty($detail)) {
             if (!empty($logId)) {
                 $this->SourceLogModel->editLog($logId, $total_result, 'skip_num', '重复跳过转存');
