@@ -60,6 +60,9 @@ class Source extends QfShop
      */
     public function getDetail(array $data)
     {
+        if(empty($data['id'])){
+            return jerr('参数错误');
+        }
         $map[] = ['status', '=', 1];
         $map[] = ['is_delete', '=', 0];
         $map[] = ['source_id', '=', $data['id']];

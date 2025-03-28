@@ -23,19 +23,10 @@ class QuarkPlugin
         $this->source_category_id = 0;
     }
 
-    public function getFiles($quark_cookie)
+    public function getFiles($type=0,$pdir_fid=0)
     {
-        $urlData = [
-            'cookie' => $quark_cookie ?? '',
-        ];
-        $res = curlHelper(Request::domain() . "/api/open/getFiles", "POST", $urlData)['body'];
-        $res = json_decode($res, true);
-
-        if ($res['code'] !== 200) {
-            return jerr($res['message']);
-        }
-
-        return $res['data'];
+        $transfer = new \netdisk\Transfer();
+        return $transfer->getFiles($type,$pdir_fid);
     }
     
     public function import($allData, $source_category_id)
@@ -68,6 +59,10 @@ class QuarkPlugin
 
     public function transferAll($source_category_id, $day = 0)
     {
+        if(empty($this->url)){
+            return jerr('未配置转存接口地址');
+        }
+
         @set_time_limit(999999);
         
         $this->source_category_id = $source_category_id;
@@ -133,17 +128,14 @@ class QuarkPlugin
         }
 
         $urlData = [
-            'cookie' => Config('qfshop.quark_cookie') ?? '',
-            'Authorization' => Config('qfshop.Authorization') ?? '',
             'expired_type' => 1,  // 1正式资源 2临时资源
-            'to_pdir_fid' => '',  //存入目标文件
             'url' => $url,
             'code' => $value['code'] ?? '',
             'isType' => $isType
         ];
 
-        $res = curlHelper(Request::domain() . "/api/open/transfer", "POST", $urlData)['body'];
-        $res = json_decode($res, true);
+        $transfer = new \netdisk\Transfer();
+        $res = $transfer->transfer($urlData);
 
         if ($res['code'] !== 200) {
             if (!empty($logId)) {
@@ -159,7 +151,7 @@ class QuarkPlugin
             "title" => $title,
             "url" => $res['data']['share_url'],
             "is_type" => determineIsType($res['data']['share_url']),
-            "code" => $value['code'] ?? '',
+            "code" => $res['data']['code'] ?? $value['code'] ?? '',
             "source_category_id" => $source_category_id,
             "update_time" => time(),
             "create_time" => time(),

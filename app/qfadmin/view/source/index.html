@@ -10,7 +10,7 @@
             <el-button icon="el-icon-plus" size="small" @click="clickAdd" plain>添加资源</el-button>
             <el-button icon="el-icon-delete" size="small" @click="postMultDelete" plain>批量删除</el-button>
             <el-button icon="el-icon-document-copy" size="small" @click="getExport" plain>导出资源</el-button>
-            <el-button icon="el-icon-plus" size="small" @click="ImportShow" plain>夸克导入专用</el-button>
+            <el-button icon="el-icon-plus" size="small" @click="ImportShow" plain>表格导入</el-button>
             <el-button icon="el-icon-plus" size="small" @click="ImportBatch" plain>批量导入</el-button>
         </el-form-item>
         <div style="float:right">
@@ -167,9 +167,9 @@
                   <el-radio-button :label="2">转存分享导入</el-radio-button>
                 </el-radio-group>
                 <p style="color: #999;" v-if='Batchform.type==1'>直接导入：链接校验有效后直接入库；Tips：该功能不会检测是否重复；</p>
-                <p style="color: #999;" v-else-if='Batchform.type==2'>将资源转存到自己网盘后分享入库（<font color=orangered>此功能仅支持夸克</font>）Tips：该功能不会检测是否重复；</p>
-                <span style="color: #999;" v-if='Batchform.type==1'>支持<font color=orangered>夸克、阿里、UC</font>的网盘资源(一次最多可以上传500条资源)</span>
-                <span style="color: #999;" v-else-if='Batchform.type==2'>目前仅支持<font color=orangered>夸克</font>的网盘资源(一次最多可以上传500条资源)</span>
+                <p style="color: #999;" v-else-if='Batchform.type==2'>将资源转存到自己网盘后分享入库；Tips：该功能不会检测是否重复；</p>
+                <span style="color: #999;" v-if='Batchform.type==1'>支持<font color=orangered>夸克、阿里、UC、百度</font>的网盘资源(一次最多可以上传500条资源)</span>
+                <span style="color: #999;" v-else-if='Batchform.type==2'>支持<font color=orangered>夸克、阿里、UC、百度</font>的网盘资源(一次最多可以上传500条资源)</span>
             </el-form-item>
             <el-form-item prop="source_category_id" label="资源分类" label-width="70px" v-if="Batchform.type">
                 <el-select size="medium" v-model="Batchform.source_category_id" placeholder="请选择分类" clearable>
@@ -187,7 +187,8 @@
 一条资源一行
 https://pan.quark.cn/s/xxxxxxxx
 https://www.alipan.com/s/xxxxxxxxx
-https://drive.uc.cn/s/xxxxxxxxxxx"
+https://drive.uc.cn/s/xxxxxxxxxxx
+https://pan.baidu.com/s/xxxxxx?pwd=xxxx"
                   v-model="Batchform.urls"
                   rows="20"
                   show-word-limit

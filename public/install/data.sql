@@ -31,12 +31,7 @@ CREATE TABLE `qf_access`  (
   `access_createtime` int(11) NOT NULL DEFAULT 0 COMMENT '创建时间',
   `access_updatetime` int(11) NOT NULL DEFAULT 0 COMMENT '修改时间',
   PRIMARY KEY (`access_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '授权信息表' ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of qf_access
--- ----------------------------
-INSERT INTO `qf_access` VALUES (1, 1, 'e87d3ab11608533d4ee0cb05a21aee6f8e44865c100000e87d3ab11608533d4ee0cb05a21aee6f8e44865c', 'admin', '127.0.0.1', 0, 1726298717, 1726303168);
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '授权信息表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for qf_admin
@@ -62,12 +57,7 @@ CREATE TABLE `qf_admin`  (
   INDEX `admin_name`(`admin_name`) USING BTREE,
   INDEX `admin_password`(`admin_password`) USING BTREE,
   INDEX `admin_account`(`admin_account`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '用户表' ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of qf_admin
--- ----------------------------
-INSERT INTO `qf_admin` VALUES (1, 'admin', 'b806edc1a9e170c683c73e9ea486bbc9ffc07eb5', 'BuVf', '超级管理员', '', '超级管理员', '', 0.00, 1, '127.0.0.1', 0, 0, 1726303168);
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '用户表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for qf_attach
@@ -128,7 +118,7 @@ CREATE TABLE `qf_conf`  (
 -- ----------------------------
 -- Records of qf_conf
 -- ----------------------------
-INSERT INTO `qf_conf` VALUES (1, 'app_name', '资源管理系统', '网站名称', '', 0, 0, NULL, 0, 1, 99, 1, 0, 1725411498);
+INSERT INTO `qf_conf` VALUES (1, 'app_name', '', '网站名称', '', 0, 0, NULL, 0, 1, 99, 1, 0, 1725411498);
 INSERT INTO `qf_conf` VALUES (2, 'upload_max_file', '4097152', '最大文件上传限制', '', 0, 0, NULL, 2, 1, 0, 1, 0, 1617352067);
 INSERT INTO `qf_conf` VALUES (3, 'upload_file_type', 'csv,xlsx', '允许文件上传类型', '', 0, 0, NULL, 2, 1, 0, 1, 0, 1617351959);
 INSERT INTO `qf_conf` VALUES (4, 'upload_max_image', '2097152', '最大图片上传限制', '', 0, 0, NULL, 2, 1, 0, 1, 0, 1617351961);
@@ -137,17 +127,17 @@ INSERT INTO `qf_conf` VALUES (21, 'logo', '', '网站LOGO', '方形LOGO，最佳
 INSERT INTO `qf_conf` VALUES (22, 'quark_cookie', '', '夸克Cookie', '', 0, 0, NULL, 4, 1, 0, 1, 1712114435, 1712114652);
 INSERT INTO `qf_conf` VALUES (23, 'qcode', '', '群二维码', '前台加入群聊开关；有图显示按钮，无图不显示', 0, 4, NULL, 3, 1, 80, 1, 1712451616, 1725326400);
 INSERT INTO `qf_conf` VALUES (24, 'app_description', '', 'SEO描述', '', 0, 1, NULL, 9, 1, 996, 1, 1712451778, 1725411481);
-INSERT INTO `qf_conf` VALUES (25, 'quark_banned', '失效,年会员,空间容量,微信,微信群,全网资源,影视资源,扫码,最新资源,公众号,IMG_,资源汇总,緑铯粢源,.url,网盘推广,大额优惠券,资源文档,dy8.xyz,妙妙屋,资源合集,kkdm', '广告词', '出现这些词的资源，转存时删除；格式如：影视资源,年会员', 0, 1, NULL, 4, 1, 0, 1, 1714035639, 1723795683);
+INSERT INTO `qf_conf` VALUES (25, 'quark_banned', '失效,年会员,空间容量,微信,微信群,全网资源,影视资源,扫码,最新资源,公众号,IMG_,资源汇总,緑铯粢源,.url,网盘推广,大额优惠券,资源文档,dy8.xyz,妙妙屋,资源合集,kkdm', '广告词', '出现这些词的资源，转存时删除；格式如：影视资源,年会员', 0, 1, NULL, 4, 1, 999, 1, 1714035639, 1723795683);
 INSERT INTO `qf_conf` VALUES (26, 'Authorization', '', '阿里Authorization', '此版本用不着', 0, 0, NULL, 4, 1, 0, 1, 1722010465, 1722010465);
 INSERT INTO `qf_conf` VALUES (27, 'mp4_online', '0', '在线观看资源', '此版本用不着', 0, 2, '开启=>1\n关闭=>0', 4, 1, 0, 1, 1723014926, 1723014926);
 INSERT INTO `qf_conf` VALUES (28, 'search_type', '1', '搜索模式', '精准搜索：只有查包含关键词的；模糊搜索：关键词顺序可乱但必须都包含；分词搜索：只要满足其中一个字就会搜索到', 0, 2, '精准搜索=>0\n模糊搜索=>1\n分词搜索=>2', 1, 1, 0, 1, 1724493746, 1724494058);
-INSERT INTO `qf_conf` VALUES (29, 'app_keywords', 'XXX,XXX,XXXX', 'SEO关键词', '网站关键词，有利于对整站的SEO优化', 0, 1, NULL, 9, 1, 998, 1, 1725006403, 1725411476);
-INSERT INTO `qf_conf` VALUES (30, 'app_title', 'XXXXXXXXXXXX', 'SEO标题', '', 0, 0, NULL, 9, 1, 999, 1, 1725006679, 1725325013);
-INSERT INTO `qf_conf` VALUES (31, 'app_subname', 'Hello World', '网站宣传语', '免费分享百万级网盘资源，致力打造顶尖网盘搜索引擎，让您畅享资源无忧！', 0, 0, NULL, 0, 1, 94, 1, 1725006792, 1725006869);
+INSERT INTO `qf_conf` VALUES (29, 'app_keywords', '', 'SEO关键词', '网站关键词，有利于对整站的SEO优化', 0, 1, NULL, 9, 1, 998, 1, 1725006403, 1725411476);
+INSERT INTO `qf_conf` VALUES (30, 'app_title', '', 'SEO标题', '', 0, 0, NULL, 9, 1, 999, 1, 1725006679, 1725325013);
+INSERT INTO `qf_conf` VALUES (31, 'app_subname', '', '网站宣传语', '免费分享百万级网盘资源，致力打造顶尖网盘搜索引擎，让您畅享资源无忧！', 0, 0, NULL, 0, 1, 94, 1, 1725006792, 1725006869);
 INSERT INTO `qf_conf` VALUES (32, 'home_bg', '', '大图背景', '', 0, 4, '', 3, 1, 75, 1, 1725007588, 1725007613);
 INSERT INTO `qf_conf` VALUES (33, 'home_background', NULL, '背景颜色', '默认：#fafafa', 0, 7, NULL, 3, 1, 74, 1, 1725007770, 1725027349);
-INSERT INTO `qf_conf` VALUES (34, 'footer_dec', '声明：本站是网盘索引系统,所有内容均来自互联网所提供的公开引用资源，未提供资源上传、存储服务。', '底部介绍', '示例：声明：本站是网盘索引系统,所有内容均来自互联网所提供的公开引用资源，未提供资源上传、存储服务。', 0, 1, NULL, 0, 1, 90, 1, 1725025185, 1725325534);
-INSERT INTO `qf_conf` VALUES (35, 'footer_copyright', '© 2024 心悦 Powered by <a href=\"https://github.com/675061370/xinyue-search/\" target=\"_blank\">心悦</a>', '底部版权', '示例：© 2024 心悦 Powered by <a href=\"https://github.com/675061370/xinyue-search/\" target=\"_blank\">心悦</a>', 0, 1, NULL, 0, 1, 89, 1, 1725025262, 1725325624);
+INSERT INTO `qf_conf` VALUES (34, 'footer_dec', '', '底部介绍','示例：声明：本站是网盘索引系统,所有内容均来自互联网所提供的公开引用资源，未提供资源上传、存储服务。', 0, 1, NULL, 0, 1, 90, 1, 1725025185, 1725325534);
+INSERT INTO `qf_conf` VALUES (35, 'footer_copyright', '', '底部版权','示例：© 2024 心悦搜剧 Powered by <a href=\"https://www.xinyuedh.com/\" target=\"_blank\">心悦导航</a>', 0, 1, NULL, 0, 1, 89, 1, 1725025262, 1725325624);
 INSERT INTO `qf_conf` VALUES (36, 'home_color', NULL, '文字颜色', '默认文字颜色：#000000', 0, 7, NULL, 3, 1, 73, 1, 1725027432, 1725027445);
 INSERT INTO `qf_conf` VALUES (37, 'home_theme', NULL, '主题色', '默认：#1e80ff', 0, 7, NULL, 3, 1, 72, 1, 1725027499, 1725027504);
 INSERT INTO `qf_conf` VALUES (38, 'other_background', NULL, '其它元素背景', '搜索框及其它元素北背景色 默认：#ffffff', 0, 7, NULL, 3, 1, 71, 1, 1725028468, 1725028478);
@@ -157,7 +147,7 @@ INSERT INTO `qf_conf` VALUES (41, 'home_css', '', '自定义CSS', '直接写css�
 INSERT INTO `qf_conf` VALUES (42, 'seo_statistics', '', '统计代码', '直接填写统计代码即可，如51LA： <script charset=\"UTF-8\" id=\"XXXXX\" src=\"//sdk.51.la/js-sdk-pro.min.js\"></script> 	<script>LA.init({id:\"XXXXX\",ck:\"XXXX\",hashMode:true})</script>', 0, 1, NULL, 9, 1, 995, 1, 1725325341, 1725411486);
 INSERT INTO `qf_conf` VALUES (43, 'app_icon', '', '网站icon', '', 0, 4, NULL, 0, 1, 92, 1, 1725326071, 1725326071);
 INSERT INTO `qf_conf` VALUES (44, 'app_demand', '0', '提交需求', '前台是否开启此功能 ；  默认开启', 0, 2, '开启=>0\n关闭=>1', 3, 1, 81, 1, 1725326640, 1725326707);
-INSERT INTO `qf_conf` VALUES (45, 'app_links', '<a href=\"https://github.com/675061370/xinyue-search/\" target=\"_blank\">更多资源</a>', '顶部其他外链', '一行一个外链(a标签)：<a href=\"https://github.com/675061370/xinyue-search/\" target=\"_blank\">更多资源</a>', 0, 1, NULL, 3, 1, 80, 1, 1725326838, 1725326838);
+INSERT INTO `qf_conf` VALUES (45, 'app_links', '', '顶部其他外链', '一行一个外链(a标签)：<a href=\"https://www.xinyuedh.com/\" target=\"_blank\">更多资源</a>', 0, 1, NULL, 3, 1, 80, 1, 1725326838, 1725326838);
 INSERT INTO `qf_conf` VALUES (46, 'app_name_hide', '0', '隐藏网站名称', '默认显示：logo包含文字的可以隐藏网站名称', 0, 2, '显示=>0\n隐藏=>1', 0, 1, 98, 1, 1725411632, 1725411763);
 INSERT INTO `qf_conf` VALUES (47, 'ranking_m_num', '6', '移动端限制数量', '释：移动端最多显示数量', 0, 0, NULL, 3, 1, 77, 1, 1725412329, 1725412329);
 INSERT INTO `qf_conf` VALUES (48, 'search_tips', '', '未搜索提示词', '为空时默认：未找到，可换个关键词尝试哦~', 0, 0, NULL, 1, 1, 0, 1, 1726108804, 1726108804);
@@ -165,6 +155,20 @@ INSERT INTO `qf_conf` VALUES (49, 'search_bg', '', '未搜索提示图', '', 0, 
 INSERT INTO `qf_conf` VALUES (50, 'home_new', '1', '最新列表', '仅无图模式有效', 0, 2, '开启=>0\n关闭=>1', 3, 1, 79, 1, 1726299605, 1726299605);
 INSERT INTO `qf_conf` VALUES (51, 'home_new_img', '', '最新图标', '', 0, 4, NULL, 3, 1, 79, 1, 1726302688, 1726302688);
 INSERT INTO `qf_conf` VALUES (52, 'is_quan', '0', '全网搜', '', 0, 2, '关闭=>0\n开启=>1', 1, 1, 1, 1, 1729928547, 1729928547);
+INSERT INTO `qf_conf` VALUES ('53', 'baidu_cookie', '', '百度Cookie', '', '0', '0', NULL, '4', '1', '89', '1', '1743145595', '1743145595');
+INSERT INTO `qf_conf` VALUES ('54', 'quark_file', '', '夸克默认转存目录', '', '0', '0', NULL, '4', '1', '98', '1', '1743145595', '1743145595');
+INSERT INTO `qf_conf` VALUES ('55', 'quark_file_time', '', '夸克临时资源目录', '', '0', '0', NULL, '4', '1', '97', '1', '1743145595', '1743145595');
+INSERT INTO `qf_conf` VALUES ('56', 'baidu_file', '', '百度默认转存目录', '', '0', '0', NULL, '4', '1', '88', '1', '1743145595', '1743145595');
+INSERT INTO `qf_conf` VALUES ('57', 'baidu_file_time', '', '百度临时资源目录', '', '0', '0', NULL, '4', '1', '87', '1', '1743145595', '1743145595');
+INSERT INTO `qf_conf` VALUES ('58', 'ali_file', '', '阿里默认转存目录', '', '0', '0', NULL, '4', '1', '78', '1', '1743145595', '1743145595');
+INSERT INTO `qf_conf` VALUES ('59', 'ali_file_time', '', '阿里临时资源目录', '', '0', '0', NULL, '4', '1', '77', '1', '1743145595', '1743145595');
+INSERT INTO `qf_conf` VALUES ('60', 'uc_cookie', '', 'UcCookie', '', '0', '0', NULL, '4', '1', '69', '1', '1743145595', '1743145595');
+INSERT INTO `qf_conf` VALUES ('61', 'uc_file', '', 'UC默认转存目录', '', '0', '0', NULL, '4', '1', '68', '1', '1743145595', '1743145595');
+INSERT INTO `qf_conf` VALUES ('62', 'uc_file_time', '', 'UC临时资源目录', '', '0', '0', NULL, '4', '1', '67', '1', '1743145595', '1743145595');
+INSERT INTO `qf_conf` VALUES ('63', 'xunlei_cookie', '', '迅雷Cookie', '', '0', '0', NULL, '4', '1', '59', '1', '1743149794', '1743149794');
+INSERT INTO `qf_conf` VALUES ('64', 'xunlei_file', '', '迅雷默认转存目录', '', '0', '0', NULL, '4', '1', '58', '1', '1743149819', '1743149819');
+INSERT INTO `qf_conf` VALUES ('65', 'xunlei_file_time', '', '迅雷临时资源目录', '', '0', '0', NULL, '4', '1', '57', '1', '1743149860', '1743149860');
+
 
 
 -- ----------------------------

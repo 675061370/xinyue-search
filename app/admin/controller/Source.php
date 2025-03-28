@@ -342,7 +342,6 @@ class Source extends QfShop
 
         $this->excelField = $excelField;
         $this->exportExcelData($dataList);
-        print_r(12);
     }
 
     /**
@@ -362,50 +361,7 @@ class Source extends QfShop
         
         $source_category_id = input('source_category_id')??0;
         
-        $urls = input("urls");
-
-        $urls = explode("\n", $urls);
-
-        // 去掉数组元素中的空白字符
-        $urls = array_map('trim', $urls);
-
-        // 过滤掉空值的数组元素
-        $urls = array_filter($urls);
-        
-        $allData = array_values(array_filter(array_map(function ($item) {
-            // 提取 URL
-            if (!preg_match('/https?:\/\/[^\s]+/', $item, $matches)) {
-                return null; // 没有匹配到 URL，直接丢弃
-            }
-        
-            $url = trim($matches[0]);
-            $code = '';
-        
-            // 提取提取码（?pwd= 或 , 分割）
-            if (preg_match('/\?pwd=([^,\s]+)/', $item, $pwdMatch)) {
-                $code = trim($pwdMatch[1]);
-            } elseif (preg_match('/,(.+)$/', $item, $commaMatch)) {
-                $code = trim($commaMatch[1]);
-            }
-        
-            // 返回结果时，确保 title 保持为空字符串
-            return [
-                'url' => $url,
-                'title' => '',
-                'code' => $code
-            ];
-        }, $urls)));
-        
-        
-        // 去重，使用 'url' 字段来去重
-        $uniqueUrls = [];
-        $allData = array_filter($allData, function($item) use (&$uniqueUrls) {
-            if (!in_array($item['url'], $uniqueUrls)) {
-                $uniqueUrls[] = $item['url'];  // 添加到已处理的 URL 列表
-                return true;  // 保留此项目
-            }
-            return false;  // 去掉重复的项目
-        });
+        $allData = parsePanLinks(input("urls"));
         
         $quarkPlugin = new QuarkPlugin();
         if(input("type")==2){
@@ -416,7 +372,7 @@ class Source extends QfShop
             $res = $quarkPlugin->import($allData,$source_category_id);
         }
         
-        return jok('已提交任务，稍后查看结果2',$res);
+        return jok('已提交任务，稍后查看结果2',$allData);
     }
 
     /**
@@ -449,10 +405,13 @@ class Source extends QfShop
         if ($error) {
             return $error;
         }
-
         $quarkPlugin = new QuarkPlugin();
-        $result = $quarkPlugin->getFiles(Config('qfshop.quark_cookie'));
-        return jok('获取成功',$result);
+        $result = $quarkPlugin->getFiles(input('type')??0,input('pdir_fid')??0);
+
+        if($result['code'] != 200){
+            return jerr($result['message']);
+        }
+        return jok('获取成功',$result['data']);
     }
     
 }

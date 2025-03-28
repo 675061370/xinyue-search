@@ -17,6 +17,14 @@ function jok($message = 'success', $data = null)
     }
     die;
 }
+function jok2($message = 'success', $data = null)
+{
+    if ($data) {
+        return ["code" => 200, "message" => $message, 'data' => $data];
+    } else {
+        return ["code" => 200, "message" => $message, 'data' => $data??''];
+    }
+}
 /**
  * 输出错误JSON
  *
@@ -29,6 +37,10 @@ function jerr($message = 'error', $code = 500)
     header("content-type:application/json;chartset=uft-8");
     echo json_encode(["code" => $code, "message" => $message]);
     die;
+}
+function jerr2($message = 'error', $code = 500)
+{
+    return ["code" => $code, "message" => $message];
 }
 /**
  * 密码+盐 加密
@@ -787,6 +799,85 @@ function determineIsType($url) {
         // 默认值是夸克网盘，返回 0
         return 0;
     }
+}
+
+/**
+ * 解析网盘分享链接
+ * 
+ * @param string $input 输入的链接文本，可以是多行
+ * @return array 解析后的链接数组，每个元素包含url、title和code
+ */
+function parsePanLinks($input)
+{
+    // 分割多行输入
+    $links = explode("\n", $input);
+    
+    // 去掉数组元素中的空白字符
+    $links = array_map('trim', $links);
+    
+    // 过滤掉空值的数组元素
+    $links = array_filter($links);
+    
+    $parsedLinks = array_values(array_filter(array_map(function ($item) {
+        // 统一处理百度网盘分享格式，同时匹配两种格式
+        if (preg_match('/链接:?\s*(https?:\/\/[^\s]+)\s*提取码:?\s*([a-zA-Z0-9]{4})/i', $item, $matches)) {
+            $url = trim($matches[1]);
+            $code = trim($matches[2]);
+            // 确保URL中包含提取码
+            if (!empty($code) && strpos($url, '?pwd=') === false) {
+                $url .= (strpos($url, '?') === false ? '?' : '&') . 'pwd=' . $code;
+            }
+            return [
+                'url' => $url,
+                'title' => '',
+                'code' => $code
+            ];
+        }
+        
+        // 提取 URL
+        if (!preg_match('/https?:\/\/[^\s]+/', $item, $matches)) {
+            return null; // 没有匹配到 URL，直接丢弃
+        }
+    
+        $url = trim($matches[0]);
+        $code = '';
+    
+        // 提取提取码（?pwd= 或 , 分割）
+        if (preg_match('/\?pwd=([^,\s&]+)/', $item, $pwdMatch)) {
+            $code = trim($pwdMatch[1]);
+        } elseif (preg_match('/,\s*([a-zA-Z0-9]{4})\s*$/', $item, $commaMatch)) {
+            $code = trim($commaMatch[1]);
+            // 添加提取码到URL
+            if (!empty($code)) {
+                $url .= (strpos($url, '?') === false ? '?' : '&') . 'pwd=' . $code;
+            }
+        } elseif (preg_match('/提取码:?\s*([a-zA-Z0-9]{4})/i', $item, $codeMatch)) {
+            $code = trim($codeMatch[1]);
+            // 添加提取码到URL
+            if (!empty($code)) {
+                $url .= (strpos($url, '?') === false ? '?' : '&') . 'pwd=' . $code;
+            }
+        }
+    
+        // 返回结果时，确保 title 保持为空字符串
+        return [
+            'url' => $url,
+            'title' => '',
+            'code' => $code
+        ];
+    }, $links)));
+    
+    // 去重，使用 'url' 字段来去重
+    $uniqueUrls = [];
+    $result = array_filter($parsedLinks, function($item) use (&$uniqueUrls) {
+        if (!in_array($item['url'], $uniqueUrls)) {
+            $uniqueUrls[] = $item['url'];  // 添加到已处理的 URL 列表
+            return true;  // 保留此项目
+        }
+        return false;  // 去掉重复的项目
+    });
+    
+    return array_values($result);
 }
 
 
