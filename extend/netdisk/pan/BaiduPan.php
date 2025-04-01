@@ -13,6 +13,10 @@ class BaiduPan extends BasePan
         $network = new \netdisk\pan\BaiduWork($cookie);
 
         $res = $network->getDirList($pdir_fid);
+        // 如果返回的是错误码，说明目录不存在，需要创建
+        if (is_numeric($res)) {
+            return jerr2($network->getErrorMessage($res));
+        }
         
         return jok2('获取成功',$res);
     }
