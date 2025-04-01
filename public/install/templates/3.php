@@ -30,7 +30,7 @@
 						<td><div id="J_install_tip_dbpw"></div></td>
 					</tr>
 					<?php }?>
-					<? if(INSTALLTYPE == 'HOST' || INSTALLTYPE == 'BAE'){ ?>
+					<?php if(INSTALLTYPE == 'HOST' || INSTALLTYPE == 'BAE'){ ?>
 					<tr>
 						<td class="tar">数据库名：</td>
 						<td><input type="text" name="dbname" id="dbname" value="<?php echo $config['dbName'] ?>" class="input"></td>

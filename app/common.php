@@ -783,22 +783,25 @@ function highlightKeywords($title, $searchTitle)
 
 /**
  * 判断是哪个网盘
- * @return array
- */ 
+ * @return int 网盘类型
+ */
 function determineIsType($url) {
-    // 判断 $url 中包含的域名并返回对应的 is_type
-    if (strpos($url, 'alipan.com') !== false) {
-        return 1;
-    } elseif (strpos($url, 'baidu.com') !== false) {
-        return 2;
-    } elseif (strpos($url, 'uc.cn') !== false) {
-        return 3;
-    } elseif (strpos($url, 'xunlei.com') !== false) {
-        return 4;
-    } else {
-        // 默认值是夸克网盘，返回 0
-        return 0;
+    $domains = [
+        'alipan.com' => 1,
+        'aliyundrive.com' => 1,
+        'baidu.com' => 2,
+        'uc.cn' => 3,
+        'xunlei.com' => 4
+    ];
+
+    foreach ($domains as $domain => $type) {
+        if (strpos($url, $domain) !== false) {
+            return $type;
+        }
     }
+
+    // 默认值是夸克网盘，返回 0
+    return 0;
 }
 
 /**

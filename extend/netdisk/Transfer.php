@@ -64,6 +64,7 @@ class Transfer
             'www.aliyundrive.com' => 1,
             'pan.baidu.com' => 2,
             'drive.uc.cn' => 3,
+            'fast.uc.cn' => 3,
             // 'pan.xunlei.com' => 4,
         ];
         
