@@ -184,7 +184,8 @@ class BaiduWork
             'bdstoken' => $this->bdstoken,
             'channel' => 'chunlei',
             'web' => '1',
-            'clienttype' => '0'
+            'clienttype' => '0',
+            'ondup' => 'newcopy' //目录中存在同名文件无法转存的问题
         ];
         $data = [
             'fsidlist' => '[' . implode(',', $paramsList[2]) . ']',

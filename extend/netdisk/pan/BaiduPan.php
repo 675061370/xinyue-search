@@ -241,6 +241,9 @@ class BaiduPan extends BasePan
         $cookie = Config('qfshop.baidu_cookie');
         $network = new \netdisk\pan\BaiduWork($cookie);
 
+        $bdstoken = $network->getBdstoken();
+        $network->setBdstoken($bdstoken);
+
         // 调用批量删除方法
         $result = $network->batchDeleteFiles($filePaths);
         return $result;
