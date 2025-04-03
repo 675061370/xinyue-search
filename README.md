@@ -72,7 +72,7 @@
 
 📌 **扫码加入交流群** 👇
 
-| ![群二维码](https://www.xinyueso.com/github/qr1.jpg) | ![支持项目](https://www.xinyueso.com/github/qr9.jpg) |
+| <img src="https://www.xinyueso.com/github/qr1.jpg" width="200" alt="群二维码"> | <img src="https://www.xinyueso.com/github/qr9.jpg" width="200" alt="支持项目"> |
 | --- | --- |
 
 > **温馨提示**：项目代码免费开放，但不提供搭建服务，如有问题可在群内讨论或私信咨询。
