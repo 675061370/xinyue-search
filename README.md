@@ -26,7 +26,7 @@
 
 ### v2.1
 - 🌍 **新增** 网页全网搜索功能
-- 💬 **接入** 微信智能对话系统
+- 💬 **接入** 微信对话开放平台
 - 🔍 **优化** SEO 及搜索体验
 - 🗑 **新增** 后台批量删除功能
 - 📥 **优化** 数据导入功能
@@ -45,7 +45,7 @@
 
 ## 📖 搭建教程
 
-📌 **[完整搭建教程](https://tcn6g7hyxvir.feishu.cn/wiki/WYT4wZtrjijeswkI0RSc4ofTnah)**
+📌 **<a href="https://tcn6g7hyxvir.feishu.cn/wiki/WYT4wZtrjijeswkI0RSc4ofTnah" target="_blank">完整搭建教程</a>**
 
 ---
 
@@ -68,11 +68,11 @@
 
 加入交流群，与更多开发者交流学习！
 
-📌 **添加微信** `l1417716300`（备注来源）
+📌 **添加微信** `l1417716300` 添加时请备注来源（如果项目对你有所帮助，也可以请我喝杯咖啡 ☕️ ~）
 
 📌 **扫码加入交流群** 👇
 
-| <img src="https://www.xinyueso.com/github/qr1.jpg" width="200" alt="群二维码"> | <img src="https://www.xinyueso.com/github/qr9.jpg" width="200" alt="支持项目"> |
+| <img src="https://www.xinyueso.com/github/qr12.jpg" width="200" alt="群二维码"> | <img src="https://www.xinyueso.com/github/qr9.jpg" width="200" alt="支持项目"> |
 | --- | --- |
 
 > **温馨提示**：项目代码免费开放，但不提供搭建服务，如有问题可在群内讨论或私信咨询。
