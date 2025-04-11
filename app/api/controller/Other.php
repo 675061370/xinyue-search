@@ -72,7 +72,7 @@ class Other extends QfShop
         $num_success = 0;
         
         // 定义源的顺序
-        $sources = ['source2', 'source4', 'source5', 'source3', 'source1'];
+        $sources = ['source1', 'source2'];
         
         foreach ($sources as $source) {
             if ($num_success >= $num_total) {
@@ -95,6 +95,46 @@ class Other extends QfShop
         Cache::delete($title . '_processing'); // 解锁
         
         return !empty($param) ? $datas : jok('临时资源获取成功', $datas);
+    }
+
+    /**
+     * 全网搜索 测试能不能拿到第三方数据
+     * 
+     * @return void
+     */
+    public function text_search($param='')
+    {
+        $title = $param ?: input('title', '');
+        if (empty($title)) {
+            return jerr("请输入要看的内容");
+        }
+        
+        $searchList = []; //查询的结果集
+        $datas = []; //最终数据
+        $num_total = 20; //最多想要几条结果
+        $num_success = 0;
+        
+        // 定义源的顺序
+        $sources = ['source1', 'source2'];
+        
+        foreach ($sources as $source) {
+            if ($num_success >= $num_total) {
+                break;
+            }
+    
+            foreach ($source($title) as $value) {
+                if ($num_success >= $num_total) {
+                    break;
+                }
+    
+                if (!$this->urlExists($searchList, $value['url'])) {
+                    $searchList[] = $value;
+                    $num_success++;
+                }
+            }
+        }
+        
+        return jok('网盘资源均来源于互联网，资源内容与本站无关', $searchList);
     }
     
     // 检查 URL 是否已存在（忽略查询参数）

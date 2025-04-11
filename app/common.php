@@ -723,6 +723,9 @@ function getDom($url)
 {
     $ch = curl_init($url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    // 临时跳过 SSL 验证（测试用）
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
     $html = curl_exec($ch);
     curl_close($ch);
     
@@ -883,250 +886,110 @@ function parsePanLinks($input)
     return array_values($result);
 }
 
-
 /**
  * 网络资源搜索源一
- * @return array
- */   
-    
- function source1($title)
- {
-     $d = [];
-     
-     return $d;
- }
- 
- /**
-  * 网络资源搜索源二(5条线路)
-  * 每个线路只取第一个
-  * @return array
-  */
- function source2($title)
- {
-     $urlDefault = "http://s.kkkob.com"; //http://s.kkkob.com
-     $url2 = [];
-     $res = curlHelper($urlDefault."/v/api/getToken", "GET")['body'];
-     $res = json_decode($res, true);
-     $token = $res['token'] ?? '';
-     if(empty($token)){
-         return $url2;
-     }
-     
-     $urlData = array(
-         'name' => $title, 
-         'token' => $token
-     );
-     $urlHeader = array('Content-Type: application/json');
-     // 定义正则表达式模式
-     $pattern = '/https:\/\/pan\.quark\.cn\/[^\s]*/';
-     
-     //线路2
-     $res = curlHelper($urlDefault."/v/api/getJuzi", "POST", json_encode($urlData), $urlHeader)['body'];
-     $res = json_decode($res, true);
-     if (!empty($res['list'] ?? [])) {
-         foreach ($res['list'] as $key => $value) {
-             if(preg_match($pattern, $value['answer'], $matches)){
-                 // 匹配成功，$matches[0] 包含了匹配到的链接
-                 $link = $matches[0];
-                 $url2[] = [
-                     'title' => preg_replace('/\s*[\(（]?(夸克)?[\)）]?\s*/u', '', $value['question']),
-                     'url' => $link
-                 ];
-                 break;
-             }
-         }
-     }
-     
-     if(!empty($url2)){
-         return $url2;
-     }
-     
-     //线路4
-     $res = curlHelper($urlDefault."/v/api/getXiaoyu", "POST", json_encode($urlData), $urlHeader)['body'];
-     $res = json_decode($res, true);
-     if (!empty($res['list'] ?? [])) {
-         foreach ($res['list'] as $key => $value) {
-             if(preg_match($pattern, $value['answer'], $matches)){
-                 // 匹配成功，$matches[0] 包含了匹配到的链接
-                 $link = $matches[0];
-                 $url2[] = [
-                     'title' => preg_replace('/\s*[\(（]?(夸克)?[\)）]?\s*/u', '', $value['question']),
-                     'url' => $link
-                 ];
-                 break;
-             }
-         }
-     }
-     
-     
-     // //线路1
-     // $res = curlHelper($urlDefault."/v/api/search", "POST", json_encode($urlData), $urlHeader)['body'];
-     // $res = json_decode($res, true);
-     // if (!empty($res['list'] ?? [])) {
-     //     $item = $res['list'][0];
-     //     // 使用正则表达式进行匹配
-     //     if (preg_match($pattern, $item['answer'], $matches)) {
-     //         // 匹配成功，$matches[0] 包含了匹配到的链接
-     //         $link = $matches[0];
-     //         $url2[] = [
-     //             'title' => '①'.preg_replace('/\s*[\(（]?(夸克)?[\)）]?\s*/u', '', $item['question']),
-     //             'url' => $link
-     //         ];
-     //     }
-     // }
-     
-     return $url2;
- }
- 
- 
- /**
-  * 网络资源搜索源三
-  * @return array
-  */
- function source3($title)
- {
-     $url3 = [];
-     $url = 'https://www.qileso.com/tag/quark?s='.$title;
-     $dom = getDom($url);
-     $finder = new DomXPath($dom);
-     // 查询class值为list-group post-list mt-3的元素
-     $nodes =$finder->query("//*[contains(concat(' ', normalize-space(@class), ' '), ' list-group post-list mt-3 ')]//a");
-     
-     if ($nodes->length > 0) {
-         $firstNode =$nodes->item(0);
-         $href = $firstNode->getAttribute('href');
-         
-         $dom = getDom($href);
-         $finder = new DomXPath($dom);
-         
-         // 查询包含特定前缀的href属性的所有<a>标签
-         $nodes =$finder->query("//@*[starts-with(., 'https://pan.quark.cn/s/')]");
-         if ($nodes->length > 0) {
-             $firstNode =$nodes->item(0);
-             $value = $firstNode->value;
-             
-             // 查询<title>元素
-             $nodes =$finder->query("/html/head/title");
-             
-             if ($nodes->length > 0) {
-                 $titleNode =$nodes->item(0);
-                 $titleText =$titleNode->textContent;
-                 // 去掉 " - 奇乐搜" 部分
-                 $title = preg_replace('/ - 奇乐搜|网盘|夸克/', '', $titleText);
-             }
-             
-             $url3[] = [
-                 'title' => '②'.$title,
-                 'url' => $value
-             ];
-         }
-     }
-     
-     return $url3;
- }
- 
- 
- /**
-  * 网络资源搜索源四
-  * @return array
-  */
- function source4($title)
- {
-     $url = 'https://www.pansearch.me/search?keyword='.urlencode($title).'&pan=quark';
-     $dom = getDom($url);
-     $finder = new DomXPath($dom);
-     
-     // 使用 XPath 查询选择具有特定类名的元素
-     $nodes =$finder->query('//div[contains(concat(" ", normalize-space(@class), " "), " whitespace-pre-wrap ") and contains(concat(" ", normalize-space(@class), " "), " break-all ")]');
- 
-     $results = [];
-     foreach ($nodes as $node) {
-         // 获取元素的内容，包括其子元素
-         $content = $node->textContent;
-         
-         // Initialize an associative array to store parsed data
-         $parsedItem = [
-             'title' => '',
-             'url' => ''
-         ];
- 
-         // Use regular expressions to extract the title and url
-         if (preg_match('/名称：(.*?)\n\n描述：/s', $content, $titleMatch)) {
-             $parsedItem['title'] = '「推荐」'.trim($titleMatch[1]);
-         }
- 
-         if (preg_match('/链接：(https:\/\/pan\.quark\.cn\/s\/[a-zA-Z0-9]+)/', $content, $urlMatch)) {
-             $parsedItem['url'] = trim($urlMatch[1]);
-         }
- 
-         if ($parsedItem['title'] && $parsedItem['url']) {
-            //  $results[] = $parsedItem;
-             if (strpos($parsedItem['title'], $title) !== false || strpos($title, $parsedItem['title']) !== false) {
-                $results[] = $parsedItem;
-            }
-         }
-         
-         if (count($results) >= 3) {
-             break;
-         }
-     }
-     
-     return $results;
- }
-
-
- /**
- * 网络资源搜索源五----音乐资源
- * @return array
- */
-function source5($title)
+* @return array
+*/
+function source1($title)
 {
-    $results = [];
-    $title = str_replace("音乐", "", $title);
-    $url = 'https://www.yym4.com/search/'.urlencode($title);
+    $urlDefault = "https://m.kkkba.com"; //http://s.kkkob.com
+    $url2 = [];
+     
+    try {
+        $res = curlHelper($urlDefault."/v/api/getToken", "GET", null, [], "", "", 5)['body'];
+    } catch (Exception $err ) {
+         return $url2;
+    }
+    
+    $res = json_decode($res, true);
+    $token = $res['token'] ?? '';
+    if(empty($token)){
+        return $url2;
+    }
+     
+    $urlData = array(
+        'name' => $title, 
+        'token' => $token
+    );
+    $urlHeader = array('Content-Type: application/json');
+    // 定义正则表达式模式
+    $pattern = '/https:\/\/pan\.quark\.cn\/[^\s]*/';
+
+    // 线路 API 列表
+    $apiList = [
+        "/v/api/getJuzi",
+        "/v/api/search",
+        "/v/api/getXiaoyu",
+        "/v/api/getDJ"
+    ];
+    
+    foreach ($apiList as $api) {
+        $res = curlHelper($urlDefault . $api, "POST", json_encode($urlData), $urlHeader)['body'];
+        $res = json_decode($res, true);
+        if (!empty($res['list'] ?? [])) {
+            foreach ($res['list'] as $value) {
+                if (preg_match($pattern, $value['answer'], $matches)) {
+                    $link = $matches[0];
+                    $url2[] = [
+                        'title' => preg_replace('/\s*[\(（]?(夸克|百度)?[\)）]?\s*/u', '', $value['question']),
+                        'url' => $link
+                    ];
+                }
+            }
+        }
+    }
+    return $url2;
+}
+ 
+/**
+ * 网络资源搜索源二
+* @return array
+*/
+function source2($title)
+{
+    $url = 'https://www.pansearch.me/search?keyword='.urlencode($title).'&pan=quark';
     $dom = getDom($url);
     $finder = new DomXPath($dom);
     
     // 使用 XPath 查询选择具有特定类名的元素
-    $nodes =$finder->query('//span[@class="search_result_item_dl_btn"]/a[@class="a-no-white"]');
-    // 检查是否有匹配的节点
-    if ($nodes->length > 0) {
-        // 获取第一个匹配的链接的 href 属性
-        $firstLink = $nodes->item(0)->getAttribute('href');
-        // echo "第一个链接: " . $firstLink;
-        $detailUrl = 'https://www.yym4.com'.$firstLink;
-        $dom = getDom($detailUrl);
-        $finder = new DomXPath($dom);
-        // 使用 XPath 获取网盘链接（详情页中的链接）
-        $panLinkNodes = $finder->query('//div[@class="detail_dl_btn"]/a[starts-with(@href, "https://pan.quark.cn")]');
-        // 获取名称
-        $nameNode = $finder->query('//div[@class="detail_info_detail_name"]');
+    $nodes =$finder->query('//div[contains(concat(" ", normalize-space(@class), " "), " whitespace-pre-wrap ") and contains(concat(" ", normalize-space(@class), " "), " break-all ")]');
+
+    $results = [];
+    foreach ($nodes as $node) {
+        // 获取元素的内容，包括其子元素
+        $content = $node->textContent;
         
+        // Initialize an associative array to store parsed data
         $parsedItem = [
             'title' => '',
             'url' => ''
         ];
-        
-        // 检查是否找到网盘链接
-        if ($panLinkNodes->length > 0) {
-            // 获取第一个网盘链接的 href 属性
-            $panLink = $panLinkNodes->item(0)->getAttribute('href');
-            $parsedItem['url'] = $panLink;
+
+        // Use regular expressions to extract the title and url
+        if (preg_match('/名称：(.*?)\n\n描述：/s', $content, $titleMatch)) {
+            $parsedItem['title'] = trim($titleMatch[1]);
+        } else {
+            $parsedItem['title'] = $title;
         }
-        
-        
-        if ($nameNode->length > 0) {
-            // 获取名称
-            $name = $nameNode->item(0)->nodeValue;
-            $parsedItem['title'] = '「音乐」'.$name;
+
+        // 定义不同类型的链接匹配规则（百度网盘包含提取码）
+        $pattern = '/https:\/\/pan\.quark\.cn\/s\/[a-zA-Z0-9]+/'; // 夸克
+
+        // 提取下载链接
+        if (preg_match($pattern, $content, $urlMatch)) {
+            $parsedItem['url'] = trim($urlMatch[0]);
         }
-        
+
         if ($parsedItem['title'] && $parsedItem['url']) {
+        //  $results[] = $parsedItem;
             if (strpos($parsedItem['title'], $title) !== false || strpos($title, $parsedItem['title']) !== false) {
                 $results[] = $parsedItem;
             }
         }
         
+        if (count($results) >= 3) {
+            break;
+        }
     }
     
     return $results;
