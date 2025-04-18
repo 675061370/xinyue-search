@@ -329,6 +329,26 @@
     }
         
     
-    
-  
+    .switch-items {
+        gap: 4.2vw;
+        padding-top: 20vw;
+    }
+    .switch-items a {
+        font-size: 3.8vw;
+    }
+
+    .btns2 {
+        height: 8.2vw;
+        line-height: 8.2vw;
+        font-size: 3.4vw;
+        width: 25vw;
+        bottom: 4vw;
+    }
+    .listBox .left .Ebox .list .item:last-child .btns2{
+        bottom: 0;
+    }
+
+    .dialogUrlBox{
+        width: 90vw;
+    }
 }

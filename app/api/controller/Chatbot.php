@@ -95,21 +95,21 @@ class Chatbot extends QfShop
             $is_times = 0;
             if (!empty($list)) {
                 foreach ($list as $item) {
-                    $content = $content . "\n";
+                    $content = $content . "\n　\n";
                     if(!empty($item['is_time']) && $item['is_time'] == 1){
                         $content = $content . "\n🌐️ " . $item['title'] . "\n<a href='" . $item['url'] . "'>" . $item['url'] . "</a>";
                         $is_times++;
                     }else{
-                       $content = $content . "\n" . $item['title'] . "\n<a href='" . $item['url'] . "'>" . $item['url'] . "</a>"; 
+                    $content = $content . "\n" . $item['title'] . "\n<a href='" . $item['url'] . "'>" . $item['url'] . "</a>"; 
                     }
                 }
-                $content = $content . "\n";
+                $content = $content . "\n　\n";
                 if($is_times>0){
-                    $content = $content . "\n🌐️ 资源来源网络，30分钟后删除";
-                }else if(!empty($newString)){ 
-                    $content = $content . "\n 不是短剧？请尝试：<a href='weixin://bizmsgmenu?msgmenucontent=全网搜".$newString."&msgmenuid=全网搜".$newString."'>全网搜".$newString."</a>";
+                    $content = $content . "🌐️ 资源来源网络，30分钟后删除";
+                }else if(!empty($newString)){
+                    $content = $content . "不是短剧？请尝试：<a href='weixin://bizmsgmenu?msgmenucontent=全网搜".$newString."&msgmenuid=全网搜".$newString."'>全网搜".$newString."</a>";
                 }
-                $content = $content . "\n ------------------------------------------------";
+                // $content = $content . "\n ------------------------------------------------";
                 $content = $content . "\n 欢迎观看！如果喜欢可以喊你的朋友一起来哦";
             } else {
                 // 如果没有找到匹配的剧名，提示用户减少关键词尝试搜索
@@ -117,7 +117,6 @@ class Chatbot extends QfShop
                 $content = $content . "\n 未找到，可换个关键词尝试哦~";
                 $content = $content . "\n ⚠️宁少写，不多写、错写~";
             }
-            
             $this->sendMessage($msg, $content);
         }
         

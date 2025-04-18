@@ -1,9 +1,9 @@
-{include file="common/header"}
+{include file="news/common/header"}
 </head>
 <body>
     <div class="headBg" style="background-image: url({$config.home_bg});"></div>
     <div id="app" v-cloak>
-        {include file="common/head"}
+        {include file="news/common/head"}
         <div class="searchBox searchDetail">
             <div class="search">
                 <input type="text" v-model="keyword" placeholder="输入关键字进行搜索" @keyup.enter="searchBtn" confirm-type="search" @confirm="searchBtn">
@@ -49,7 +49,7 @@
                     <div class="cat">
                         <div class="l">资源类型</div>
                         <div class="r">
-                            <img src="/static/index/images/{$detail.is_type}.png" class="icon" alt="网盘图标" />
+                            <img src="__STATIC__/news/common/static/images/{$detail.is_type}.png" class="icon" alt="网盘图标" />
                             {if condition="$detail.is_type==1"}
                             <span>阿里云盘</span>
                             {elseif condition="$detail.is_type==2"/}
@@ -63,10 +63,10 @@
                             {/if}
                         </div>
                     </div>
-                    <div class="cat">
+                    <div class="cat" v-show="pc_type!=2">
                         <div class="l">资源地址</div>
                         <div class="r">
-                            <a href="{$detail.url}" target="_blank">{$detail.url}</a>
+                            <a href="javascript:;" onclick="linkBtn()" class="btn">{$detail.url}</a>
                         </div>
                     </div>
                     {notempty name="detail.code"}
@@ -76,8 +76,8 @@
                     </div>
                     {/notempty}
                     <div class="btns">
-                        <div class="btn btnCol" @click.stop="copyText($event,'{$detail.title|trim}','{$detail.url}','{$detail.code}')"><i class="iconfont icon-fenxiang1"></i>复制分享</div>
-                        <a  href="{$detail.url}" target="_blank" class="btn"><i class="iconfont icon-yun_o"></i>立即访问</a>
+                        <div class="btn" @click.stop="copyText($event,'{$detail.title|trim}','{$detail.url}','{$detail.code}')"><i class="iconfont icon-fenxiang1"></i>复制分享</div>
+                        <a class="btn btnCol" href="javascript:;" onclick="linkBtn()"><i class="iconfont icon-yun_o"></i>立即访问</a>
                     </div>
                 </div>
                 <h3 class="samelistNav">相关资源</h3>
@@ -117,9 +117,9 @@
                 {/volist}
             </div>
         </div>
-        {include file="common/foot"}
+        {include file="news/common/foot"}
     </div>
-    {include file="common/footer"}
+    {include file="news/common/footer"}
     <script type="text/javascript" charset="utf-8">
         app.rankList = JSON.parse('<?php echo json_encode($rankList, JSON_UNESCAPED_UNICODE); ?>');
         for (const item of app.rankList) {
@@ -128,6 +128,30 @@
                   channel: item.name
                 }
             })
+        }
+
+        function linkBtn() {
+            var item = JSON.parse('<?php echo json_encode($detail, JSON_UNESCAPED_UNICODE); ?>');
+            if(app.pc_type == 1){
+                window.open(item.url);
+            }else{
+                item.showUrl = item.url
+                app.dialogUrl = true;
+                showUrlFun(item);
+            }
+        }
+
+        function showUrlFun(item) {
+            app.dialogItem = item
+            if(item.showUrl) {
+                var canvas = qrcanvas.qrcanvas({
+                    data: item.showUrl,
+                    size: 120
+                });
+                setTimeout(() => {
+                    document.getElementById('qrcode').appendChild(canvas);
+                }, 200);
+            }
         }
     </script>
 </body>

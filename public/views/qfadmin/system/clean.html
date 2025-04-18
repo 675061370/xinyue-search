@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>{$node.node_title}</title>
+    {include file="common/header"/}
+    <el-card class="box-card" shadow="never">
+        <div slot="header" class="clearfix">
+            <span>系统数据清理</span>
+        </div>
+        <div class="text item">
+            <!-- <el-card class="box-card">
+                <div slot="header" class="clearfix">
+                    <span>清理授权记录</span>
+                </div>
+                <div style="margin-bottom: 20px;font-size:14px;color:#666;">
+                    用户组授权信息清理为
+                    <font color=orangered>不可逆操作</font>，请谨慎操作！<br> 清理完毕后，除超级管理用户组外，其他任何用户组将无法访问系统任何功能！
+                    <br> 建议仅在用户组权限混乱或出现其他账号安全问题时进行清理操作。
+                    <br> 清理成功后可重新对用户组进行权限授权，即可恢复正常使用。
+                </div>
+                <el-button type="danger" @click="clearAuth">清理授权</el-button>
+            </el-card>
+            <br> -->
+            <el-card class="box-card">
+                <div slot="header" class="clearfix">
+                    <span>清除缓存</span>
+                </div>
+                <div style="margin-bottom: 20px;font-size:14px;color:#666;">
+                    清除缓存
+                    <font color=orangered>不可逆操作</font>
+                </div>
+                <el-button type="danger" @click="clearLog">清除缓存</el-button>
+            </el-card>
+        </div>
+    </el-card>
+    {include file="common/footer"/}
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data() {
+                return {};
+            },
+            methods: {
+                clearLog() {
+                    var that = this;
+                    this.$confirm('即将清除缓存, 是否确认?', '删除日志', {
+                        confirmButtonText: '删除',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(() => {
+                        axios.post('/admin/system/clean', Object.assign({}, PostBase))
+                            .then(function (response) {
+                                if (response.data.code == CODE_SUCCESS) {
+                                    that.$message({
+                                        message: response.data.message,
+                                        type: 'success'
+                                    });
+                                } else {
+                                    that.$message.error(response.data.message);
+                                }
+                            })
+                            .catch(function (error) {
+                                that.$message.error('服务器内部错误');
+                                console.log(error);
+                            });
+                    }).catch(() => {
+                    });
+                },
+                // clearAuth() {
+                //     var that = this;
+                //     this.$confirm('即将删除授权信息, 是否确认?', '清空授权', {
+                //         confirmButtonText: '删除',
+                //         cancelButtonText: '取消',
+                //         type: 'warning'
+                //     }).then(() => {
+                //         axios.post('/admin/auth/clean', Object.assign({}, PostBase))
+                //             .then(function (response) {
+                //                 if (response.data.code == CODE_SUCCESS) {
+                //                     that.$message({
+                //                         message: response.data.message,
+                //                         type: 'success'
+                //                     });
+                //                 } else {
+                //                     that.$message.error(response.data.message);
+                //                 }
+                //             })
+                //             .catch(function (error) {
+                //                 that.$message.error('服务器内部错误');
+                //                 console.log(error);
+                //             });
+                //     }).catch(() => {
+                //     });
+                // },
+            }
+        })
+    </script>
+
+
+</html>

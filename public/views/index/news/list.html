@@ -1,0 +1,295 @@
+{include file="news/common/header"}
+</head>
+<body>
+    <div class="headBg" style="background-image: url({$config.home_bg});"></div>
+    <div id="app" v-cloak>
+        {include file="news/common/head"}
+        <div class="searchBox searchList">
+            <div class="search">
+                <div class="select" @click="selectBtn" v-if="currentSource === 1">
+                    <span>{{is_type==2?'百度':'夸克'}}</span>
+                    <i class="iconfont icon-xiala" style="font-size: 3vw"></i>
+                </div>
+                <div class="select" @click="selectBtn" v-else>
+                    {if condition="$category_id == ''"}全部{/if}
+                    {foreach $category as $key=>$vo }
+                        {if condition='$category_id == $vo.id'}{$vo.name}{/if}
+                    {/foreach}
+                    <i class="iconfont icon-xiala" style="font-size: 3vw"></i>
+                </div>
+                <input type="text" v-model="keyword" placeholder="输入关键字进行搜索" @keyup.enter="searchBtn" confirm-type="search" @confirm="searchBtn">
+                <div class="btn" @click="searchBtn">
+                    <i class="iconfont icon-sousuo"></i>
+                </div>
+            </div>
+        </div>
+        <div class="listBox">
+            <div class="screen">
+                <div class="fixed">
+                    <h3>筛选</h3>
+                    <div class="box" v-if="currentSource === 1">
+                        <a href="javascript:;" :class="{active: is_type==0}" onclick="setType(0)">夸克网盘</a>
+                        <a href="javascript:;" :class="{active: is_type==2}" onclick="setType(2)">百度网盘</a>
+                    </div>
+                    <div class="box" v-else>
+                        <a href="/s/{$keyword}.html" class="{eq name="category_id" value=""}active{/eq}">全部</a>
+                        {foreach $category as $key=>$vo }
+                        <a href="/s/{$keyword}-1-{$vo.id}.html" class="{if condition='$category_id == $vo.id'}active{/if}">{$vo.name}</a>
+                        {/foreach}
+                    </div>
+                </div>
+            </div>
+            <div class="left">
+                {if condition="$config.is_quan == 1"}
+                <div class="source-switch">
+                    <h3>切换搜索源：</h3>
+                    <div class="switch-items">
+                        <a href="javascript:;" onclick="switchSource(0)" :class="{active: currentSource==0}">本地搜</a>
+                        <a href="javascript:;" onclick="switchSource(1)" :class="{active: currentSource==1}">全网搜</a>
+                    </div>
+                </div>
+                {else /}
+                <h3 v-if="total_result>0">为您找到【<span>{$keyword}</span>】相关资源<span>&nbsp;{{total_result}}&nbsp;</span>条</h3>
+                <h3 v-else>为您找到【<span>{$keyword}</span>】相关资源<span>&nbsp;{$list.total_result}&nbsp;</span>条</h3>
+                {/if}
+
+                <div class="box" v-show="currentSource === 0">
+                    {if condition="$list.total_result>0"}
+                    {if condition="$config.is_quan == 1"}
+                        <div class="Qbtn">
+                            <div class="btn">
+                                <p v-if="total_result>0">为您找到【<span>{$keyword}</span>】相关资源<span>&nbsp;{{total_result}}&nbsp;</span>条</p>
+                                <p v-else>为您找到【<span>{$keyword}</span>】相关资源<span>&nbsp;{$list.total_result}&nbsp;</span>条</p>
+                            </div>
+                        </div>
+                    {/if}
+                    <div class="list">
+                        {foreach $list.items as $key=>$vo }
+                        <div class="item">
+                            <a href="javascript:;" onclick="linkBtn(this)" data-index="{$key}" class="title">
+                                {$vo.name|raw}
+                            </a>
+                            <!-- <div class="type cate">分类：{$vo.category.name|default='其它'}</div> -->
+                            <div class="type time">{$vo.times}</div>
+                            <div class="type">
+                                {if condition="$vo.is_type==1"}
+                                <span>来源：阿里云盘</span>
+                                {elseif condition="$vo.is_type==2"/}
+                                <span>来源：百度网盘</span>
+                                {elseif condition="$vo.is_type==3"/}
+                                <span>来源：UC网盘</span>
+                                {elseif condition="$vo.is_type==4"/}
+                                <span>来源：迅雷网盘</span>
+                                {else /}
+                                <span>来源：夸克网盘</span>
+                                {/if}
+                                {notempty name="vo.code"}
+                                <span>提取码：<span>{$vo.code}</span></span>
+                                {/notempty}
+                            </div>
+                            <div class="btns">
+                                <div class="btn" @click.stop="copyText($event,'{$vo.title|trim}','{$vo.url}','{$vo.code}')"><i class="iconfont icon-fenxiang1"></i>复制分享</div>
+                                <a href="/d/{$vo.id}.html" class="btn"><i class="iconfont icon-fangwen"></i>查看详情</a>
+                                <a href="javascript:;" onclick="linkBtn(this)" data-index="{$key}" class="btn">
+                                    <img src="__STATIC__/news/common/static/images/{$vo.is_type}.png" class="icon" alt="立即访问" />
+                                    立即访问
+                                </a>
+                            </div>
+                        </div>
+                        {/foreach}
+                    </div>
+                    <div class="page">
+                        {notempty name="list.total_result"}
+                        <el-pagination background layout="prev, pager, next" :pager-count="3" :default-current-page="{$page_no}" :default-page-size="{$page_size}" :total="{$list.total_result}" @change="changeBtn"></el-pagination>
+                        {/notempty}
+                    </div>
+                    {else /}
+                    <el-empty style="margin-top: 10%;" :image-size="200" image="{$config.search_bg??''}" description="{$config.search_tips|default='未找到，可换个关键词尝试哦~'}">
+                        {if condition="$config.is_quan == 1"}
+                        <div class="vtips" onclick="switchSource(1)">请尝试切换&nbsp;“<a href="javascript:;">全网搜</a>”&nbsp;获取资源</div>
+                        {/if}
+                    </el-empty>
+                    {/if}
+                </div>
+
+                <div class="Ebox" v-show="currentSource === 1">
+                    <div class="Qloading" v-if="QLoading">
+                        <div class="loader"></div>
+                    </div>
+                    <div class="Qbtn">
+                        <div class="btn">
+                            <p>为您找到【<span>{$keyword}</span>】相关资源<span>&nbsp;{{QList.length}}&nbsp;</span>条</p>
+                        </div>
+                    </div>
+                    <div class="list">
+                        <div class="item" v-for="(item,index) in QList" :key="index">
+                            <a href="javascript:;" onclick="getUrlBtn(this)" :data-index="index" class="title">
+                                {{item.title}}
+                            </a>
+                            <div class="type">
+                                <span v-if="item.is_type==1">来源：阿里云盘</span>
+                                <span v-else-if="item.is_type==2">来源：百度网盘</span>
+                                <span v-else-if="item.is_type==3">来源：UC网盘</span>
+                                <span v-else-if="item.is_type==4">来源：迅雷网盘</span>
+                                <span v-else>来源：夸克网盘</span>
+                            </div>
+                            <div class="btns2" onclick="getUrlBtn(this)" :data-index="index">
+                                获取资源
+                            </div>
+                        </div>
+                    </div>
+
+                    <block v-if="!QLoading && QList.length==0">
+                        <el-empty style="margin-top: 10%;" :image-size="200" image="{$config.search_bg??''}" description="{$config.search_tips|default='未找到，可换个关键词尝试哦~'}">
+                            {if condition="$config.is_quan == 1"}
+                            <div class="vtips" onclick="switchSource(0)">请尝试切换&nbsp;“<a href="javascript:;">本地搜</a>”&nbsp;获取资源</div>
+                            {/if}
+                        </el-empty>
+                    </block>  
+                </div>
+            </div>
+            <div class="right">
+                {volist name="hotList" id="vo"}
+                    <div class="nav">
+                        {notempty name="vo.image"}
+                        <img src="{$vo.image}" alt="{$vo.name}">
+                        {/notempty}
+                        {$vo.name}
+                    </div>
+                    <div class="box">
+                        <div class="list">
+                            {volist name="vo.list" id="vos" length="5"}
+                            <a href="/s/{$vos.title}.html" class="item">
+                                <p>
+                                    <span>{$key+1}</span>
+                                    {$vos.title}
+                                </p>
+                            </a>
+                            {/volist}
+                        </div>
+                    </div>
+                {/volist}
+            </div>
+        </div>
+        {include file="news/common/foot"}
+    </div>
+    {include file="news/common/footer"}
+    <script type="text/javascript" charset="utf-8">
+        app.rankList = JSON.parse('<?php echo json_encode($rankList, JSON_UNESCAPED_UNICODE); ?>');
+        for (const item of app.rankList) {
+            axios.get('/api/tool/ranking',{
+                params: {
+                    channel: item.name
+                }
+            })
+        }
+
+        function linkBtn(element) {
+            const index = element.getAttribute('data-index');
+            const list = JSON.parse('<?php echo json_encode($list["items"], JSON_UNESCAPED_UNICODE); ?>');
+            const item = list[index];
+            if(app.pc_type == 1){
+                window.open(item.url);
+            }else{
+                item.showUrl = item.url
+                app.dialogUrl = true;
+                showUrlFun(item);
+            }
+        }
+
+        function getUrlBtn(element) {
+            app.dialogUrl = true;
+            const index = element.getAttribute('data-index');
+            const item = app.QList[index];
+            if(item.url.startsWith('http')) {
+                item.showUrl = item.url
+                showUrlFun(item);
+            }else{
+                app.dialogLoading = true;
+                axios.post('/api/other/save_url',{
+                    url: encodeURIComponent(item.url),
+                    title: item.title
+                }).then(res => {
+                    if(res.data.code == 200) {
+                        item.url = res.data.data.url
+                        item.showUrl = res.data.data.url
+                    }else{
+                        item.showUrl = ''
+                        item.message = res.data.message
+                    }
+                    app.dialogLoading = false;
+                    showUrlFun(item)
+                })
+                .catch(err => {
+                    app.dialogLoading = false
+                })
+            }
+        }
+
+        function showUrlFun(item) {
+            app.dialogItem = item
+            if(item.showUrl) {
+                var canvas = qrcanvas.qrcanvas({
+                    data: item.showUrl,
+                    size: 120
+                });
+                setTimeout(() => {
+                    document.getElementById('qrcode').appendChild(canvas);
+                }, 200);
+            }
+        }
+
+        let cancelSource = null;
+        function setType(type) {
+            app.selectBtn()
+            if(type == app.is_type) return
+            app.is_type = type;
+            app.QLoading = false
+            app.QList = []
+            switchSource(1)
+        }
+        function switchSource(source) {
+            app.currentSource = source;
+            if(app.currentSource == 1){
+                if(app.QLoading || app.QList.length>0) return
+
+                if (cancelSource) {
+                    cancelSource.cancel('用户切换了数据源，取消上次请求');
+                    setTimeout(() => {
+                        app.QLoading = true
+                    }, 100);
+                }
+                cancelSource = axios.CancelToken.source();
+                
+                app.QLoading = true
+                
+                // search1线路 有5个接口
+                const searchTypes = [1, 2, 3, 4, 5];
+                const promises = [
+                    ...searchTypes.map(num => searchRequest('search1', num)),
+                    searchRequest('search2')
+                ];
+                Promise.all(promises)
+                    .then(() => {
+                        app.QLoading = false
+                    })
+            }
+        }
+        function searchRequest(api, num = null) {
+            const params = {
+                title: app.keyword,
+                is_type: app.is_type,
+            }
+            if(num) params.num = num
+            
+            return axios.post(`/api/other/${api}`, params, {
+                    cancelToken: cancelSource.token  // 直接用全局变量
+                })
+                .then(res => {
+                    app.QList = app.QList.concat(res.data.data)
+                })
+        }
+        
+    </script>
+</body>
+</html>

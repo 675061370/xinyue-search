@@ -184,7 +184,8 @@ class BaiduPan extends BasePan
 
          // 创建分享
         $expiry = 0; // 0为永久
-        $password = substr(str_shuffle('abcdefghijklmnopqrstuvwxyz'), 0, 4); // 随机4位提取码
+        // $password = substr(str_shuffle('abcdefghijklmnopqrstuvwxyz'), 0, 4); // 随机4位提取码
+        $password = '6666'; // 随机4位提取码
         $shareLink = $network->createShare(implode(',', $fsIdList), $expiry, $password);
 
         if (is_numeric($shareLink)) {

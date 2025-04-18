@@ -1,6 +1,7 @@
-<script src="/static/index/js/vue.global.min.js"></script>
-<script src="/static/index/js/index.full.min.js"></script>
-<script src="/static/index/js/axios.min.js"></script>
+<script src="__STATIC__/news/common/static/js/vue.global.min.js"></script>
+<script src="__STATIC__/news/common/static/js/index.full.min.js"></script>
+<script src="__STATIC__/news/common/static/js/axios.min.js"></script>
+<script src="__STATIC__/news/common/static/js/qrcanvas@3.js"></script>
 <script>
     const { createApp, ref, onMounted, onUnmounted } = Vue;
     const { ElButton, ElMessage  } = ElementPlus;
@@ -19,10 +20,15 @@
             const rankDj = ref([]);
             const is_m = ref(0);
             const newList = ref([]);
-            const QStatus = ref(0);
             const QList = ref([]);
             const QLoading = ref(false);
             const total_result = ref(0);
+            const currentSource = ref(0);
+            const dialogUrl = ref(false);
+            const dialogLoading = ref(false);
+            const dialogItem = ref({});
+            const is_type = ref(0);
+            const pc_type = ref(0);
             
             
             // 公共消息方法
@@ -102,7 +108,7 @@
                 event.preventDefault();
                 var text = '标题：'+title+'\n链接：'+url
                 if (code) text += `\n提取码：${code}`;
-                text += `\n由【${'{$config.app_name}'}${window.location.hostname}】供网盘分享链接`;
+                text += `\n由【${'{$config.app_name}'}${window.location.hostname}】提供网盘分享链接`;
                 
                 
                 try {
@@ -135,12 +141,13 @@
             }
             
             const selectBtn = () => {
+                if(!is_m.value) return;
                 const boxElement = document.querySelector('.listBox .screen .fixed .box');
                 // 切换 display 属性，显示或隐藏
                 if (boxElement.style.display === 'none' || boxElement.style.display === '') {
                     boxElement.style.display = 'block'; // 显示
                 } else {
-                    boxElement.style.display = 'none'; // 隐藏
+                    boxElement.style.display = ''; // 隐藏
                 }
             }
             
@@ -149,9 +156,11 @@
                 if (isMobile) {
                     // 手机端的逻辑
                     is_m.value = 1
+                    pc_type.value = 1
                 } else {
                     // 电脑端的逻辑
                     is_m.value = 0
+                    pc_type.value = '{$config.pc_type}';
                 }
             };
 
@@ -171,7 +180,7 @@
             });
 
             // 返回数据和方法
-            return { elementOpacity, scrollThreshold, keyword, searchBtn, rankList,newList, setnum, qcodeVisible, layerVisible, content, saveBtn, rankDj,goLink,changeBtn,copyText,drawer,selectBtn,is_m,QList,QLoading,QStatus,total_result };
+            return { elementOpacity, scrollThreshold, keyword, searchBtn, rankList,newList, setnum, qcodeVisible, layerVisible, content, saveBtn, rankDj,goLink,changeBtn,copyText,drawer,selectBtn,is_m,QList,QLoading,total_result,currentSource,dialogUrl,dialogLoading,dialogItem,is_type,pc_type };
         }
     })
     .use(ElementPlus) // 使用 Element Plus

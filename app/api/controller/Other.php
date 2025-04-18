@@ -16,6 +16,175 @@ class Other extends QfShop
         parent::__construct($app);
         $this->model = new SourceModel();
     }
+
+    public function search1()
+    {
+        $searchdata = input('');
+        if (empty($title)) {
+            if (empty($searchdata['title'])) {
+                return jerr("请输入名称");
+            }
+            $title = $searchdata['title'];
+        }
+        $apiType = $searchdata['num']??0;
+        $is_type = $searchdata['is_type']??0;
+        
+        
+        $searchList = []; // 查询的结果集
+        $num_total = 10; // 最多想要几条结果
+        $num_success = 0;
+        
+        $sources = ['source1'];
+        
+        // 遍历所有源
+        foreach ($sources as $source) {
+            if ($num_success >= $num_total) {
+                break; // 有效结果数量已达到
+            }
+        
+            foreach ($source(Config('qfshop.is_quan_zc'),$title,$is_type,5,$apiType) as $value) {
+                if ($num_success >= $num_total) {
+                    break; // 有效结果数量已达到
+                }
+        
+                // 如果 URL 不存在则新增 $value
+                if (!$this->urlExists($searchList, $value['url'])) {
+                    $searchList[] = $value;
+                    $num_success++;
+                }
+            }
+        }
+
+        $searchList = array_map(function($value) {
+            $value['is_type'] = determineIsType($value['url']);
+            if(Config('qfshop.is_quan_type') != 1){
+                $value['url'] = encryptObject($value['url']);
+            }
+            return $value;
+        }, $searchList);
+        
+        return jok('网盘资源均来源于互联网，资源内容与本站无关', $searchList);
+    }
+    
+    public function search2()
+    {
+        $searchdata = input('');
+        if (empty($title)) {
+            if (empty($searchdata['title'])) {
+                return jerr("请输入名称");
+            }
+            $title = $searchdata['title'];
+        }
+        $is_type = $searchdata['is_type']??0;
+        
+        
+        $searchList = []; // 查询的结果集
+        $num_total = 10; // 最多想要几条结果
+        $num_success = 0;
+        
+        // 定义源的顺序
+        $sources = ['source2'];
+        
+        // 遍历所有源
+        foreach ($sources as $source) {
+            if ($num_success >= $num_total) {
+                break; // 有效结果数量已达到
+            }
+        
+            foreach ($source(Config('qfshop.is_quan_zc'),$title,$is_type) as $value) {
+                if ($num_success >= $num_total) {
+                    break; // 有效结果数量已达到
+                }
+        
+                // 如果 URL 不存在则新增 $value
+                if (!$this->urlExists($searchList, $value['url'])) {
+                    $searchList[] = $value;
+                    $num_success++;
+                }
+            }
+        }
+
+        $searchList = array_map(function($value) {
+            $value['is_type'] = determineIsType($value['url']);
+            if(Config('qfshop.is_quan_type') != 1){
+                $value['url'] = encryptObject($value['url']);
+            }
+            return $value;
+        }, $searchList);
+        
+        return jok('网盘资源均来源于互联网，资源内容与本站无关', $searchList);
+    }
+
+    /**
+     * 解密url并转存
+     * @return void
+     */
+    public function save_url()
+    {   
+        $value = [
+            'title'  => input('title', ''),
+            'url'    => urldecode(input('url', '')),
+            'stoken' => input('stoken', ''),
+        ];
+        $value['url'] = decryptObject($value['url']);
+        
+        if (empty($value['title']) || empty($value['url'])) {
+            return jerr("参数不对");
+        }
+
+        $map[] = ['status', '=', 1];
+        $map[] = ['is_delete', '=', 0];
+        $map[] = ['is_time', '=', 1];
+        $map[] = ['content', '=', $value['url']];
+            
+        $url = $this->model->where($map)->field('source_id as id, title, url')->find();
+        if (!empty($url)) {
+            $this->model->where('source_id', $url['id'])->update(['update_time' => time()]);
+            unset($url['id']);
+            return jok('临时资源获取成功', $url);
+        }
+
+        //同一个搜索内容锁机
+        $keys = $value['url'].'ACAA';
+        if (Cache::has($keys)) {
+            // 检查缓存中是否已有结果
+            return jok('临时资源获取成功', Cache::get($keys));
+        }
+
+        // 检查是否有正在处理的请求
+        if (Cache::has($keys . '_processing')) {
+            // 如果当前正在处理相同关键词的请求，等待结果
+            $startTime = time(); // 记录开始时间
+            while (Cache::has($keys . '_processing')) {
+                usleep(1000000); // 暂停1秒
+        
+                // 检查是否超过60秒
+                if (time() - $startTime > 60) {
+                    return jok('临时资源获取成功', []);
+                }
+            }
+            return jok('临时资源获取成功', Cache::get($keys));
+        }
+
+        // 设置处理状态为正在处理
+        Cache::set($keys . '_processing', true, 60); // 锁定60秒
+
+        $datas = [];
+        $num_total = 1;
+        $num_success = 0;
+        $res = $this->processUrl($value, $num_success, $datas, true);
+
+        Cache::delete($keys . '_processing'); // 解锁
+
+        if($res['code'] !== 200){
+            return jerr($res['message']);
+        }else{
+            $result['title'] = $res['data']['title'];
+            $result['url'] = $res['data']['url'];
+            Cache::set($keys, $result, 60); // 缓存结果60秒
+            return jok('临时资源获取成功', $result);
+        }
+    }
     
     /**
      * 全网搜索 该接口仅用于微信自动回复
@@ -79,7 +248,7 @@ class Other extends QfShop
                 break;
             }
     
-            foreach ($source($title) as $value) {
+            foreach ($source(true,$title) as $value) {
                 if ($num_success >= $num_total) {
                     break;
                 }
@@ -95,46 +264,6 @@ class Other extends QfShop
         Cache::delete($title . '_processing'); // 解锁
         
         return !empty($param) ? $datas : jok('临时资源获取成功', $datas);
-    }
-
-    /**
-     * 全网搜索 测试能不能拿到第三方数据
-     * 
-     * @return void
-     */
-    public function text_search($param='')
-    {
-        $title = $param ?: input('title', '');
-        if (empty($title)) {
-            return jerr("请输入要看的内容");
-        }
-        
-        $searchList = []; //查询的结果集
-        $datas = []; //最终数据
-        $num_total = 20; //最多想要几条结果
-        $num_success = 0;
-        
-        // 定义源的顺序
-        $sources = ['source1', 'source2'];
-        
-        foreach ($sources as $source) {
-            if ($num_success >= $num_total) {
-                break;
-            }
-    
-            foreach ($source($title) as $value) {
-                if ($num_success >= $num_total) {
-                    break;
-                }
-    
-                if (!$this->urlExists($searchList, $value['url'])) {
-                    $searchList[] = $value;
-                    $num_success++;
-                }
-            }
-        }
-        
-        return jok('网盘资源均来源于互联网，资源内容与本站无关', $searchList);
     }
     
     // 检查 URL 是否已存在（忽略查询参数）
@@ -161,17 +290,25 @@ class Other extends QfShop
      * 
      * @return void
      */
-    public function processUrl($value, &$num_success, &$datas) 
+    public function processUrl($value, &$num_success, &$datas, $type=false) 
     {
         $substring = strstr($value['url'], 's/');
         if ($substring === false) {
-            return; // 模拟 continue 行为
+            if($type){
+                return jerr2("资源地址格式有误");
+            }else{
+                return; // 模拟 continue 行为
+            }
         }
         
-        $pwd_id = substr($substring, 2); // 去除 's/' 部分
-    
+        $code = '';
+        if (preg_match('/\?pwd=([^,\s&]+)/',$value['url'], $pwdMatch)) {
+            $code = trim($pwdMatch[1]);
+        }
+        
         $urlData = array(
             'url' => $value['url'],
+            'code' => $code,
             'expired_type' => 2,
             'ad_fid' => '', //分享时带上这个文件
         );
@@ -180,7 +317,11 @@ class Other extends QfShop
         $res = $transfer->transfer($urlData);
 
         if($res['code'] !== 200){
-            return; // 模拟 continue 行为
+            if($type){
+                return jerr2($res['message']);
+            }else{
+                return; // 模拟 continue 行为
+            }
         }
     
         $patterns = '/^\d+\./';
@@ -189,6 +330,7 @@ class Other extends QfShop
         $data["title"] =$title;
         $data["url"] =$res['data']['share_url'];
         $data["is_type"] = determineIsType($data["url"]);
+        $data["content"] =$value['url'];
         $dataFid = $res['data']['fid']??'';
         $data["fid"] = is_array($dataFid) ? json_encode($dataFid) : $dataFid;
         $data["is_time"] = 1;
@@ -197,6 +339,10 @@ class Other extends QfShop
         $data["id"] = $this->model->insertGetId($data);
         $datas[] =$data;
         $num_success++;
+
+        if($type){
+            return jok2('转存成功',$data);
+        }
     }
     
     

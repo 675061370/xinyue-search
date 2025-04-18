@@ -54,6 +54,7 @@
 		<div class="vbtn" @click="saveBtn">提交</div>
 	</div>
 </el-dialog>
+
 <el-dialog
     v-model="drawer"
     width="300"
@@ -67,5 +68,36 @@
         <div class="item" @click="layerVisible = true">提交需求</div>
         {/empty}
         <div class="btns" v-html="`{$config.app_links}`"></div>
+    </div>
+</el-dialog>
+
+<el-dialog title="" v-model="dialogUrl" class="dialogUrlBox" :close-on-click-modal="false">
+    <div v-loading="dialogLoading" class="dialogUrl" v-if="dialogUrl">
+        <div v-if="dialogItem.showUrl">
+            <block v-show="pc_type!=1">
+                <div class="title">请使用 <span>夸克APP</span> 扫码获取</div>
+                <div class="tips">打开夸克APP- 点击搜索框中的相机 - 点击扫码</div>
+                <div class="qrcode" id="qrcode"></div>
+            </block>
+            <div class="nav">
+                <div class="item">
+                    <span class="t">{{dialogItem.title}}</span>
+                </div>
+                <div class="item" v-show="pc_type!=2">
+                    <span>资源地址：</span>
+                    <a :href="dialogItem.showUrl" target="_blank">{{dialogItem.showUrl}}</a>
+                </div>
+            </div>
+        </div>
+        <div v-else-if="!dialogLoading">
+            <div class="title">获取失败</div>
+            <div class="tips" style="color: #FF3F3D;">{{dialogItem.message}}</div>
+        </div>
+        <div class="statement">
+            <div class="content">
+                <p>🔔 声明：本站链接均由程序自动收集自公开网盘，不存储、不传播任何文件，跳转链接指向网盘官网。</p>
+                <p>文件内容请自行辨别，如发现违规请向网盘平台举报。本站仅供学习交流，无任何收费行为。</p>
+            </div>
+        </div>
     </div>
 </el-dialog>

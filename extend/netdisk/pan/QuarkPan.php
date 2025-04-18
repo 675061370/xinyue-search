@@ -59,6 +59,7 @@ class QuarkPan extends BasePan
             if($this->isType == 1){
                 $urls['title'] = $infoData['title'];
                 $urls['share_url'] = $this->url;
+                $urls['stoken'] = $infoData['stoken'];
                 return jok2('检验成功', $urls);
             }
             $stoken = $infoData['stoken'];
@@ -183,8 +184,17 @@ class QuarkPan extends BasePan
             'passcode' => '',
             'pwd_id' => $pwd_id,
         );
-        $res = curlHelper("https://drive-pc.quark.cn/1/clouddrive/share/sharepage/token?pr=ucpro&fr=pc&uc_param_str=", "POST",json_encode($urlData), $this->urlHeader)['body'];
-        return json_decode($res, true);
+        $queryParams = [
+            'pr' => 'ucpro',
+            'fr' => 'pc',
+            'uc_param_str' => '',
+        ];
+        return $this->executeApiRequest(
+            "https://drive-pc.quark.cn/1/clouddrive/share/sharepage/token", 
+            "POST", 
+            $urlData, 
+            $queryParams
+        );
     }
 
 
@@ -211,8 +221,12 @@ class QuarkPan extends BasePan
             "_fetch_total" => "1",
             "_sort" => "file_type:asc,updated_at:desc"
         ];
-        $res = curlHelper("https://drive-pc.quark.cn/1/clouddrive/share/sharepage/detail", "GET", json_encode($urlData), $this->urlHeader,$queryParams)['body'];
-        return json_decode($res, true);
+        return $this->executeApiRequest(
+            "https://drive-pc.quark.cn/1/clouddrive/share/sharepage/detail", 
+            "GET", 
+            $urlData, 
+            $queryParams
+        );
     }
 
 
@@ -223,10 +237,15 @@ class QuarkPan extends BasePan
      */
     public function getShareSave($pwd_id,$stoken,$fid_list,$fid_token_list)
     {
-        $to_pdir_fid = Config('qfshop.quark_file'); //默认存储路径
-        if($this->expired_type == 2){
-            $to_pdir_fid = Config('qfshop.quark_file_time'); //临时资源路径
+        if(!empty($this->to_pdir_fid)){
+            $to_pdir_fid = $this->to_pdir_fid;
+        }else{
+            $to_pdir_fid = Config('qfshop.quark_file'); //默认存储路径
+            if($this->expired_type == 2){
+                $to_pdir_fid = Config('qfshop.quark_file_time'); //临时资源路径
+            }
         }
+        
         $urlData =  array(
             'fid_list' => $fid_list, 
             'fid_token_list' => $fid_token_list, 
@@ -242,8 +261,13 @@ class QuarkPan extends BasePan
             "fr" => "pc",
             "uc_param_str" => ""
         ];
-        $res = curlHelper("https://drive-pc.quark.cn/1/clouddrive/share/sharepage/save", "POST", json_encode($urlData), $this->urlHeader,$queryParams)['body'];
-        return json_decode($res, true);
+        
+        return $this->executeApiRequest(
+            "https://drive-pc.quark.cn/1/clouddrive/share/sharepage/save", 
+            "POST", 
+            $urlData, 
+            $queryParams
+        );
     }
 
     /**
@@ -267,8 +291,13 @@ class QuarkPan extends BasePan
             "fr" => "pc",
             "uc_param_str" => ""
         ];
-        $res = curlHelper("https://drive-pc.quark.cn/1/clouddrive/share", "POST", json_encode($urlData), $this->urlHeader,$queryParams)['body'];
-        return json_decode($res, true);
+        
+        return $this->executeApiRequest(
+            "https://drive-pc.quark.cn/1/clouddrive/share", 
+            "POST", 
+            $urlData, 
+            $queryParams
+        );
     }
 
 
@@ -287,8 +316,12 @@ class QuarkPan extends BasePan
             "task_id" => $task_id,
             "retry_index" => $retry_index
         ];
-        $res = curlHelper("https://drive-pc.quark.cn/1/clouddrive/task", "GET", json_encode($urlData), $this->urlHeader, $queryParams)['body'];
-        return json_decode($res, true);
+        return $this->executeApiRequest(
+            "https://drive-pc.quark.cn/1/clouddrive/task", 
+            "GET", 
+            $urlData, 
+            $queryParams
+        );
     }
 
     /**
@@ -306,8 +339,12 @@ class QuarkPan extends BasePan
             "fr" => "pc",
             "uc_param_str" => ""
         ];
-        $res = curlHelper("https://drive-pc.quark.cn/1/clouddrive/share/password", "POST", json_encode($urlData), $this->urlHeader,$queryParams)['body'];
-        return json_decode($res, true);
+        return $this->executeApiRequest(
+            "https://drive-pc.quark.cn/1/clouddrive/share/password", 
+            "POST", 
+            $urlData, 
+            $queryParams
+        );
     }
     
     
@@ -328,8 +365,12 @@ class QuarkPan extends BasePan
             "fr" => "pc",
             "uc_param_str" => ""
         ];
-        $res = curlHelper("https://drive-pc.quark.cn/1/clouddrive/file/delete", "POST", json_encode($urlData), $this->urlHeader,$queryParams)['body'];
-        return json_decode($res, true);
+        return $this->executeApiRequest(
+            "https://drive-pc.quark.cn/1/clouddrive/file/delete", 
+            "POST", 
+            $urlData, 
+            $queryParams
+        );
     }
     
     /**
@@ -351,11 +392,58 @@ class QuarkPan extends BasePan
             '_fetch_sub_dirs' => 0,
             '_sort' => 'file_type:asc,updated_at:desc',
         ];
-        $res = curlHelper("https://drive-pc.quark.cn/1/clouddrive/file/sort", "GET", json_encode($urlData), $this->urlHeader,$queryParams)['body'];
-        $res = json_decode($res, true);
-        if($res['status'] !== 200){
+        try {
+            $res = curlHelper("https://drive-pc.quark.cn/1/clouddrive/file/sort", "GET", json_encode($urlData), $this->urlHeader,$queryParams)['body'];
+            $res = json_decode($res, true);
+            if($res['status'] !== 200){
+                return [];
+            }
+            return $res['data']['list'];
+        } catch (\Throwable $e) {
             return [];
         }
-        return $res['data']['list'];
+    }
+
+    /**
+     * 执行API请求并处理重试逻辑
+     * 
+     * @param string $url 请求URL
+     * @param string $method 请求方法(GET/POST)
+     * @param array $data 请求数据
+     * @param array $queryParams 查询参数
+     * @param int $maxRetries 最大重试次数
+     * @param int $retryDelay 重试延迟(秒)
+     * @return array 响应结果
+     */
+    protected function executeApiRequest($url, $method, $data = [], $queryParams = [], $maxRetries = 3, $retryDelay = 2)
+    {
+        $attempt = 0;
+        while ($attempt < $maxRetries) {
+            $attempt++;
+            try {
+                $res = curlHelper($url, $method, json_encode($data), $this->urlHeader, $queryParams)['body'];
+                return json_decode($res, true);
+            } catch (\Throwable $e) {
+                $this->logApiError($url, $attempt, $e->getMessage());
+                if ($attempt < $maxRetries) {
+                    sleep($retryDelay);
+                }
+            }
+        }
+        
+        return ['status' => 500, 'message' => '接口请求异常'];
+    }
+    /**
+     * 记录API错误日志
+     * 
+     * @param string $prefix 日志前缀
+     * @param int $attempt 尝试次数
+     * @param mixed $error 错误信息
+     */
+    protected function logApiError($prefix, $attempt, $error)
+    {
+        $errorMsg = is_scalar($error) ? $error : json_encode($error);
+        $logMessage = date('Y-m-d H:i:s') . ' ' . $prefix . '请求失败（尝试次数: ' . $attempt . '） 错误: ' . $errorMsg . "\n";
+        file_put_contents('error.log', $logMessage, FILE_APPEND);
     }
 }

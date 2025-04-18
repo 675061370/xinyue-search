@@ -1,10 +1,10 @@
-{include file="common/header"}
+{include file="news/common/header"}
 <meta name="referrer" content="never">
 </head>
 <body>
     <div class="headBg" style="background-image: url({$config.home_bg});"></div>
     <div id="app" v-cloak>
-        {include file="common/head"}
+        {include file="news/common/head"}
         <div class="homeBox searchBox">
             <div class="box">
                 <div class="logoBox">
@@ -113,9 +113,9 @@
                 
             </div>
         </div>
-        {include file="common/foot"}
+        {include file="news/common/foot"}
     </div>
-    {include file="common/footer"}
+    {include file="news/common/footer"}
     <script type="text/javascript" charset="utf-8">
         app.rankList = JSON.parse('<?php echo json_encode($rankList, JSON_UNESCAPED_UNICODE); ?>');
         for (const item of app.rankList) {

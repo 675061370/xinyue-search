@@ -77,7 +77,7 @@ class Index extends QfShop
         View::assign('seo_title', $config['app_name'].' - '.$config['app_title']);
         View::assign('seo_keywords', $config['app_keywords']);
         View::assign('seo_description', $config['app_description']);
-        return View::fetch('/news/index');
+        return View::fetch('/theme1/index');
     }
     
     

@@ -835,6 +835,148 @@ a:hover {
 }
 
 
+/*全网搜线路切换*/
+.source-switch {
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    overflow-x: auto;
+}
+
+.source-switch h3{
+    margin-right: 6px;
+}
+
+.switch-items {
+    display: flex;
+    gap: 18px;
+    padding-top: 16px;
+}
+
+.switch-items a {
+    position: relative;
+    padding: 5px 0;
+    text-decoration: none;
+    transition: all 0.3s;
+}
+
+.switch-items a:hover {
+    color: var(--theme-theme);
+}
+
+.switch-items a.active {
+    color: var(--theme-theme);
+    font-weight: bold;
+}
+
+.switch-items a.active:after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 20px;
+    height: 4px;
+    margin: auto;
+    border-radius: 4px;
+    background-color: var(--theme-theme);
+}
+.vtips{
+    font-size: 14px;
+    color: #999;
+    padding: 10px 0 0;
+}
+.vtips a{
+    font-weight: bold;
+    color: var(--theme-theme);
+}
+
+.btns2{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    height: 30px;
+    line-height: 30px;
+    color: var(--theme-other_background);
+    background-color: var(--theme-theme);
+    font-size: 14px;
+    width: 100px;
+    cursor: pointer;
+    position: absolute;
+    bottom: 15px;
+    right: 0;
+}
+.dialogUrlBox{
+    width: 450px;
+    border-radius: 18px;
+}
+.dialogUrlBox .dialogUrl{
+    min-height: 100px;
+}
+.dialogUrlBox .dialogUrl .title {
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+    color: #000;
+}
+.dialogUrlBox .dialogUrl .title span {
+    color: var(--theme-theme);
+}
+.dialogUrlBox .dialogUrl .tips {
+    margin-top: 12px;
+    color: #666;
+    font-size: 14px;
+    text-align: center;
+}
+.dialogUrlBox .dialogUrl .qrcode {
+    margin: 24px auto 0;
+    width: 200px;
+    height: 200px;
+    border: 1.5px solid #e5e6e8;
+    border-radius: 4px;
+}
+.dialogUrlBox .dialogUrl .qrcode canvas{
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+}
+.dialogUrlBox .dialogUrl .nav{
+    margin-top: 15px;
+    font-size: 15px;
+}
+.dialogUrlBox .dialogUrl .nav .item{
+    color: #333;
+	text-align: center;
+    margin-top: 5px;
+}
+.dialogUrlBox .dialogUrl .nav .item .t {
+	font-weight: 600;
+}
+.dialogUrlBox .dialogUrl .nav .item a {
+	color: var(--theme-theme);
+}
+.dialogUrlBox .dialogUrl .statement {
+    margin-top: 24px;
+    padding-top: 15px;
+    text-align: left;
+    font-size: 14px;
+    border-top: 1px dashed #e6e6e6;
+}
+.dialogUrlBox .dialogUrl .statement .content {
+    margin-bottom: 8px;
+    color: #666;
+    line-height: 1.6;
+}
+.dialogUrlBox .dialogUrl .statement .content p{
+    text-align: justify;
+    margin-top: 5px;
+}
+.dialogUrlBox .el-icon{
+    font-size: 20px;
+}
+
+
 
 
 @font-face {

@@ -886,15 +886,43 @@ function parsePanLinks($input)
     return array_values($result);
 }
 
+
+/**
+ * 夸克线路一
+ * @return array
+ */
+function source1($isStoken=false,$title,$type=0,$num=5,$index=0)
+{
+    return sourceData1($isStoken,$title,$type,$num,$index);
+}
+
+/**
+ * 夸克线路二
+ * @return array
+ */
+function source2($isStoken=false,$title,$type=0,$num=5)
+{
+    return sourceData2($isStoken,$title,$type,$num);
+}
+
 /**
  * 网络资源搜索源一
-* @return array
-*/
-function source1($title)
+ * @return array
+ */
+function sourceData1($isStoken=false,$title, $type = 0, $maxCount = 100, $apiType = 0)
 {
     $urlDefault = "https://m.kkkba.com"; //http://s.kkkob.com
     $url2 = [];
-     
+    
+    // 定义匹配不同网盘的正则表达式
+    $pattern = [
+        0 => '/https:\/\/pan\.quark\.cn\/[^\s]*/', // 只匹配夸克
+        2 => '/https:\/\/pan\.baidu\.com\/[^\s]*/' // 只匹配百度
+    ];
+    if (!isset($pattern[$type])) {
+        return [];
+    }
+
     try {
         $res = curlHelper($urlDefault."/v/api/getToken", "GET", null, [], "", "", 5)['body'];
     } catch (Exception $err ) {
@@ -906,66 +934,105 @@ function source1($title)
     if(empty($token)){
         return $url2;
     }
-     
+    
     $urlData = array(
         'name' => $title, 
         'token' => $token
     );
     $urlHeader = array('Content-Type: application/json');
-    // 定义正则表达式模式
-    $pattern = '/https:\/\/pan\.quark\.cn\/[^\s]*/';
-
-    // 线路 API 列表
-    $apiList = [
-        "/v/api/getJuzi",
-        "/v/api/search",
-        "/v/api/getXiaoyu",
-        "/v/api/getDJ"
+    
+    $allApiList = [
+        1 => "/v/api/getJuzi",
+        2 => "/v/api/search",
+        3 => "/v/api/getXiaoyu",
+        4 => "/v/api/getDJ",
+        5 => "/v/api/getKK"
     ];
+        
+    // 根据 apiType 确定要调用的接口列表
+    if ($apiType == 0) {
+        // 全部接口
+        $apiList = array_values($allApiList);
+    } elseif (isset($allApiList[$apiType])) {
+        // 指定某个接口
+        $apiList = [$allApiList[$apiType]];
+    } else {
+        // 错误类型，直接返回空
+        return [];
+    }
     
     foreach ($apiList as $api) {
-        $res = curlHelper($urlDefault . $api, "POST", json_encode($urlData), $urlHeader)['body'];
+        $res = curlHelper($urlDefault . $api, "POST", json_encode($urlData), $urlHeader, "", "", 5)['body'];
         $res = json_decode($res, true);
         if (!empty($res['list'] ?? [])) {
             foreach ($res['list'] as $value) {
-                if (preg_match($pattern, $value['answer'], $matches)) {
+                if (preg_match($pattern[$type], $value['answer'], $matches)) {
                     $link = $matches[0];
-                    $url2[] = [
-                        'title' => preg_replace('/\s*[\(（]?(夸克|百度)?[\)）]?\s*/u', '', $value['question']),
-                        'url' => $link
-                    ];
+                    if (preg_match('/提取码[:：]?\s*([a-zA-Z0-9]{4})/', $value['answer'], $codeMatch)) {
+                        $link .= '?pwd=' . $codeMatch[1];
+                    }
+                    $titleText = preg_replace('/\s*[\(（]?(夸克|百度)?[\)）]?\s*/u', '', $value['question']);
+                    if ($isStoken && $type == 0) {
+                        $infoData = verificationUrl($link);
+                        if (!empty($infoData['stoken'])) {
+                            $url2[] = [
+                                'title' => $titleText,
+                                'url' => $link,
+                                'stoken' => $infoData['stoken']
+                            ];
+                        }
+                    } else {
+                        $url2[] = [
+                            'title' => $titleText,
+                            'url' => $link
+                        ];
+                    }
+                    if (count($url2) >= $maxCount) {
+                        return $url2;
+                    }
                 }
             }
         }
     }
     return $url2;
 }
- 
+
+
 /**
  * 网络资源搜索源二
-* @return array
-*/
-function source2($title)
+ * @return array
+ */
+function sourceData2($isStoken=false,$title, $type = 0, $maxCount = 100)
 {
-    $url = 'https://www.pansearch.me/search?keyword='.urlencode($title).'&pan=quark';
+    // 根据类型选择搜索参数
+    $panType = [
+        0 => 'quark',   // 夸克
+        2 => 'baidu'    // 百度
+    ];
+
+    if (!isset($panType[$type])) {
+        return [];
+    }
+    
+    $results = [];
+
+    // 仅获取指定网盘的资源
+    $url = 'https://www.pansearch.me/search?keyword='.urlencode($title).'&pan='.$panType[$type];
     $dom = getDom($url);
     $finder = new DomXPath($dom);
     
-    // 使用 XPath 查询选择具有特定类名的元素
-    $nodes =$finder->query('//div[contains(concat(" ", normalize-space(@class), " "), " whitespace-pre-wrap ") and contains(concat(" ", normalize-space(@class), " "), " break-all ")]');
+    // XPath 选择 class 包含 "whitespace-pre-wrap break-all" 的 div
+    $nodes = $finder->query('//div[contains(concat(" ", normalize-space(@class), " "), " whitespace-pre-wrap ") and contains(concat(" ", normalize-space(@class), " "), " break-all ")]');
 
-    $results = [];
     foreach ($nodes as $node) {
-        // 获取元素的内容，包括其子元素
         $content = $node->textContent;
         
-        // Initialize an associative array to store parsed data
         $parsedItem = [
             'title' => '',
             'url' => ''
         ];
 
-        // Use regular expressions to extract the title and url
+        // 提取资源名称
         if (preg_match('/名称：(.*?)\n\n描述：/s', $content, $titleMatch)) {
             $parsedItem['title'] = trim($titleMatch[1]);
         } else {
@@ -973,25 +1040,79 @@ function source2($title)
         }
 
         // 定义不同类型的链接匹配规则（百度网盘包含提取码）
-        $pattern = '/https:\/\/pan\.quark\.cn\/s\/[a-zA-Z0-9]+/'; // 夸克
+        $pattern = [
+            0 => '/https:\/\/pan\.quark\.cn\/s\/[a-zA-Z0-9]+/', // 夸克
+            2 => '/https:\/\/pan\.baidu\.com\/s\/[a-zA-Z0-9_-]+(\?pwd=[a-zA-Z0-9]+)?/' // 百度（包含提取码）
+        ];
 
         // 提取下载链接
-        if (preg_match($pattern, $content, $urlMatch)) {
+        if (preg_match($pattern[$type], $content, $urlMatch)) {
             $parsedItem['url'] = trim($urlMatch[0]);
         }
 
         if ($parsedItem['title'] && $parsedItem['url']) {
-        //  $results[] = $parsedItem;
+            // 只有标题包含搜索关键字才加入结果
             if (strpos($parsedItem['title'], $title) !== false || strpos($title, $parsedItem['title']) !== false) {
-                $results[] = $parsedItem;
+                if($isStoken && $type==0){
+                    $infoData = verificationUrl($parsedItem['url']);
+                    if(!empty($infoData['stoken'])){
+                        $parsedItem['stoken'] = $infoData['stoken'];
+                        $results[] = $parsedItem;
+                    }  
+                }else{
+                    $results[] = $parsedItem;  
+                }
             }
         }
         
-        if (count($results) >= 3) {
-            break;
+        // 如果已获取的条目达到限制数量，退出循环
+        if (count($results) >= $maxCount) {
+            return $results;
         }
     }
     
     return $results;
 }
- 
+
+/**
+ * 验证夸克地址是否有效
+ * @return array
+ */
+function verificationUrl($url) {
+    $code = '';
+    if (preg_match('/\?pwd=([^,\s&]+)/', $url, $pwdMatch)) {
+        $code = trim($pwdMatch[1]);
+    }
+    $urlData = [
+        'url' => $url,
+        'code' => $code,
+        'isType' => 1
+    ];
+
+    $transfer = new \netdisk\Transfer();
+    $res = $transfer->transfer($urlData);
+
+    if ($res['code'] !== 200) {
+        return 0;
+    }
+    
+    return $res['data'];
+}
+
+
+function encryptObject($object) {
+    $jsonString = json_encode($object);
+    // 使用 AES 加密算法加密 JSON 字符串
+    $key = 'ABCD';  // 加密密钥
+    $encrypted = openssl_encrypt($jsonString, 'aes-256-cbc', $key, 0, '1234567890123456');
+    return $encrypted;
+}
+function decryptObject($encryptedObject) {
+    // 解密密钥
+    $key = 'ABCD';
+    // 解密加密后的对象字符串
+    $decryptedJson = openssl_decrypt($encryptedObject, 'aes-256-cbc', $key, 0, '1234567890123456');
+    // 将解密后的 JSON 字符串转换回对象
+    $object = json_decode($decryptedJson, true);  // true 转换为关联数组
+    return $object;
+}
