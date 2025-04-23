@@ -273,6 +273,9 @@
                     .then(() => {
                         app.QLoading = false
                     })
+                    .catch(error => {
+                        app.QLoading = false;
+                    });
             }
         }
         function searchRequest(api, num = null) {
