@@ -75,8 +75,14 @@
     <div v-loading="dialogLoading" class="dialogUrl" v-if="dialogUrl">
         <div v-if="dialogItem.showUrl">
             <block v-show="pc_type!=1">
-                <div class="title">请使用 <span>夸克APP</span> 扫码获取</div>
-                <div class="tips">打开夸克APP- 点击搜索框中的相机 - 点击扫码</div>
+                <block v-if="dialogItem.is_type==0">
+                    <div class="title">请使用 <span>夸克APP</span> 扫码获取</div>
+                    <div class="tips">打开夸克APP- 点击搜索框中的相机 - 点击扫码</div>
+                </block>
+                <block v-else>
+                    <div class="title">请使用 <span>手机扫码</span> 获取</div>
+                    <div class="tips">打开微信APP- 点击右上角 - 选择扫一扫</div>
+                </block>
                 <div class="qrcode" id="qrcode"></div>
             </block>
             <div class="nav">
