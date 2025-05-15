@@ -723,9 +723,14 @@ function getDom($url)
 {
     $ch = curl_init($url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    // 设置超时时间
+    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10); // 连接超时：5秒
+    curl_setopt($ch, CURLOPT_TIMEOUT, 10);       // 响应超时：5秒
     // 临时跳过 SSL 验证（测试用）
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
     curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true); // 避免跳转被拦
+    curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0'); // 模拟浏览器UA
     $html = curl_exec($ch);
     curl_close($ch);
     

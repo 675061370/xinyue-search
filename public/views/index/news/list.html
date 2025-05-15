@@ -239,7 +239,7 @@
             }
         }
 
-        let cancelSource = null;
+        let currentEventSource = null;
         function setType(type) {
             app.selectBtn()
             if(type == app.is_type) return
@@ -252,47 +252,48 @@
             app.currentSource = source;
             if(app.currentSource == 1){
                 if(app.QLoading || app.QList.length>0) return
-
-                if (cancelSource) {
-                    cancelSource.cancel('用户切换了数据源，取消上次请求');
-                    setTimeout(() => {
-                        app.QLoading = true
-                    }, 100);
-                }
-                cancelSource = axios.CancelToken.source();
                 
                 app.QLoading = true
-                
-                // search1线路 有5个接口
-                const searchTypes = [1, 2, 3, 4, 5];
-                const promises = [
-                    ...searchTypes.map(num => searchRequest('search1', num)),
-                    searchRequest('search2')
-                ];
-                Promise.all(promises)
-                    .then(() => {
+                app.QList = []
+
+                // 创建新的 EventSource 连接前，确保关闭旧的连接
+                if(currentEventSource) {
+                    currentEventSource.close();
+                }
+
+                // 创建 EventSource 连接
+                const params = new URLSearchParams({
+                    title: app.keyword,
+                    is_type: app.is_type
+                })
+                currentEventSource = new EventSource(`/api/other/web_search?${params.toString()}`)
+
+                // 监听消息
+                currentEventSource.onmessage = function(event) {
+                    if(event.data.includes('[DONE]')) {
+                        currentEventSource.close()
+                        currentEventSource = null
                         app.QLoading = false
-                    })
-                    .catch(error => {
-                        app.QLoading = false;
-                    });
+                        return
+                    }
+                    
+                    try {
+                        const data = JSON.parse(event.data)
+                        app.QList.push(data)
+                    } catch(e) {
+                        console.error('解析数据失败:', e)
+                    }
+                }
+
+                // 错误处理
+                currentEventSource.onerror = function(error) {
+                    console.error('SSE 连接错误:', error)
+                    currentEventSource.close()
+                    currentEventSource = null
+                    app.QLoading = false
+                }
             }
         }
-        function searchRequest(api, num = null) {
-            const params = {
-                title: app.keyword,
-                is_type: app.is_type,
-            }
-            if(num) params.num = num
-            
-            return axios.post(`/api/other/${api}`, params, {
-                    cancelToken: cancelSource.token  // 直接用全局变量
-                })
-                .then(res => {
-                    app.QList = app.QList.concat(res.data.data)
-                })
-        }
-        
     </script>
 </body>
 </html>

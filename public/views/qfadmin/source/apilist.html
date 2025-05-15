@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>接口配置</title>
+    {include file="common/header"/}
+    <el-form :inline="true">
+        <el-form-item>
+            <el-button icon="el-icon-plus" size="small" @click="clickAdd" plain>添加</el-button>
+        </el-form-item>
+    </el-form>
+    <el-table :data="dataList" v-loading="loading">
+        <el-table-column prop="id" label="ID" width="60">
+        </el-table-column>
+        <el-table-column label="网盘类型" width="100" prop="name">
+            <template slot-scope="scope">
+                <span v-if="scope.row.pantype==2">百度网盘</span>
+                <span v-else>夸克网盘</span>
+            </template>
+        </el-table-column>
+        <el-table-column label="线路名称" prop="name"></el-table-column>
+        <el-table-column label="地址" prop="url"></el-table-column>
+        <el-table-column label="类型" width="100" prop="name">
+            <template slot-scope="scope">
+                <span v-if="scope.row.type=='html'">网页</span>
+                <span v-else-if="scope.row.type=='tg'">TG频道</span>
+                <span v-else>接口</span>
+            </template>
+        </el-table-column>
+        <el-table-column prop="count" label="获取资源数"  width="150" align="center">
+        </el-table-column>
+        <el-table-column label="是否开启" width="100" align="center">
+            <template slot-scope="scope">
+                <el-switch v-model="scope.row.status==1?true:false"
+                    @change="clickStatus(scope.row)">
+                </el-switch>
+            </template>
+        </el-table-column>
+        <el-table-column prop="weight" label="排序"  width="100" align="center">
+        </el-table-column>
+        <el-table-column label="操作" width="200">
+            <template slot-scope="scope">
+                <el-link type="primary" @click="clickEdit(scope.row)" :underline="false">编辑</el-link>&nbsp;&nbsp;&nbsp;&nbsp;
+                <el-link type="danger" @click="clickDelete(scope.row)" :underline="false">删除</el-link>
+            </template>
+        </el-table-column>
+    </el-table>
+
+
+    <!-- 添加框 -->
+    <el-dialog title="添加线路" :visible.sync="dialogFormAdd" width="750px" :modal-append-to-body='false' append-to-body :close-on-click-modal='false'>
+        <el-form :model="formAdd" :rules="rules" ref="formAdd">
+
+            <el-form-item prop="pantype" label="网盘类型" :label-width="formLabelWidth">
+                <el-radio-group v-model="formAdd.pantype">
+                    <el-radio :label="0">夸克网盘</el-radio>
+                    <el-radio :label="2">百度网盘</el-radio>
+                </el-radio-group>
+            </el-form-item>
+            
+            <el-form-item prop="name" label="线路名称" :label-width="formLabelWidth">
+                <el-input size="medium" autocomplete="off" v-model="formAdd.name"></el-input>
+            </el-form-item>
+
+            <el-form-item prop="count" label="总数限制" :label-width="formLabelWidth">
+                <el-input-number v-model="formAdd.count" :min="0" :max="999" size="medium" style="width: 120px;"
+                    controls-position="right"></el-input-number>
+                <span style="color: #999;">建议最大设置为5，即该接口最多只获取5条数据</span>
+            </el-form-item>
+
+            <el-form-item prop="type" label="类型" :label-width="formLabelWidth">
+                <el-radio-group v-model="formAdd.type">
+                    <el-radio label="api">API接口</el-radio>
+                    <el-radio label="tg">TG频道</el-radio>
+                    <el-radio label="html">网页爬虫</el-radio>
+                </el-radio-group>
+                <p style="color: red;" v-if="formAdd.type=='html'">不推荐！网页爬虫：配置复杂，请自行看描述；功能由AI编写，如无法获取也没法😄</p>
+                <p style="color: red;" v-else-if="formAdd.type=='tg'">国内服务器无法使用；比如：https://t.me/s/NewQuark  就填写NewQuark即可</p>
+            </el-form-item>
+
+            <el-form-item prop="url" label="TG频道" :label-width="formLabelWidth" v-if="formAdd.type === 'tg'">
+                <el-input size="medium" autocomplete="off" v-model="formAdd.url"></el-input>
+            </el-form-item>
+            <el-form-item prop="url" label="目标网址" :label-width="formLabelWidth" v-else-if="formAdd.type === 'html'">
+                <el-input size="medium" autocomplete="off" v-model="formAdd.url"></el-input>
+                <span style="color: #999;">比如：https://www.baidu.com/s?wd={keyword}，{keyword}是固定词请勿修改</span>
+            </el-form-item>
+            <el-form-item prop="url" label="接口地址" :label-width="formLabelWidth" v-else>
+                <el-input size="medium" autocomplete="off" v-model="formAdd.url"></el-input>
+            </el-form-item>
+
+            <block v-if="formAdd.type === 'api'">
+                <el-form-item prop="method" label="请求方式" :label-width="formLabelWidth">
+                    <el-radio-group v-model="formAdd.method">
+                        <el-radio label="GET">GET</el-radio>
+                        <el-radio label="POST">POST</el-radio>
+                    </el-radio-group>
+                </el-form-item>
+
+                <el-form-item prop="headers" label="请求头" :label-width="formLabelWidth">
+                    <el-input type="textarea" v-model="formAdd.headers" :rows="3" placeholder='{
+        "User-Agent": "..."
+    }' />
+                </el-form-item>
+    
+                <el-form-item prop="fixed_params" label="接口参数" :label-width="formLabelWidth">
+                    <el-input type="textarea" v-model="formAdd.fixed_params" :rows="3" placeholder='{"search": "{keyword}"}'></el-input>
+                    <span style="color: #999;">将search改为实际的搜索字段即可，{keyword}请勿修改</span>
+                </el-form-item>
+
+                <el-form-item prop="field_map" label="字段映射" :label-width="formLabelWidth">
+                    <el-input type="textarea" v-model="formAdd.field_map" :rows="7" placeholder='{"title": "xxx", "url": "xxx"}'></el-input>
+                    <span style="color: #999;">结构参数名请勿修改，仅将中文修改为真实接口的字段名即可；数组字段一般是data或者data.list</span>
+                </el-form-item>
+            </block>
+
+            <block v-if="formAdd.type === 'html'">
+
+                <el-form-item prop="html_item" label="内容标签" :label-width="formLabelWidth">
+                    <el-input size="medium" autocomplete="off" v-model="formAdd.html_item"></el-input>
+                    <span style="color: #999;line-height: 1.4;display: block;">
+                        请填写用于循环内容的 HTML 标签和 class，用于提取数据列表。格式：标签名+class名
+                        <br>
+                        示例：<br>
+                        div+item （选择所有 class="item" 的 div 标签）<br>
+                        article+post （选择所有 class="post" 的 article 标签）<br>
+                        li+result-item hot（选择所有 class 同时包含 "result-item" 和 "hot" 的 li 标签）
+                    </span>
+                </el-form-item>
+
+                <el-form-item prop="html_title" label="标题标签" :label-width="formLabelWidth">
+                    <el-input size="medium" autocomplete="off" v-model="formAdd.html_title"></el-input>
+                    <span style="color: #999; line-height: 1.4; display: block;">
+                        标题标签是循环项中用于提取标题文字的元素；格式：标签名+class名。<br>
+                        例如：<br>
+                        h3+title 表示选择 `&lt;h3 class="title"&gt;` 标签作为标题内容<br>
+                        a+link 表示 `&lt;a class="link"&gt;` 标签中的文本作为标题<br>
+                        div+content-title 表示 `&lt;div class="content-title"&gt;` 标签作为标题
+                    </span>
+                </el-form-item>
+
+                <el-form-item prop="html_type" label="详情页" :label-width="formLabelWidth">
+                    <el-radio-group v-model="formAdd.html_type">
+                        <el-radio :label="0">不需要</el-radio>
+                        <el-radio :label="1">需要</el-radio>
+                    </el-radio-group>
+                    <p style="color: #999;">如果网盘链接不在列表页中，而是需要进入详情页后才能获取，请选择“需要”</p>
+                </el-form-item>
+
+                <el-form-item prop="html_url" label="详情页标签" :label-width="formLabelWidth" v-if="formAdd.html_type==1">
+                    <el-input size="medium" autocomplete="off" v-model="formAdd.html_url"></el-input>
+                    <span style="color: #999; line-height: 1.4; display: block;">
+                        详情页标签是循环项中用于提取详情页网址的元素；格式：a+class名。只能a标签<br>
+                        例如：<br>
+                        a+post_url 表示获取元素 `&lt;a class="post_url" href="https://.."&gt;` 上的href的值
+                    </span>
+                </el-form-item>
+
+                <el-form-item prop="html_url2" label="网盘链接" :label-width="formLabelWidth">
+                    <el-input size="medium" autocomplete="off" v-model="formAdd.html_url2"></el-input>
+                    <span style="color: #999; line-height: 1.4; display: block;">
+                        网盘链接标签是循环项中用于提取网盘链接的元素；格式：标签名+class名。<br>
+                        将提取该元素第一个出现的网盘链接
+                    </span>
+                </el-form-item>
+
+            </block>
+            
+            <el-form-item prop="weight" label="排序" :label-width="formLabelWidth">
+                <el-input-number v-model="formAdd.weight" :min="0" :max="999" size="medium" style="width: 120px;"
+                    controls-position="right" />
+            </el-form-item>
+
+            <el-form-item prop="status" label="是否启用" :label-width="formLabelWidth">
+                <el-switch v-model="formAdd.status" size="medium" />
+            </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button type="primary" @click="postAdd()">确认添加</el-button>
+        </div>
+    </el-dialog>
+    <!-- 修改框 -->
+    <el-dialog title="修改线路" :visible.sync="dialogFormEdit" width="750px" :modal-append-to-body='false' append-to-body :close-on-click-modal='false'>
+        <el-form :model="formEdit" :rules="rules" ref="formEdit">
+            <el-form-item prop="pantype" label="网盘类型" :label-width="formLabelWidth">
+                <el-radio-group v-model="formEdit.pantype">
+                    <el-radio :label="0">夸克网盘</el-radio>
+                    <el-radio :label="2">百度网盘</el-radio>
+                </el-radio-group>
+            </el-form-item>
+            <el-form-item prop="name" label="线路名称" :label-width="formLabelWidth">
+                <el-input size="medium" autocomplete="off" v-model="formEdit.name"></el-input>
+            </el-form-item>
+
+            <el-form-item prop="count" label="总数限制" :label-width="formLabelWidth">
+                <el-input-number v-model="formEdit.count" :min="0" :max="999" size="medium" style="width: 120px;"
+                    controls-position="right"></el-input-number>
+                <span style="color: #999;">建议最大设置为5，即该接口最多只获取5条数据</span>
+            </el-form-item>
+
+            <el-form-item prop="type" label="类型" :label-width="formLabelWidth">
+                <el-radio-group v-model="formEdit.type">
+                    <el-radio label="api">API接口</el-radio>
+                    <el-radio label="tg">TG频道</el-radio>
+                    <el-radio label="html">网页爬虫</el-radio>
+                </el-radio-group>
+                <p style="color: red;" v-if="formEdit.type=='html'">不推荐！网页爬虫：配置复杂，请自行看描述；功能由AI编写，如无法获取也没法😄</p>
+            </el-form-item>
+
+            <el-form-item prop="url" label="TG频道" :label-width="formLabelWidth" v-if="formEdit.type === 'tg'">
+                <el-input size="medium" autocomplete="off" v-model="formEdit.url"></el-input>
+            </el-form-item>
+            <el-form-item prop="url" label="目标网址" :label-width="formLabelWidth" v-else-if="formEdit.type === 'html'">
+                <el-input size="medium" autocomplete="off" v-model="formEdit.url"></el-input>
+                <span style="color: #999;">比如：https://www.baidu.com/s?wd={keyword}，{keyword}是固定词请勿修改</span>
+            </el-form-item>
+            <el-form-item prop="url" label="接口地址" :label-width="formLabelWidth" v-else>
+                <el-input size="medium" autocomplete="off" v-model="formEdit.url"></el-input>
+            </el-form-item>
+
+            <block  v-if="formEdit.type === 'api'">
+                <el-form-item prop="method" label="请求方式" :label-width="formLabelWidth">
+                    <el-radio-group v-model="formEdit.method">
+                        <el-radio label="GET">GET</el-radio>
+                        <el-radio label="POST">POST</el-radio>
+                    </el-radio-group>
+                </el-form-item>
+
+                <el-form-item prop="headers" label="请求头" :label-width="formLabelWidth">
+                    <el-input type="textarea" v-model="formEdit.headers" :rows="3" placeholder='{
+        "User-Agent": "..."
+    }' />
+                </el-form-item>
+
+                <el-form-item prop="fixed_params" label="接口参数" :label-width="formLabelWidth">
+                    <el-input type="textarea" v-model="formEdit.fixed_params" :rows="3" placeholder='{"search": "{keyword}"}'></el-input>
+                    <span style="color: #999;">将search改为实际的搜索字段即可，{keyword}请勿修改</span>
+                </el-form-item>
+
+                <el-form-item prop="field_map" label="字段映射" :label-width="formLabelWidth">
+                    <el-input type="textarea" v-model="formEdit.field_map" :rows="7" placeholder='{"title": "xxx", "url": "xxx"}'></el-input>
+                    <span style="color: #999;">结构参数名请勿修改，仅将中文修改为真实接口的字段名即可；数组字段一般是data或者data.list</span>
+                </el-form-item>
+            </block>
+
+            <block v-if="formEdit.type === 'html'">
+
+                <el-form-item prop="html_item" label="内容标签" :label-width="formLabelWidth">
+                    <el-input size="medium" autocomplete="off" v-model="formEdit.html_item"></el-input>
+                    <span style="color: #999;line-height: 1.4;display: block;">
+                        请填写用于循环内容的 HTML 标签和 class，用于提取数据列表。格式：标签名+class名
+                        <br>
+                        示例：<br>
+                        div+item （选择所有 class="item" 的 div 标签）<br>
+                        article+post （选择所有 class="post" 的 article 标签）<br>
+                        li+result-item hot（选择所有 class 同时包含 "result-item" 和 "hot" 的 li 标签）
+                    </span>
+                </el-form-item>
+
+                <el-form-item prop="html_title" label="标题标签" :label-width="formLabelWidth">
+                    <el-input size="medium" autocomplete="off" v-model="formEdit.html_title"></el-input>
+                    <span style="color: #999; line-height: 1.4; display: block;">
+                        标题标签是循环项中用于提取标题文字的元素；格式：标签名+class名。<br>
+                        例如：<br>
+                        h3+title 表示选择 `&lt;h3 class="title"&gt;` 标签作为标题内容<br>
+                        a+link 表示 `&lt;a class="link"&gt;` 标签中的文本作为标题<br>
+                        div+content-title 表示 `&lt;div class="content-title"&gt;` 标签作为标题
+                    </span>
+                </el-form-item>
+
+                <el-form-item prop="html_type" label="详情页" :label-width="formLabelWidth">
+                    <el-radio-group v-model="formEdit.html_type">
+                        <el-radio :label="0">不需要</el-radio>
+                        <el-radio :label="1">需要</el-radio>
+                    </el-radio-group>
+                    <p style="color: #999;">如果网盘链接不在列表页中，而是需要进入详情页后才能获取，请选择“需要”</p>
+                </el-form-item>
+
+                <el-form-item prop="html_url" label="详情页标签" :label-width="formLabelWidth" v-if="formEdit.html_type==1">
+                    <el-input size="medium" autocomplete="off" v-model="formEdit.html_url"></el-input>
+                    <span style="color: #999; line-height: 1.4; display: block;">
+                        详情页标签是循环项中用于提取详情页网址的元素；格式：a+class名。只能a标签<br>
+                        例如：<br>
+                        a+post_url 表示获取元素 `&lt;a class="post_url" href="https://.."&gt;` 上的href的值
+                    </span>
+                </el-form-item>
+
+                <el-form-item prop="html_url2" label="网盘链接" :label-width="formLabelWidth">
+                    <el-input size="medium" autocomplete="off" v-model="formEdit.html_url2"></el-input>
+                    <span style="color: #999; line-height: 1.4; display: block;">
+                        网盘链接标签是循环项中用于提取网盘链接的元素；格式：标签名+class名。<br>
+                        将提取该元素第一个出现的网盘链接
+                    </span>
+                </el-form-item>
+
+            </block>
+            
+            <el-form-item prop="weight" label="排序" :label-width="formLabelWidth">
+                <el-input-number v-model="formEdit.weight" :min="0" :max="999" size="medium" style="width: 120px;"
+                    controls-position="right" />
+            </el-form-item>
+
+            <el-form-item prop="status" label="是否启用" :label-width="formLabelWidth">
+                <el-switch v-model="formEdit.status" size="medium" />
+            </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button type="primary" @click="postEdit()">确认修改</el-button>
+        </div>
+    </el-dialog>
+
+    {include file="common/footer"/}
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data() {
+                this.getList();
+                return {
+                    formLabelWidth: '90px',
+                    dialogFormAdd: false,
+                    dialogFormEdit: false,
+                    loading: true,
+                    dataList: [],
+                    selectList: [],
+                    formAdd: {
+                    },
+                    formEdit: {
+                    },
+                    rules: {
+                        name: [ { required: true, message: '请输入分类名称', trigger: 'blur' }],
+                    },
+                }
+            },
+            methods: {
+                postEdit() {
+                    var that = this;
+                    that.$refs["formEdit"].validate((valid) => {
+                        if (valid) {
+                            axios.post('/admin/api_list/update', Object.assign({}, PostBase, that.formEdit))
+                                .then(function (response) {
+                                    that.getList();
+                                    if (response.data.code == CODE_SUCCESS) {
+                                        that.$message({
+                                            message: response.data.message,
+                                            type: 'success'
+                                        });
+                                        that.dialogFormEdit = false;
+                                    } else {
+                                        that.$message.error(response.data.message);
+                                    }
+                                })
+                                .catch(function (error) {
+                                    that.$message.error('服务器内部错误');
+                                });
+                        }
+                    });
+                },
+                postAdd() {
+                    var that = this;
+                    that.$refs['formAdd'].validate((valid) => {
+                        if (valid) {
+                            axios.post('/admin/api_list/add', Object.assign({}, PostBase, that.formAdd))
+                                .then(function (response) {
+                                    that.getList();
+                                    if (response.data.code == CODE_SUCCESS) {
+                                        that.$message({
+                                            message: response.data.message,
+                                            type: 'success'
+                                        });
+                                        that.dialogFormAdd = false;
+                                    } else {
+                                        that.$message.error(response.data.message);
+                                    }
+                                })
+                                .catch(function (error) {
+                                    that.$message.error('服务器内部错误');
+                                });
+                        }
+                    });
+                },
+                clickAdd() {
+                    var that = this;
+                    that.formAdd = {
+                        pantype: 0,
+                        type: 'api',
+                        method: 'GET',
+                        weight: 0,
+                        count: 5,
+                        status: true,
+                        html_type: 0,
+                        fixed_params: `{
+    "search": "{keyword}"
+}`,
+                        field_map: `{
+    "list_path": "数组字段",
+    "fields": {
+        "title": "资源名称",
+        "url": "资源地址"
+    }
+}`
+                     };
+                     
+                    that.dialogFormAdd = true;
+                },
+                clickDelete(row) {
+                    var that = this;
+                    this.$confirm('即将删除这个分类, 是否确认?', '删除提醒', {
+                        confirmButtonText: '删除',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(() => {
+                        axios.post('/admin/api_list/delete', Object.assign({}, PostBase, {
+                            id: row.id
+                        }))
+                            .then(function (response) {
+                                that.getList();
+                                if (response.data.code == CODE_SUCCESS) {
+                                    that.$message({
+                                        message: response.data.message,
+                                        type: 'success'
+                                    });
+                                } else {
+                                    that.$message.error(response.data.message);
+                                }
+                            })
+                            .catch(function (error) {
+                                that.$message.error('服务器内部错误');
+                            });
+                    }).catch(() => {
+                    });
+                },
+                clickEdit(row) {
+                    var that = this;
+                    that.formEdit = row;
+                    axios.post('/admin/api_list/detail', Object.assign({}, PostBase, {
+                        id: row.id
+                    }))
+                        .then(function (response) {
+                            if (response.data.code == CODE_SUCCESS) {
+                                that.formEdit = response.data.data;
+                                that.formEdit.status = that.formEdit.status==1?true:false;
+                                that.dialogFormEdit = true;
+                            } else {
+                                that.$message.error(response.data.message);
+                            }
+                        })
+                        .catch(function (error) {
+                            that.$message.error('服务器内部错误');
+                        });
+
+                },
+                getList() {
+                    var that = this;
+                    that.loading = true;
+                    axios.post('/admin/api_list/getList', Object.assign({}, PostBase))
+                        .then(function (response) {
+                            that.loading = false;
+                            if (response.data.code == CODE_SUCCESS) {
+                                that.dataList = response.data.data;
+                            } else {
+                                that.$message.error(response.data.message);
+                            }
+                        })
+                        .catch(function (error) {
+                            that.loading = false;
+                            that.$message.error('服务器内部错误');
+                        });
+                },
+
+                clickStatus(row) {
+                    var that = this;
+                    let url = row.status ? '/admin/api_list/disable' : '/admin/api_list/enable'
+                    axios.post(url, Object.assign({}, PostBase, {
+                        id: row.id
+                    }))
+                        .then(function (response) {
+                            that.getList();
+                            if (response.data.code == CODE_SUCCESS) {
+                                that.$message({
+                                    message: response.data.message,
+                                    type: 'success'
+                                });
+                            } else {
+                                that.$message.error(response.data.message);
+                            }
+                        })
+                        .catch(function (error) {
+                            that.$message.error('服务器内部错误');
+                        });
+                },
+  
+            }
+        })
+    </script>
+
+
+</html>

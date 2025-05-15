@@ -278,6 +278,7 @@ INSERT INTO `qf_node` VALUES (112, '账号管理', '', 'qfadmin', 'source', 'dep
 INSERT INTO `qf_node` VALUES (113, '资源日志', '', 'qfadmin', 'source', 'log', 108, 8, 1, 'el-icon-discover', NULL, 0, 1712208103, 1726195583);
 INSERT INTO `qf_node` VALUES (114, '用户需求', '', 'qfadmin', 'source', 'feedback', 108, 1, 1, 'el-icon-edit', NULL, 0, 1712230638, 1712230717);
 INSERT INTO `qf_node` VALUES (118, '分类管理', '', 'qfadmin', 'source', 'category', 108, 9, 1, 'el-icon-s-operation', NULL, 0, 1716363477, 1726190129);
+INSERT INTO `qf_node` VALUES (119, '接口配置', '', 'qfadmin', 'source', 'apilist', '108', '1', '1', 'el-icon-link', NULL, '0', '1747119102', '1747119102');
 
 -- ----------------------------
 -- Table structure for qf_source
@@ -364,6 +365,30 @@ CREATE TABLE `qf_token`  (
   `create_time` int(11) NOT NULL DEFAULT 0 COMMENT '登录时间',
   PRIMARY KEY (`token_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '授权信息表' ROW_FORMAT = Dynamic;
+
+DROP TABLE IF EXISTS `qf_api_list`;
+CREATE TABLE `qf_api_list` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `name` varchar(100) NOT NULL COMMENT '线路名称',
+  `type` varchar(20) NOT NULL DEFAULT 'api' COMMENT '接口类型：api（接口）、html（网页）、tg（TG频道）',
+  `pantype` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0 夸克  2百度',
+  `url` varchar(255) DEFAULT NULL COMMENT '请求地址或入口URL',
+  `method` varchar(10) DEFAULT 'GET' COMMENT '请求方式：GET/POST，仅用于api/html类型',
+  `fixed_params` text COMMENT '固定请求参数（JSON格式）',
+  `headers` text COMMENT '请求头信息（JSON格式）',
+  `field_map` text COMMENT '返回字段映射（JSON格式）',
+  `count` int(11) DEFAULT '0' COMMENT '最多取多少个资源',
+  `html_item` varchar(255) DEFAULT NULL,
+  `html_title` varchar(255) DEFAULT NULL,
+  `html_url` varchar(255) DEFAULT NULL,
+  `html_type` tinyint(4) DEFAULT '0',
+  `html_url2` varchar(255) DEFAULT NULL,
+  `weight` int(11) DEFAULT '0' COMMENT '权重，数值越大优先级越高',
+  `status` tinyint(1) DEFAULT '1' COMMENT '是否启用：1启用，0禁用',
+  `create_time` int(11) NOT NULL DEFAULT '0' COMMENT '创建时间',
+  `update_time` int(11) NOT NULL DEFAULT '0' COMMENT '更新时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='多线路接口配置表';
 
 -- ----------------------------
 -- Table structure for qf_user
