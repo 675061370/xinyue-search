@@ -7,6 +7,8 @@
     <el-form :inline="true">
         <el-form-item>
             <el-button icon="el-icon-plus" size="small" @click="clickAdd" plain>添加</el-button>
+            <el-button icon="el-icon-paperclip" size="small" @click="window.open('/api/other/web_search?title=仙逆&is_show=1', '_blank')" plain>测试前台数据</el-button>
+            
         </el-form-item>
     </el-form>
     <el-table :data="dataList" v-loading="loading">
