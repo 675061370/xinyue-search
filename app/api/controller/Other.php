@@ -400,7 +400,7 @@ class Other extends QfShop
         }
 
         $results = [];
-        $url = 'https://t.me/s/NewQuark?q='.urlencode($title);
+        $url = 'https://t.me/s/'.$line['url'].'?q='.urlencode($title);
         $dom = getDom($url);
         $finder = new \DomXPath($dom);
 
