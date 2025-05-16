@@ -144,7 +144,7 @@ class Other extends QfShop
         Cache::set($title . '_processing', true, 60); // 锁定60秒
 
         
-        $$typeV = input('type', 0);
+        $typeV = input('type', 0);
 
         $searchList = []; //查询的结果集
         $datas = []; //最终转存后的数据
@@ -152,7 +152,7 @@ class Other extends QfShop
         $num_success = 0;
 
         $datas_zc = []; //最终未转存的数据
-        $num_total_zc = $$typeV==1?3:0; //最多想要几条未转存的结果
+        $num_total_zc = $typeV==1?3:0; //最多想要几条未转存的结果
         $num_success_zc = 0;
 
         // 查找一条可用线路
@@ -218,7 +218,7 @@ class Other extends QfShop
         Cache::set($title, $datas, 60); // 缓存结果60秒
         Cache::delete($title . '_processing'); // 解锁
 
-        if($$typeV == 1){
+        if($typeV == 1){
             $datas = array_merge($datas, $datas_zc);
         }
         
