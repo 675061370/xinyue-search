@@ -662,23 +662,26 @@ class Other extends QfShop
     }
 
     /**
-     * 构建href属性匹配模式
-     * 
+     * 构建 href 属性匹配模式，支持 class 和 href 顺序不固定
+     *
      * @param string $tag 标签名
-     * @param string $classString 类名
+     * @param string $classString 类名（可为空）
      * @return string 正则表达式
      */
     private function buildHrefPattern($tag, $classString)
     {
         $escapedClass = preg_quote($classString, '#');
         $escapedTag = preg_quote($tag, '#');
-        
+
         if (empty($escapedClass)) {
-            return '#<' . $escapedTag . '[^>]*href=["\']([^"\']+)["\']#i';
+            // 没有类名要求，只匹配标签中包含 href 的内容
+            return '#<' . $escapedTag . '\b[^>]*href=["\']([^"\']+)["\'][^>]*>#i';
         } else {
-            return '#<' . $escapedTag . '[^>]*class=["\'][^"\']*' . $escapedClass . '[^"\']*["\'][^>]*href=["\']([^"\']+)["\']#i';
+            // 匹配包含指定 class 的标签，不要求 href 和 class 的顺序
+            return '#<' . $escapedTag . '\b(?=[^>]*class=["\'][^"\']*' . $escapedClass . '[^"\']*["\'])(?=[^>]*href=["\']([^"\']+)["\'])[^>]*>#i';
         }
     }
+
 
     /**
      * 构建完整URL
