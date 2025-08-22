@@ -119,6 +119,13 @@
                         {/notempty}
                     </div>
                     {else /}
+                    {if condition="$blocked == 1"}
+                    <div style="padding-top: 16px;">
+                        <el-alert title="搜索词中包含违规内容，请修改后重试" style="padding: 12px 0; font-weight: bold;" type="error"
+                            center :closable="false">
+                        </el-alert>
+                    </div>
+                    {/if}
                     <el-empty style="margin-top: 10%;" :image-size="200" image="{$config.search_bg??''}"
                         description="{$config.search_tips|default='未找到，可换个关键词尝试哦~'}">
                         {if condition="$config.is_quan == 1"}
@@ -157,6 +164,13 @@
                     </div>
 
                     <block v-if="!QLoading && QList.length==0">
+                        {if condition="$blocked == 1"}
+                        <div style="padding-top: 16px;">
+                            <el-alert title="搜索词中包含违规内容，请修改后重试" style="padding: 12px 0; font-weight: bold;" type="error"
+                                center :closable="false">
+                            </el-alert>
+                        </div>
+                        {/if}
                         <el-empty style="margin-top: 10%;" :image-size="200" image="{$config.search_bg??''}"
                             description="{$config.search_tips|default='未找到，可换个关键词尝试哦~'}">
                             {if condition="$config.is_quan == 1"}
@@ -317,7 +331,7 @@
         }
 
         app.is_type = '{$firstKey}'
-        if ('{$config.is_quan}' == 1) {
+        if ('{$config.is_quan}' == 1 && !'{$blocked}') {
             let listItems = JSON.parse('<?php echo json_encode($list["items"], JSON_UNESCAPED_UNICODE); ?>');
             if (listItems.length == 0) {
                 switchSource(1)

@@ -33,7 +33,20 @@ class Other extends QfShop
         header('X-Accel-Buffering: no'); // 防止 Nginx 缓冲
 
         $title = input('title', '');
-        if (empty($title)) {
+
+        // 被屏蔽的关键词，用逗号分隔
+        $banKeywords = explode(',', Config('qfshop.ban_keywords'));
+        // 检查$name是否包含屏蔽关键词
+        $blocked = false;
+        foreach ($banKeywords as $keyword) {
+            $keyword = trim($keyword);
+            if ($keyword !== '' && mb_strpos($title, $keyword) !== false) {
+                $blocked = true;
+                break;
+            }
+        }
+
+        if (empty($title) || $blocked) {
             echo "data: [DONE] 无搜索词\n\n";
             ob_flush();
             flush();

@@ -1,17 +1,18 @@
 <div class="headerBox">
-    <div class="bg" {notempty name="fixed"}:style="{ opacity: elementOpacity }"{/notempty}></div>
+    <div class="bg" {notempty name="fixed" }:style="{ opacity: elementOpacity }" {/notempty}></div>
     <div class="box">
-        <a href="/" class="logoBox" {notempty name="fixed"}:style="{ opacity: elementOpacity }"{/notempty}>
+        <a href="/" class="logoBox" {notempty name="fixed" }:style="{ opacity: elementOpacity }" {/notempty}>
             {notempty name="config.logo"}
             <img class="logo" src="{$config.logo}" alt="{$config.app_name}"></img>
             {/notempty}
-            
+
             {if condition="$config.app_name && $config.app_name_hide!=1"}
             <div class="title">{$config.app_name}</div>
             {/if}
         </a>
-        <div class="search" {notempty name="fixed"}:style="{ opacity: elementOpacity }"{/notempty}>
-            <input type="text" v-model="keyword" placeholder="输入关键字进行搜索" @keyup.enter="searchBtn" confirm-type="search" @confirm="searchBtn">
+        <div class="search" {notempty name="fixed" }:style="{ opacity: elementOpacity }" {/notempty}>
+            <input type="text" v-model="keyword" placeholder="输入关键字进行搜索" @keyup.enter="searchBtn" confirm-type="search"
+                @confirm="searchBtn">
             <div class="btn" @click="searchBtn">
                 <i class="iconfont icon-sousuo"></i>
             </div>
@@ -24,7 +25,7 @@
             <div class="item" @click="layerVisible = true">提交需求</div>
             {/empty}
             <div class="btns" v-html="`{$config.app_links}`"></div>
-            
+
             <div class="iconfont icon-caidan" @click="drawer = true"></div>
         </div>
     </div>
@@ -32,34 +33,19 @@
 <div class="headerKox"></div>
 
 
-<el-dialog
-    v-model="qcodeVisible"
-    width="300"
-  >
+<el-dialog v-model="qcodeVisible" width="300">
     <img src="{$config.qcode}" style="width: 100%" />
 </el-dialog>
 
-<el-dialog
-    v-model="layerVisible"
-    width="300"
-  >
+<el-dialog v-model="layerVisible" width="300">
     <div class="layerBox">
-		<div class="vname">提交需求</div>
-	    <el-input
-            v-model="content"
-            placeholder="请输入你想看的资源信息~"
-            type="textarea"
-            resize='none'
-          ></el-input>
-		<div class="vbtn" @click="saveBtn">提交</div>
-	</div>
+        <div class="vname">提交需求</div>
+        <el-input v-model="content" placeholder="请输入你想看的资源信息~" type="textarea" resize='none'></el-input>
+        <div class="vbtn" @click="saveBtn">提交</div>
+    </div>
 </el-dialog>
 
-<el-dialog
-    v-model="drawer"
-    width="300"
-    center
-  >
+<el-dialog v-model="drawer" width="300" center>
     <div class="drawer">
         {notempty name="config.qcode"}
         <div class="item" @click="qcodeVisible = true">加入群聊</div>
@@ -78,6 +64,10 @@
                 <block v-if="dialogItem.is_type==0">
                     <div class="title">请使用 <span>夸克APP</span> 扫码获取</div>
                     <div class="tips">打开夸克APP- 点击搜索框中的相机 - 点击扫码</div>
+                </block>
+                <block v-if="dialogItem.is_type==3">
+                    <div class="title">请使用 <span>UC浏览器</span> 扫码获取</div>
+                    <div class="tips">打开UC浏览器- 点击搜索框中的相机 - 点击扫码</div>
                 </block>
                 <block v-else>
                     <div class="title">请使用 <span>手机扫码</span> 获取</div>

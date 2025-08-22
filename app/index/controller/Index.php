@@ -105,13 +105,37 @@ class Index extends QfShop
      */    
     public function list($name,$page=1,$cate='')
     {
+        $config = config("qfshop");
+
+        // 被屏蔽的关键词，用逗号分隔
+        $banKeywords = explode(',', $config['ban_keywords']);
+
+        // 默认$list为空
+        $list = [
+            'total_result' => 0,
+            'items' => []
+        ];
+
+        // 检查$name是否包含屏蔽关键词
+        $blocked = false;
+        foreach ($banKeywords as $keyword) {
+            $keyword = trim($keyword);
+            if ($keyword !== '' && mb_strpos($name, $keyword) !== false) {
+                $blocked = true;
+                break;
+            }
+        }
+
         $data['page_no'] = $page;
         $data['page_size'] = 10;
         $data['title'] = $name;
         $data['category_id'] = $cate;
         $data['search_type'] = 1;
         $data['is_time'] = 1;
-        $list = $this->SourceModel->getList($data);
+        if (!$blocked) {
+            // 没有屏蔽关键词才去查询
+            $list = $this->SourceModel->getList($data);
+        }
         
         
         $rankList = $this->SourceCategoryModel->field('name,image')->where([['status','=',0],['is_sys','=',1]])->order('sort desc')->select();
@@ -132,10 +156,6 @@ class Index extends QfShop
                 );
             }
         }
-        
-
-        $config = config("qfshop");
-
 
         // 查询数据库，按 weight 排序
         $lines = $this->ApiListModel
@@ -179,6 +199,7 @@ class Index extends QfShop
         }
 
         // 传给模板
+        View::assign('blocked', $blocked);
         View::assign('displayList', $displayList);
         View::assign('firstKey', $firstKey);
         View::assign('hotList', $hotList);
