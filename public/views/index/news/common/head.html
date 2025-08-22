@@ -65,7 +65,7 @@
                     <div class="title">请使用 <span>夸克APP</span> 扫码获取</div>
                     <div class="tips">打开夸克APP- 点击搜索框中的相机 - 点击扫码</div>
                 </block>
-                <block v-if="dialogItem.is_type==3">
+                <block v-else-if="dialogItem.is_type==3">
                     <div class="title">请使用 <span>UC浏览器</span> 扫码获取</div>
                     <div class="tips">打开UC浏览器- 点击搜索框中的相机 - 点击扫码</div>
                 </block>
