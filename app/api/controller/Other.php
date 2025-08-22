@@ -39,12 +39,12 @@ class Other extends QfShop
             flush();
             exit;
         }
-        $is_type = input('is_type', 0); //0夸克  2百度
+        $is_type = input('is_type', 0); //0夸克  2百度 3Uc
         $is_show = input('is_show', 0); //0加密网址  1显示网址
 
         // 查找一条可用线路
         $lines = $this->ApiListModel->where('status', 1)->where('pantype', $is_type)->order('weight desc')->select()->toArray();
-        
+
         // 获取自定义线路并合并到线路列表前面
         $lines = array_merge($this->getCustomLines(), $lines);
 
@@ -54,9 +54,10 @@ class Other extends QfShop
             flush();
             exit;
         }
-        
+
         foreach ($lines as $line) {
             $result = [];
+            echo "线路：" . $line['name'] . "\n\n";
             $type = $line['type'] ?? 'api';
             if ($type === 'tg') {
                 $result = $this->handleTg($line, $title);
@@ -70,17 +71,17 @@ class Other extends QfShop
 
             foreach ($result as $item) {
                 $item['is_type'] = determineIsType($item['url']);
-                if(Config('qfshop.is_quan_zc')==1){
+                if (Config('qfshop.is_quan_zc') == 1) {
                     //检测是否有效
                     $infoData = $this->verificationUrl($item['url']);
                     if (!empty($infoData['stoken'])) {
                         $item['stoken'] = $infoData['stoken'];
                     }
-                    if($infoData === 0) {
+                    if ($infoData === 0) {
                         continue;
                     }
                 }
-                if(config('qfshop.is_quan_type') != 1 && $is_show != 1){
+                if (config('qfshop.is_quan_type') != 1 && $is_show != 1) {
                     $item['url'] = encryptObject($item['url']);
                 }
                 echo "data: " . str_replace(["\n", "\r"], '', json_encode($item, JSON_UNESCAPED_UNICODE)) . "\n\n";
@@ -99,7 +100,7 @@ class Other extends QfShop
      * 
      * @return void
      */
-    public function all_search($param='')
+    public function all_search($param = '')
     {
         $title = $param ?: input('title', '');
         if (empty($title)) {
@@ -111,7 +112,7 @@ class Other extends QfShop
         $map[] = ['is_delete', '=', 0];
         $map[] = ['is_time', '=', 1];
         $map[] = ['title|description', 'like', '%' . trim($title) . '%'];
-            
+
         $urls = $this->model->where($map)->field('source_id as id, title, url,is_time')->order('update_time', 'desc')->limit(5)->select()->toArray();
         if (!empty($urls)) {
             $ids = array_column($urls, 'id');
@@ -131,7 +132,7 @@ class Other extends QfShop
             $startTime = time(); // 记录开始时间
             while (Cache::has($title . '_processing')) {
                 usleep(1000000); // 暂停1秒
-        
+
                 // 检查是否超过60秒
                 if (time() - $startTime > 60) {
                     return !empty($param) ? [] : jok('临时资源获取成功', []);
@@ -143,7 +144,7 @@ class Other extends QfShop
         // 设置处理状态为正在处理
         Cache::set($title . '_processing', true, 60); // 锁定60秒
 
-        
+
         $typeV = input('type', 0);
 
         $searchList = []; //查询的结果集
@@ -152,12 +153,12 @@ class Other extends QfShop
         $num_success = 0;
 
         $datas_zc = []; //最终未转存的数据
-        $num_total_zc = $typeV==1?3:0; //最多想要几条未转存的结果
+        $num_total_zc = $typeV == 1 ? 3 : 0; //最多想要几条未转存的结果
         $num_success_zc = 0;
 
         // 查找一条可用线路
         $lines = $this->ApiListModel->where('status', 1)->where('pantype', $is_type)->order('weight desc')->select()->toArray();;
-        
+
         // 获取自定义线路并合并到线路列表前面
         $lines = array_merge($this->getCustomLines(), $lines);
 
@@ -196,7 +197,7 @@ class Other extends QfShop
                             $this->processUrl($item, $num_success, $datas);
                         }
                     }
-                }else if($num_success_zc < $num_total_zc){
+                } else if ($num_success_zc < $num_total_zc) {
                     //检测是否有效
                     $infoData = $this->verificationUrl($item['url']);
                     if (!empty($infoData['stoken'])) {
@@ -210,7 +211,7 @@ class Other extends QfShop
                                 $datas_zc[] = $item;
                                 $num_success_zc++;
                             }
-                        } 
+                        }
                     }
                 }
             }
@@ -218,10 +219,10 @@ class Other extends QfShop
         Cache::set($title, $datas, 60); // 缓存结果60秒
         Cache::delete($title . '_processing'); // 解锁
 
-        if($typeV == 1){
+        if ($typeV == 1) {
             $datas = array_merge($datas, $datas_zc);
         }
-        
+
         return !empty($param) ? $datas : jok('临时资源获取成功', $datas);
     }
 
@@ -241,7 +242,7 @@ class Other extends QfShop
         //         'num' => $i,
         //     ];
         // }, range(1, 6));
-        
+
         // 可以在这里添加更多自定义线路
         // 例如：
         /*
@@ -252,7 +253,7 @@ class Other extends QfShop
             'count' => 5,
         ];
         */
-        return $customLines??[];
+        return $customLines ?? [];
     }
 
     /**
@@ -266,9 +267,10 @@ class Other extends QfShop
         // 根据类型选择搜索参数
         $panType = [
             0 => 'quark',   // 夸克
-            2 => 'baidu'    // 百度
+            2 => 'baidu',    // 百度
+            3 => 'uc',    // UC
         ];
-        
+
         if (!isset($panType[$type]) || $maxCount <= 0) {
             return [];
         }
@@ -296,7 +298,7 @@ class Other extends QfShop
 
         // 简化参数处理
         $queryParams = $method === 'GET' ? $params : [];
-        
+
         // 处理POST数据
         if ($method === 'POST' && !empty($params)) {
             $postData = http_build_query($params);
@@ -342,11 +344,11 @@ class Other extends QfShop
                 }
                 $row[$targetKey] = $value;
 
-                if($targetKey=='url'){
+                if ($targetKey == 'url') {
                     // 将任何类型的值转换为字符串
                     $stringValue = '';
-                    
-                    if(is_array($value)) {
+
+                    if (is_array($value)) {
                         // 原始数组转字符串
                         $stringValue = json_encode($value, JSON_UNESCAPED_UNICODE);
                         // JSON 中链接中的 / 会变成 \/，替换回来
@@ -356,24 +358,26 @@ class Other extends QfShop
                     }
 
                     // 从字符串中提取夸克网盘链接
-                    if($type === 0 && preg_match('/https:\/\/pan\.quark\.cn\/s\/[a-zA-Z0-9]+/', $stringValue, $urlMatch)) {
+                    if ($type === 0 && preg_match('/https:\/\/pan\.quark\.cn\/s\/[a-zA-Z0-9]+/', $stringValue, $urlMatch)) {
+                        $row['url'] = trim($urlMatch[0]);
+                    }
+                    else if($type === 3 && preg_match('/https:\/\/drive\.uc\.cn\/s\/[a-zA-Z0-9]+/', $stringValue, $urlMatch)) {
                         $row['url'] = trim($urlMatch[0]);
                     } 
                     // 从字符串中提取百度网盘链接
-                    else if($type === 2 && preg_match('/https:\/\/pan\.baidu\.com\/s\/[a-zA-Z0-9_-]+(\?pwd=[a-zA-Z0-9]+)?/', $stringValue, $urlMatch)) {
+                    else if ($type === 2 && preg_match('/https:\/\/pan\.baidu\.com\/s\/[a-zA-Z0-9_-]+(\?pwd=[a-zA-Z0-9]+)?/', $stringValue, $urlMatch)) {
                         $row['url'] = trim($urlMatch[0]);
 
                         // 检查URL中是否已有pwd参数，如果没有但字符串中有pwd字段，则添加
-                        if(!strpos($row['url'], '?pwd=') && preg_match('/["\'](pwd|code)["\']\s*:\s*["\']([^"\']+)["\']/', $stringValue, $pwdMatches)) {
+                        if (!strpos($row['url'], '?pwd=') && preg_match('/["\'](pwd|code)["\']\s*:\s*["\']([^"\']+)["\']/', $stringValue, $pwdMatches)) {
                             $row['url'] .= '?pwd=' . $pwdMatches[2];
                         }
-                    }
-                    else {
+                    } else {
                         $row['url'] = '';
                     }
                 }
             }
-            if(!empty($row['url'])){
+            if (!empty($row['url'])) {
                 $result[] = $row;
             }
         }
@@ -392,15 +396,16 @@ class Other extends QfShop
         // 根据类型选择搜索参数
         $panType = [
             0 => 'quark',   // 夸克
-            2 => 'baidu'    // 百度
+            2 => 'baidu',    // 百度
+            3 => 'uc',    // UC
         ];
-        
+
         if (!isset($panType[$type]) || $maxCount <= 0) {
             return [];
         }
 
         $results = [];
-        $url = 'https://t.me/s/'.$line['url'].'?q='.urlencode($title);
+        $url = 'https://t.me/s/' . $line['url'] . '?q=' . urlencode($title);
         $dom = getDom($url);
         $finder = new \DomXPath($dom);
 
@@ -409,27 +414,34 @@ class Other extends QfShop
         foreach ($nodes as $node) {
             // 获取 HTML 内容
             $htmlContent = $dom->saveHTML($node);
-        
-            // 提取标题（名称：xxx）
+
+            // // 提取标题（名称：xxx）
+            // if (preg_match('/名称：(.+?)<br/i', $htmlContent, $titleMatch)) {
+            //     $parsedItem['title'] = trim(strip_tags($titleMatch[1]));
+            // } else {
+            //     $parsedItem['title'] = $title;
+            // }
             if (preg_match('/名称：(.+?)<br/i', $htmlContent, $titleMatch)) {
-                $parsedItem['title'] = trim(strip_tags($titleMatch[1]));
+                $parsedItem['title'] = trim(html_entity_decode(strip_tags($titleMatch[1]), ENT_QUOTES, 'UTF-8'));
             } else {
                 $parsedItem['title'] = $title;
             }
-        
+
             // 提取夸克链接（可支持百度扩展）
             $parsedItem['url'] = '';
             if ($type === 0 && preg_match('/https:\/\/pan\.quark\.cn\/s\/[a-zA-Z0-9]+/', $htmlContent, $urlMatch)) {
                 $parsedItem['url'] = trim($urlMatch[0]);
-            } elseif ($type === 2 && preg_match('/https:\/\/pan\.baidu\.com\/s\/[a-zA-Z0-9_-]+(\?pwd=[a-zA-Z0-9]+)?/', $htmlContent, $urlMatch)) {
+            }else if ($type === 3 && preg_match('/https:\/\/drive\.uc\.cn\/s\/[a-zA-Z0-9]+/', $htmlContent, $urlMatch)) {
+                $parsedItem['url'] = trim($urlMatch[0]);
+            } else if ($type === 2 && preg_match('/https:\/\/pan\.baidu\.com\/s\/[a-zA-Z0-9_-]+(\?pwd=[a-zA-Z0-9]+)?/', $htmlContent, $urlMatch)) {
                 $parsedItem['url'] = trim($urlMatch[0]);
             }
-        
+
             // 过滤不合法或无效链接
             if ($parsedItem['title'] && $parsedItem['url']) {
                 $results[] = $parsedItem;
             }
-        
+
             if (count($results) >= $maxCount) {
                 return $results;
             }
@@ -466,7 +478,8 @@ class Other extends QfShop
         // 定义网盘链接匹配规则
         $panPatterns = [
             0 => '/https:\/\/pan\.quark\.cn\/s\/[a-zA-Z0-9]+/', // 夸克
-            2 => '/https:\/\/pan\.baidu\.com\/s\/[a-zA-Z0-9_-]+(\?pwd=[a-zA-Z0-9]+)?/' // 百度（包含提取码）
+            2 => '/https:\/\/pan\.baidu\.com\/s\/[a-zA-Z0-9_-]+(\?pwd=[a-zA-Z0-9]+)?/', // 百度（包含提取码）
+            3 => '/https:\/\/drive\.uc\.cn\/s\/[a-zA-Z0-9]+/', // UC
         ];
 
         // 获取DOM并设置XPath查询
@@ -474,16 +487,16 @@ class Other extends QfShop
         if (!$dom) {
             return $results;
         }
-        
+
         $finder = new \DomXPath($dom);
         $xpath = $this->buildXPathQuery($tag, $classString);
         $nodes = $finder->query($xpath);
-        
+
         foreach ($nodes as $node) {
             if (count($results) >= $maxCount) {
                 break;
             }
-            
+
             $html = $dom->saveHTML($node);
             $item = [
                 'title' => '',
@@ -492,7 +505,7 @@ class Other extends QfShop
 
             // 提取资源标题
             $item['title'] = $this->extractTitle($html, $tagTitle, $classStringTitle);
-            
+
             // 尝试直接从当前HTML中提取网盘链接
             if (preg_match($panPatterns[$type], $html, $match)) {
                 $item['url'] = trim($match[0]);
@@ -530,7 +543,7 @@ class Other extends QfShop
                 $xpathConditions[] = "contains(concat(' ', normalize-space(@class), ' '), ' {$cls} ')";
             }
         }
-        
+
         return "//{$tag}" . (empty($xpathConditions) ? "" : "[" . implode(' and ', $xpathConditions) . "]");
     }
 
@@ -548,16 +561,16 @@ class Other extends QfShop
         if (preg_match('/名称：(.*?)\n\n描述：/s', $html, $match)) {
             return trim(strip_tags($match[1]));
         }
-        
+
         // 尝试根据标签和类名匹配
         $escapedClass = preg_quote($classStringTitle, '#');
         $escapedTag = preg_quote($tagTitle, '#');
-        $pattern = '#<'.$escapedTag.'[^>]*class=["\'][^"\']*' . $escapedClass . '[^"\']*["\'][^>]*>(.*?)</'.$escapedTag.'>#s';
-        
+        $pattern = '#<' . $escapedTag . '[^>]*class=["\'][^"\']*' . $escapedClass . '[^"\']*["\'][^>]*>(.*?)</' . $escapedTag . '>#s';
+
         if (preg_match($pattern, $html, $titleMatch)) {
             return trim(strip_tags($titleMatch[1]));
         }
-        
+
         return '';
     }
 
@@ -575,44 +588,44 @@ class Other extends QfShop
     private function extractUrlFromDetailPage($html, $line, $baseUrl, $tagUrl, $classStringUrl, $panPattern)
     {
         list($tagD, $classStringD) = explode('+', $line['html_url'], 2);
-        
+
         // 构建匹配详情页链接的正则表达式
         $detailUrlPattern = $this->buildHrefPattern($tagD, $classStringD);
-        
+
         if (!preg_match($detailUrlPattern, $html, $match)) {
             return '';
         }
-        
+
         // 处理相对URL
         $detailUrl = trim($match[1]);
         $fullDetailUrl = $this->buildFullUrl($detailUrl, $baseUrl);
-        
+
         // 获取详情页内容
         $dom2 = getDom($fullDetailUrl);
         if (!$dom2) {
             return '';
         }
-        
+
         $finder2 = new \DomXPath($dom2);
         $xpath2 = $this->buildXPathQuery($tagUrl, $classStringUrl);
         $nodes2 = $finder2->query($xpath2);
-        
+
         // 遍历详情页节点查找网盘链接
         foreach ($nodes2 as $node2) {
             $html2 = $dom2->saveHTML($node2);
-            
+
             // 尝试从内容中提取
             $escapedClass = preg_quote($classStringUrl, '#');
             $escapedTag = preg_quote($tagUrl, '#');
-            $contentPattern = '#<'.$escapedTag.'[^>]*class=["\'][^"\']*' . $escapedClass . '[^"\']*["\'][^>]*>(.*?)</'.$escapedTag.'>#s';
-            
+            $contentPattern = '#<' . $escapedTag . '[^>]*class=["\'][^"\']*' . $escapedClass . '[^"\']*["\'][^>]*>(.*?)</' . $escapedTag . '>#s';
+
             if (preg_match($contentPattern, $html2, $titleMatch)) {
                 $extractedUrl = trim(strip_tags($titleMatch[1]));
                 if (preg_match($panPattern, $extractedUrl, $urlMatch)) {
                     return trim($urlMatch[0]);
                 }
             }
-            
+
             // 尝试从href属性中提取
             $hrefPattern = $this->buildHrefPattern($tagUrl, $classStringUrl);
             if (preg_match($hrefPattern, $html2, $match)) {
@@ -622,7 +635,7 @@ class Other extends QfShop
                 }
             }
         }
-        
+
         return '';
     }
 
@@ -640,15 +653,15 @@ class Other extends QfShop
         // 尝试从内容中提取
         $escapedClass = preg_quote($classStringUrl, '#');
         $escapedTag = preg_quote($tagUrl, '#');
-        $contentPattern = '#<'.$escapedTag.'[^>]*class=["\'][^"\']*' . $escapedClass . '[^"\']*["\'][^>]*>(.*?)</'.$escapedTag.'>#s';
-        
+        $contentPattern = '#<' . $escapedTag . '[^>]*class=["\'][^"\']*' . $escapedClass . '[^"\']*["\'][^>]*>(.*?)</' . $escapedTag . '>#s';
+
         if (preg_match($contentPattern, $html, $titleMatch)) {
             $extractedUrl = trim(strip_tags($titleMatch[1]));
             if (preg_match($panPattern, $extractedUrl, $urlMatch)) {
                 return trim($urlMatch[0]);
             }
         }
-        
+
         // 尝试从href属性中提取
         $hrefPattern = $this->buildHrefPattern($tagUrl, $classStringUrl);
         if (preg_match($hrefPattern, $html, $match)) {
@@ -657,7 +670,7 @@ class Other extends QfShop
                 return trim($urlMatch[0]);
             }
         }
-        
+
         return '';
     }
 
@@ -716,13 +729,13 @@ class Other extends QfShop
             0 => '/https:\/\/pan\.quark\.cn\/[^\s]+/',   // 夸克
             2 => '/https:\/\/pan\.baidu\.com\/[^\s]+/',  // 百度
         ];
-        
+
         if (!isset($pattern[$type])) {
             return [];
         }
 
         try {
-            $res = curlHelper($urlDefault."/v/api/getToken", "GET", null, [], "", "", 5)['body'] ?? null;
+            $res = curlHelper($urlDefault . "/v/api/getToken", "GET", null, [], "", "", 5)['body'] ?? null;
             if (!$res) return $url2;
         } catch (Exception $err) {
             return $url2;
@@ -730,7 +743,7 @@ class Other extends QfShop
 
         $res = json_decode($res, true);
         $token = $res['token'] ?? '';
-        if(empty($token)){
+        if (empty($token)) {
             return $url2;
         }
 
@@ -742,7 +755,7 @@ class Other extends QfShop
             // 4 => "/v/api/getDJ",
             // 5 => "/v/api/getKK"
         ];
-        
+
         // 根据 apiType 确定要调用的接口列表
         if ($apiType == 0) {
             // 全部接口
@@ -757,14 +770,14 @@ class Other extends QfShop
 
         // 请求头
         $urlData = array(
-            'name' => $title, 
+            'name' => $title,
             'token' => $token
         );
         $headers = ['Content-Type: application/json'];
 
         foreach ($apiList as $apiUrl) {
             try {
-                $response = curlHelper($urlDefault.$apiUrl, "POST", json_encode($urlData), $headers, "", "", 5);
+                $response = curlHelper($urlDefault . $apiUrl, "POST", json_encode($urlData), $headers, "", "", 5);
                 $res = isset($response['body']) ? json_decode($response['body'], true) : null;
             } catch (Exception $err) {
                 continue;
@@ -779,7 +792,7 @@ class Other extends QfShop
                     if (preg_match('/提取码[:：]?\s*([a-zA-Z0-9]{4})/', $value['answer'], $codeMatch)) {
                         $link .= '?pwd=' . $codeMatch[1];
                     }
-                    $titleText = preg_replace('/\s*[\(（]?(夸克|百度)?[\)）]?\s*/u', '', $value['answer']??'');
+                    $titleText = preg_replace('/\s*[\(（]?(夸克|百度)?[\)）]?\s*/u', '', $value['answer'] ?? '');
                     $url2[] = [
                         'title' => $titleText,
                         'url' => $link
@@ -798,7 +811,8 @@ class Other extends QfShop
      * 验证夸克地址是否有效
      * @return array
      */
-    private function verificationUrl($url) {
+    private function verificationUrl($url)
+    {
         $code = '';
         if (preg_match('/\?pwd=([^,\s&]+)/', $url, $pwdMatch)) {
             $code = trim($pwdMatch[1]);
@@ -815,7 +829,7 @@ class Other extends QfShop
         if ($res['code'] !== 200) {
             return 0;
         }
-        
+
         return $res['data'];
     }
 
@@ -824,14 +838,14 @@ class Other extends QfShop
      * @return void
      */
     public function save_url()
-    {   
+    {
         $value = [
             'title'  => input('title', ''),
             'url'    => urldecode(input('url', '')),
             'stoken' => input('stoken', ''),
         ];
         $value['url'] = decryptObject($value['url']);
-        
+
         if (empty($value['title']) || empty($value['url'])) {
             return jerr("参数不对");
         }
@@ -840,7 +854,7 @@ class Other extends QfShop
         $map[] = ['is_delete', '=', 0];
         $map[] = ['is_time', '=', 1];
         $map[] = ['content', '=', $value['url']];
-            
+
         $url = $this->model->where($map)->field('source_id as id, title, url')->find();
         if (!empty($url)) {
             $this->model->where('source_id', $url['id'])->update(['update_time' => time()]);
@@ -849,7 +863,7 @@ class Other extends QfShop
         }
 
         //同一个搜索内容锁机
-        $keys = $value['url'].'ACAA';
+        $keys = $value['url'] . 'ACAA';
         if (Cache::has($keys)) {
             // 检查缓存中是否已有结果
             return jok('临时资源获取成功', Cache::get($keys));
@@ -861,7 +875,7 @@ class Other extends QfShop
             $startTime = time(); // 记录开始时间
             while (Cache::has($keys . '_processing')) {
                 usleep(1000000); // 暂停1秒
-        
+
                 // 检查是否超过60秒
                 if (time() - $startTime > 60) {
                     return jok('临时资源获取成功', []);
@@ -880,56 +894,59 @@ class Other extends QfShop
 
         Cache::delete($keys . '_processing'); // 解锁
 
-        if($res['code'] !== 200){
+        if ($res['code'] !== 200) {
             return jerr($res['message']);
-        }else{
+        } else {
             $result['title'] = $res['data']['title'];
             $result['url'] = $res['data']['url'];
             Cache::set($keys, $result, 60); // 缓存结果60秒
             return jok('临时资源获取成功', $result);
         }
     }
-    
+
     // 检查 URL 是否已存在（忽略查询参数）
-    public function urlExists($searchList, $urlToCheck) {
+    public function urlExists($searchList, $urlToCheck)
+    {
         // 解析待检查的 URL
         $parsedUrlToCheck = parse_url($urlToCheck);
-    
+
         foreach ($searchList as $item) {
             $parsedUrl = parse_url($item['url']);
-    
+
             // 比较 scheme, host 和 path
-            if ($parsedUrlToCheck['scheme'] === $parsedUrl['scheme'] &&
+            if (
+                $parsedUrlToCheck['scheme'] === $parsedUrl['scheme'] &&
                 $parsedUrlToCheck['host'] === $parsedUrl['host'] &&
-                $parsedUrlToCheck['path'] === $parsedUrl['path']) {
+                $parsedUrlToCheck['path'] === $parsedUrl['path']
+            ) {
                 return true;
             }
         }
-    
+
         return false;
     }
-    
+
     /**
      * 临时资源转存
      * 
      * @return void
      */
-    public function processUrl($value, &$num_success, &$datas, $type=false) 
+    public function processUrl($value, &$num_success, &$datas, $type = false)
     {
         $substring = strstr($value['url'], 's/');
         if ($substring === false) {
-            if($type){
+            if ($type) {
                 return jerr2("资源地址格式有误");
-            }else{
+            } else {
                 return; // 模拟 continue 行为
             }
         }
-        
+
         $code = '';
-        if (preg_match('/\?pwd=([^,\s&]+)/',$value['url'], $pwdMatch)) {
+        if (preg_match('/\?pwd=([^,\s&]+)/', $value['url'], $pwdMatch)) {
             $code = trim($pwdMatch[1]);
         }
-        
+
         $urlData = array(
             'url' => $value['url'],
             'code' => $code,
@@ -940,36 +957,36 @@ class Other extends QfShop
         $transfer = new \netdisk\Transfer();
         $res = $transfer->transfer($urlData);
 
-        if($res['code'] !== 200){
-            if($type){
+        if ($res['code'] !== 200) {
+            if ($type) {
                 return jerr2($res['message']);
-            }else{
+            } else {
                 return; // 模拟 continue 行为
             }
         }
-    
+
         $patterns = '/^\d+\./';
         $title = preg_replace($patterns, '', $value['title']);
         // 添加资源到系统中
-        $data["title"] =$title;
-        $data["url"] =$res['data']['share_url'];
+        $data["title"] = $title;
+        $data["url"] = $res['data']['share_url'];
         $data["is_type"] = determineIsType($data["url"]);
-        $data["content"] =$value['url'];
-        $dataFid = $res['data']['fid']??'';
+        $data["content"] = $value['url'];
+        $dataFid = $res['data']['fid'] ?? '';
         $data["fid"] = is_array($dataFid) ? json_encode($dataFid) : $dataFid;
         $data["is_time"] = 1;
         $data["update_time"] = time();
         $data["create_time"] = time();
         $data["id"] = $this->model->insertGetId($data);
-        $datas[] =$data;
+        $datas[] = $data;
         $num_success++;
 
-        if($type){
-            return jok2('转存成功',$data);
+        if ($type) {
+            return jok2('转存成功', $data);
         }
     }
-    
-    
+
+
     /**
      * 30分钟后清除临时资源
      * 
@@ -981,8 +998,8 @@ class Other extends QfShop
         $map[] = ['is_time', '=', 1];
         $map[] = ['update_time', '<=', time() - (30 * 60)];
         $abc = $this->model->where($map)->select();
-        
-        
+
+
         $this->model->where($map)->chunk(100, function ($order) {
             foreach ($order as $value) {
                 $deles = $value->toArray();
@@ -991,14 +1008,13 @@ class Other extends QfShop
 
                 // 尝试解码，如果是有效的 JSON 数组则使用，否则转为单元素数组
                 $filelist = (is_string($fid) && ($decodedFid = json_decode($fid, true)) && is_array($decodedFid)) ? $decodedFid : (array)$fid;
-               
+
                 $this->model->where('fid', $deles['fid'])->delete();
                 $transfer = new \netdisk\Transfer();
-                $transfer->deletepdirFid($deles['is_type'],$filelist);
+                $transfer->deletepdirFid($deles['is_type'], $filelist);
             }
         });
-        
-        return jok('临时资源删除成功',$abc);
-    }
 
+        return jok('临时资源删除成功', $abc);
+    }
 }

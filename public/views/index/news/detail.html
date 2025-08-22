@@ -1,12 +1,14 @@
 {include file="news/common/header"}
 </head>
+
 <body>
     <div class="headBg" style="background-image: url({$config.home_bg});"></div>
     <div id="app" v-cloak>
         {include file="news/common/head"}
         <div class="searchBox searchDetail">
             <div class="search">
-                <input type="text" v-model="keyword" placeholder="输入关键字进行搜索" @keyup.enter="searchBtn" confirm-type="search" @confirm="searchBtn">
+                <input type="text" v-model="keyword" placeholder="输入关键字进行搜索" @keyup.enter="searchBtn"
+                    confirm-type="search" @confirm="searchBtn">
                 <div class="btn" @click="searchBtn">
                     <i class="iconfont icon-sousuo"></i>
                 </div>
@@ -49,7 +51,8 @@
                     <div class="cat">
                         <div class="l">资源类型</div>
                         <div class="r">
-                            <img src="__STATIC__/news/common/static/images/{$detail.is_type}.png" class="icon" alt="网盘图标" />
+                            <img src="__STATIC__/news/common/static/images/{$detail.is_type}.png" class="icon"
+                                alt="网盘图标" />
                             {if condition="$detail.is_type==1"}
                             <span>阿里云盘</span>
                             {elseif condition="$detail.is_type==2"/}
@@ -76,8 +79,11 @@
                     </div>
                     {/notempty}
                     <div class="btns">
-                        <div class="btn" @click.stop="copyText($event,'{$detail.title|trim}','{$detail.url}','{$detail.code}')"><i class="iconfont icon-fenxiang1"></i>复制分享</div>
-                        <a class="btn btnCol" href="javascript:;" onclick="linkBtn()"><i class="iconfont icon-yun_o"></i>立即访问</a>
+                        <div class="btn"
+                            @click.stop="copyText($event,'{$detail.title|trim}','{$detail.url}','{$detail.code}')"><i
+                                class="iconfont icon-fenxiang1"></i>复制分享</div>
+                        <a class="btn btnCol" href="javascript:;" onclick="linkBtn()"><i
+                                class="iconfont icon-yun_o"></i>立即访问</a>
                     </div>
                 </div>
                 <h3 class="samelistNav">相关资源</h3>
@@ -96,24 +102,24 @@
             </div>
             <div class="right">
                 {volist name="hotList" id="vo"}
-                    <div class="nav">
-                        {notempty name="vo.image"}
-                        <img src="{$vo.image}" alt="{$vo.name}">
-                        {/notempty}
-                        {$vo.name}
+                <div class="nav">
+                    {notempty name="vo.image"}
+                    <img src="{$vo.image}" alt="{$vo.name}">
+                    {/notempty}
+                    {$vo.name}
+                </div>
+                <div class="box">
+                    <div class="list">
+                        {volist name="vo.list" id="vos" length="5"}
+                        <a href="/s/{$vos.title}.html" class="item">
+                            <p>
+                                <span>{$key+1}</span>
+                                {$vos.title}
+                            </p>
+                        </a>
+                        {/volist}
                     </div>
-                    <div class="box">
-                        <div class="list">
-                            {volist name="vo.list" id="vos" length="5"}
-                            <a href="/s/{$vos.title}.html" class="item">
-                                <p>
-                                    <span>{$key+1}</span>
-                                    {$vos.title}
-                                </p>
-                            </a>
-                            {/volist}
-                        </div>
-                    </div>
+                </div>
                 {/volist}
             </div>
         </div>
@@ -123,18 +129,20 @@
     <script type="text/javascript" charset="utf-8">
         app.rankList = JSON.parse('<?php echo json_encode($rankList, JSON_UNESCAPED_UNICODE); ?>');
         for (const item of app.rankList) {
-            axios.get('/api/tool/ranking',{
+            axios.get('/api/tool/ranking', {
                 params: {
-                  channel: item.name
+                    channel: item.name
                 }
             })
         }
 
         function linkBtn() {
-            var item = JSON.parse('<?php echo json_encode($detail, JSON_UNESCAPED_UNICODE); ?>');
-            if(app.pc_type == 1){
+            var jsonData = '<?php echo json_encode($detail, JSON_UNESCAPED_UNICODE); ?>';
+            jsonData = jsonData.replace(/[\x00-\x1F\x7F]/g, '');
+            var item = JSON.parse(jsonData);
+            if (app.pc_type == 1) {
                 window.open(item.url);
-            }else{
+            } else {
                 item.showUrl = item.url
                 app.dialogUrl = true;
                 showUrlFun(item);
@@ -143,7 +151,7 @@
 
         function showUrlFun(item) {
             app.dialogItem = item
-            if(item.showUrl) {
+            if (item.showUrl) {
                 var canvas = qrcanvas.qrcanvas({
                     data: item.showUrl,
                     size: 120
@@ -155,4 +163,5 @@
         }
     </script>
 </body>
+
 </html>

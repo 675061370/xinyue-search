@@ -272,4 +272,34 @@ class SourceCategory extends QfShop
         return jok("启用成功");
     }
 
+
+    public function setStatus()
+    {
+        //校验Access与RBAC
+        $error = $this->access();
+        if ($error) {
+            return $error;
+        }
+        $source_category_id = input("source_category_id");
+        if (!$source_category_id) {
+            return jerr("ID参数必须填写", 400);
+        }
+
+        $d = [
+            input("type") => input("status")==1?0:1,
+            "update_time" => time(),
+        ];
+
+        //根据主键获取一行数据
+        $item = $this->model->where("source_category_id", $source_category_id)->field($this->selectDetail)->find();
+        if (empty($item)) {
+            return jerr("数据查询失败", 404);
+        }
+        //单个操作
+        $map = ["source_category_id" => $source_category_id];
+        $this->model->where($map)->update($d);
+
+        return jok("操作成功");
+    }
+
 }

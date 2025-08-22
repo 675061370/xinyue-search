@@ -9,6 +9,7 @@ use think\facade\Cache;
 use app\index\QfShop;
 use app\model\Source as SourceModel;
 use app\model\SourceCategory as SourceCategoryModel;
+use app\model\ApiList as ApiListModel;
 
 use Lizhichao\Word\VicWord;
 
@@ -21,6 +22,7 @@ class Index extends QfShop
         parent::__construct($app);
         $this->SourceModel = new SourceModel();
         $this->SourceCategoryModel = new SourceCategoryModel();
+        $this->ApiListModel = new ApiListModel();
     }
 
     /**
@@ -30,15 +32,14 @@ class Index extends QfShop
      */    
     public function index()
     {
-        $rankList = $this->SourceCategoryModel->field('name,image')->where([['status','=',0],['is_sys','=',1]])->order('sort desc')->select();
+        $rankList = $this->SourceCategoryModel->field('source_category_id,name,image,is_sys,is_type')->where([['status','=',0]])->order('sort desc')->select();
         $newList = [];
         
-        if(config("qfshop.ranking_type") == 0 && config("qfshop.home_new") == 0){
+        $map[] = ['status', '=', 1];
+        $map[] = ['is_time', '=', 0];
+        $map[] = ['is_delete', '=', 0];
+        if(config("qfshop.home_new") == 0){
             //最新榜
-            $map[] = ['status', '=', 1];
-            $map[] = ['is_time', '=', 0];
-            $map[] = ['is_delete', '=', 0];
-            
             $newList = $this->SourceModel->order(['create_time' => 'desc'])
                 ->field('title,create_time as time,source_id as id')
                 ->where($map)
@@ -50,18 +51,34 @@ class Index extends QfShop
                 });
         }
         
-        
-        
         //热门排行榜数据
         $hotList = [];
         $cacheDir = root_path('runtime/api/cache'); // runtime/cache 目录
         foreach ($rankList as $value) {
-            $cacheFile = $cacheDir . "ranking_data_{$value['name']}.cache";
-            if (file_exists($cacheFile)) {
+            if($value['is_sys'] == 1 && $value['is_type'] == 0){
+                $cacheFile = $cacheDir . "ranking_data_{$value['name']}.cache";
+                if (file_exists($cacheFile)) {
+                    $hotList[] = array(
+                        'name'=> $value['name'],
+                        'image'=> $value['image'],
+                        'list'=> json_decode(file_get_contents($cacheFile), true),
+                    );
+                }
+            }else{
+                $list = $this->SourceModel->order(['create_time' => 'desc'])
+                        ->field('title,create_time as time,source_id as id')
+                        ->where($map)
+                        ->where(['source_category_id' => $value['source_category_id']])
+                        ->limit(Config('qfshop.ranking_num') ?? 1)
+                        ->select()->each(function($item,$key){
+                            $item['times'] = substr($item['time'], 5, 5);
+                            unset($item['time']); 
+                            return $item;
+                        })->toArray();
                 $hotList[] = array(
                     'name'=> $value['name'],
                     'image'=> $value['image'],
-                    'list'=> json_decode(file_get_contents($cacheFile), true),
+                    'list'=> $list,
                 );
             }
         }
@@ -118,7 +135,52 @@ class Index extends QfShop
         
 
         $config = config("qfshop");
-        
+
+
+        // 查询数据库，按 weight 排序
+        $lines = $this->ApiListModel
+            ->field('pantype, COUNT(*) as total, MAX(weight) as max_weight')
+            ->where('status', 1)
+            ->group('pantype')
+            ->order('max_weight desc')
+            ->select();
+
+        // 统计数量
+        $linesTotal = [];
+        foreach ($lines as $item) {
+            $linesTotal[$item['pantype']] = $item['total'];
+        }
+
+        // 定义名称映射
+        $names = [
+            0 => '夸克网盘',
+            2 => '百度网盘',
+            3 => 'UC网盘'
+        ];
+
+        // 根据查询结果生成显示列表（顺序和数据库一致）
+        $displayList = [];
+        foreach ($lines as $item) {
+            if (!empty($item['total'])) {
+                $displayList[] = [
+                    'type' => $item['pantype'],
+                    'name' => $names[$item['pantype']] ?? '未知网盘',
+                    'total' => $item['total']
+                ];
+            }
+        }
+
+        // 记录第一个 key（如果需要前端默认选中）
+        $firstKey = !empty($displayList) ? $displayList[0]['type'] : null;
+
+        // 如果没有任何数据
+        if (empty($displayList)) {
+            $config['is_quan'] = 0;
+        }
+
+        // 传给模板
+        View::assign('displayList', $displayList);
+        View::assign('firstKey', $firstKey);
         View::assign('hotList', $hotList);
         View::assign('rankList', $rankList);
         View::assign('category', $category);

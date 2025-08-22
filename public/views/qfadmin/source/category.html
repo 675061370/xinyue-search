@@ -22,30 +22,41 @@
         </el-table-column>
         <el-table-column label="分类名称">
             <template slot-scope="scope">
-                <img :src="scope.row.image" style="width: 30px;height:30px;vertical-align: middle;" v-if="scope.row.image" />
+                <img :src="scope.row.image" style="width: 30px;height:30px;vertical-align: middle;"
+                    v-if="scope.row.image" />
                 <span style="vertical-align: middle;margin-left: 5px">{{scope.row.name}}</span>
+            </template>
+        </el-table-column>
+        <el-table-column label="是否展示本地" width="150" align="center">
+            <template slot-scope="scope">
+                <el-switch v-model="scope.row.is_type==1?true:false"
+                    @change="clickStatus(scope.row.source_category_id,'is_type',scope.row.is_type)">
+                </el-switch>
             </template>
         </el-table-column>
         <el-table-column label="是否每日更新" width="150" align="center">
             <template slot-scope="scope">
                 <el-switch v-model="scope.row.is_update==1?true:false"
-                    @change="clickStatus(scope.row,1)">
+                    @change="clickStatus(scope.row.source_category_id,'is_update',scope.row.is_update)">
+
                 </el-switch>
             </template>
         </el-table-column>
         <el-table-column label="是否前台展示" width="150" align="center">
             <template slot-scope="scope">
                 <el-switch v-model="scope.row.status==1?false:true"
-                    @change="clickStatus(scope.row,0)">
+                    @change="clickStatus(scope.row.source_category_id,'status',scope.row.status)">
                 </el-switch>
             </template>
         </el-table-column>
-        <el-table-column prop="sort" label="排序"  width="150" align="center">
+        <el-table-column prop="sort" label="排序" width="150" align="center">
         </el-table-column>
         <el-table-column label="操作" width="200">
             <template slot-scope="scope">
-                <el-link type="primary" @click="s2Btn(scope.row)" :underline="false">一键转存</el-link>&nbsp;&nbsp;&nbsp;&nbsp;
-                <el-link type="primary" @click="clickEdit(scope.row)" :underline="false">编辑</el-link>&nbsp;&nbsp;&nbsp;&nbsp;
+                <el-link type="primary" @click="s2Btn(scope.row)"
+                    :underline="false">一键转存</el-link>&nbsp;&nbsp;&nbsp;&nbsp;
+                <el-link type="primary" @click="clickEdit(scope.row)"
+                    :underline="false">编辑</el-link>&nbsp;&nbsp;&nbsp;&nbsp;
                 <el-link type="danger" @click="clickDelete(scope.row)" :underline="false">删除</el-link>
             </template>
         </el-table-column>
@@ -53,13 +64,14 @@
 
 
     <!-- 添加框 -->
-    <el-dialog title="添加资源分类名称" :visible.sync="dialogFormAdd" width="500px" :modal-append-to-body='false' append-to-body :close-on-click-modal='false'>
+    <el-dialog title="添加资源分类名称" :visible.sync="dialogFormAdd" width="500px" :modal-append-to-body='false' append-to-body
+        :close-on-click-modal='false'>
         <el-form :model="formAdd" :rules="rules" ref="formAdd">
-            
+
             <el-form-item prop="name" label="分类名称" :label-width="formLabelWidth">
                 <el-input size="medium" autocomplete="off" v-model="formAdd.name"></el-input>
             </el-form-item>
-            
+
             <el-form-item prop="image" label="图标" :label-width="formLabelWidth">
                 <Single v-model="formAdd.image"></Single>
             </el-form-item>
@@ -73,10 +85,11 @@
         </div>
     </el-dialog>
     <!-- 修改框 -->
-    <el-dialog title="修改资源分类信息" :visible.sync="dialogFormEdit" width="500px" :modal-append-to-body='false' append-to-body :close-on-click-modal='false'>
+    <el-dialog title="修改资源分类信息" :visible.sync="dialogFormEdit" width="500px" :modal-append-to-body='false'
+        append-to-body :close-on-click-modal='false'>
         <el-form :model="formEdit" :rules="rules" ref="formEdit">
             <el-form-item prop="name" label="分类名称" :label-width="formLabelWidth">
-                <el-input size="medium" autocomplete="off" v-model="formEdit.name" disabled ></el-input>
+                <el-input size="medium" autocomplete="off" v-model="formEdit.name" disabled></el-input>
             </el-form-item>
             <el-form-item prop="image" label="图标" :label-width="formLabelWidth">
                 <Single v-model="formEdit.image"></Single>
@@ -90,23 +103,27 @@
             <el-button type="primary" @click="postEdit()">确认修改</el-button>
         </div>
     </el-dialog>
-     <!-- 每日更新 -->
-    <el-dialog title="每日更新" :visible.sync="dayShow" width="500px" :modal-append-to-body='false' append-to-body :close-on-click-modal='false'>
+    <!-- 每日更新 -->
+    <el-dialog title="每日更新" :visible.sync="dayShow" width="500px" :modal-append-to-body='false' append-to-body
+        :close-on-click-modal='false'>
         <div style="margin-bottom: 20px;font-size:14px;color:#666;line-height: 2">
             <font color=orangered>功能暂停使用</font>
-            <p>自动更新：<font color=orangered>转存当日及昨天的资源数据；</font></p>
+            <p>自动更新：<font color=orangered>转存当日及昨天的资源数据；</font>
+            </p>
             <font color=orangered>将此接口添加到计划任务中，计划任务每日执行一次即可；</font>
             <p>接口地址：{{domain}}/api/source/day</p>
             <p>Tips：添加计划任务后方可生效；名称重复的资源会跳过转存；</p>
             <p>宝塔任务类型：访问URL-GET</p>
         </div>
     </el-dialog>
-    
-     <!-- 全部更新 -->
-    <el-dialog title="全部转存" :visible.sync="allShow" width="500px" :modal-append-to-body='false' append-to-body :close-on-click-modal='false'>
+
+    <!-- 全部更新 -->
+    <el-dialog title="全部转存" :visible.sync="allShow" width="500px" :modal-append-to-body='false' append-to-body
+        :close-on-click-modal='false'>
         <div style="margin-bottom: 20px;font-size:14px;color:#666;line-height: 2">
             <font color=orangered>功能暂停使用</font>
-            <p>全部转存：<font color=orangered>一键转存所有资源到自己的网盘及系统中</font></p>
+            <p>全部转存：<font color=orangered>一键转存所有资源到自己的网盘及系统中</font>
+            </p>
             <font color=orangered>全部转存速度比较慢，提交后请耐心等待；名称重复的资源会跳过转存；</font>
             <p>全部转存需要按类别转存：见下方列表一键转存按钮</p>
         </div>
@@ -132,12 +149,12 @@
                     formEdit: {
                     },
                     rules: {
-                        name: [ { required: true, message: '请输入分类名称', trigger: 'blur' }],
+                        name: [{ required: true, message: '请输入分类名称', trigger: 'blur' }],
                     },
-                    
+
                     allShow: false,
                     dayShow: false,
-                    domain: window.location.protocol+'//'+window.location.host
+                    domain: window.location.protocol + '//' + window.location.host
                 }
             },
             methods: {
@@ -167,7 +184,7 @@
                                 })
                                 .catch(function (error) {
                                     that.$message.error('服务器内部错误');
-console.log(error);
+                                    console.log(error);
                                 });
                         }
                     });
@@ -191,14 +208,14 @@ console.log(error);
                                 })
                                 .catch(function (error) {
                                     that.$message.error('服务器内部错误');
-console.log(error);
+                                    console.log(error);
                                 });
                         }
                     });
                 },
                 clickAdd() {
                     var that = this;
-                    that.formAdd = { sort: 0,image: '' };
+                    that.formAdd = { sort: 0, image: '' };
                     that.dialogFormAdd = true;
                 },
                 clickDelete(row) {
@@ -224,20 +241,17 @@ console.log(error);
                             })
                             .catch(function (error) {
                                 that.$message.error('服务器内部错误');
-console.log(error);
+                                console.log(error);
                             });
                     }).catch(() => {
                     });
                 },
-                clickStatus(row,type) {
+                clickStatus(source_category_id, type, status) {
                     var that = this;
-                    let url = row.status ? '/admin/source_category/enable' : '/admin/source_category/disable'
-                    if(type==1){
-                        url = !row.is_update ? '/admin/source_category/enable' : '/admin/source_category/disable'
-                    }
-                    axios.post(url, Object.assign({}, PostBase, {
-                        source_category_id: row.source_category_id,
-                        type: type
+                    axios.post('/admin/source_category/setStatus', Object.assign({}, PostBase, {
+                        source_category_id: source_category_id,
+                        type: type,
+                        status: status
                     }))
                         .then(function (response) {
                             that.getList();
@@ -252,7 +266,7 @@ console.log(error);
                         })
                         .catch(function (error) {
                             that.$message.error('服务器内部错误');
-console.log(error);
+                            console.log(error);
                         });
                 },
                 clickEdit(row) {
@@ -264,7 +278,7 @@ console.log(error);
                         .then(function (response) {
                             if (response.data.code == CODE_SUCCESS) {
                                 that.formEdit = response.data.data;
-                                that.formEdit.image = that.formEdit.image||''
+                                that.formEdit.image = that.formEdit.image || ''
                                 that.dialogFormEdit = true;
                             } else {
                                 that.$message.error(response.data.message);
@@ -272,7 +286,7 @@ console.log(error);
                         })
                         .catch(function (error) {
                             that.$message.error('服务器内部错误');
-console.log(error);
+                            console.log(error);
                         });
 
                 },
@@ -291,20 +305,20 @@ console.log(error);
                         .catch(function (error) {
                             that.loading = false;
                             that.$message.error('服务器内部错误');
-console.log(error);
+                            console.log(error);
                         });
                 },
-                
 
-                s2Btn(row){
+
+                s2Btn(row) {
                     let that = this
-                    if(row.source_category_id!=1) return that.$message.error('当前版本仅支持短剧');
+                    if (row.source_category_id != 1) return that.$message.error('当前版本仅支持短剧');
                     this.$confirm('全部转存速度比较慢，提交后请耐心等待,该操作不可暂停, 是否继续?', '提示', {
                         confirmButtonText: '确定',
                         cancelButtonText: '取消',
                         type: 'warning'
                     }).then(() => {
-                        axios.post('/admin/source/transferAll', Object.assign({}, PostBase,{
+                        axios.post('/admin/source/transferAll', Object.assign({}, PostBase, {
                             source_category_id: row.source_category_id
                         }))
                             .then(function (res) {
@@ -319,8 +333,8 @@ console.log(error);
                             message: "已提交任务，稍后查看结果",
                             type: 'success'
                         });
-                    }).catch(() => {});
-                    
+                    }).catch(() => { });
+
                 },
             }
         })

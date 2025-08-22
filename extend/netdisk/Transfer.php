@@ -1,4 +1,5 @@
 <?php
+
 namespace netdisk;
 
 class Transfer
@@ -13,17 +14,17 @@ class Transfer
         $this->isType = 0; //0 转存并分享后的资源信息  1直接获取资源信息 
     }
 
-    public function getFiles($type=0,$pdir_fid=0)
+    public function getFiles($type = 0, $pdir_fid = 0)
     {
-        if($type == 1){
+        if ($type == 1) {
             //阿里
             $pan = new \netdisk\pan\AlipanPan();
             return $pan->getFiles($pdir_fid);
-        } else if($type == 2){
+        } else if ($type == 2) {
             //百度网盘
             $pan = new \netdisk\pan\BaiduPan();
             return $pan->getFiles($pdir_fid);
-        } else if($type == 3){
+        } else if ($type == 3) {
             //UC
             $pan = new \netdisk\pan\UcPan();
             return $pan->getFiles($pdir_fid);
@@ -33,10 +34,10 @@ class Transfer
             return $pan->getFiles($pdir_fid);
         }
     }
-    
+
     public function transfer($urlData = [])
     {
-        $url = $urlData['url']??'';
+        $url = $urlData['url'] ?? '';
         $config = [
             'isType' => $urlData['isType'] ?? input('isType') ?? 0,
             'url' => $url,
@@ -57,7 +58,7 @@ class Transfer
         } else {
             return jerr2("资源地址格式有误");
         }
-        
+
         $patterns = [
             'pan.quark.cn' => 0,
             'www.alipan.com' => 1,
@@ -67,7 +68,7 @@ class Transfer
             'fast.uc.cn' => 3,
             // 'pan.xunlei.com' => 4,
         ];
-        
+
         $url_type = -1;  // 默认值为 -1
         foreach ($patterns as $pattern => $type) {
             if (strpos($url, $pattern) !== false) {
@@ -75,22 +76,22 @@ class Transfer
                 break;  // 一旦匹配成功，退出循环
             }
         }
-        
+
         $this->url = $url;
 
         if ($url_type == 0) {
             //夸克
             $pan = new \netdisk\pan\QuarkPan($config);
             return $pan->transfer(strtok($pwd_id, '#'));
-        } else if($url_type == 1){
+        } else if ($url_type == 1) {
             //阿里
             $pan = new \netdisk\pan\AlipanPan($config);
             return $pan->transfer(strtok($pwd_id, '#'));
-        } else if($url_type == 2){
+        } else if ($url_type == 2) {
             //百度网盘
             $pan = new \netdisk\pan\BaiduPan($config);
             return $pan->transfer(strtok($pwd_id, '#'));
-        } else if($url_type == 3){
+        } else if ($url_type == 3) {
             //UC
             $pan = new \netdisk\pan\UcPan($config);
             return $pan->transfer(strtok($pwd_id, '#'));
@@ -100,20 +101,20 @@ class Transfer
     }
 
 
-    public function deletepdirFid($type=0,$filelist)
+    public function deletepdirFid($type = 0, $filelist)
     {
-        if($type == 1){
+        if ($type == 1) {
             //阿里
             $pan = new \netdisk\pan\AlipanPan();
             return $pan->deletepdirFid($filelist);
-        } else if($type == 2){
+        } else if ($type == 2) {
             //百度网盘
             $pan = new \netdisk\pan\BaiduPan();
             return $pan->deletepdirFid($filelist);
-        } else if($type == 3){
+        } else if ($type == 3) {
             //UC
             $pan = new \netdisk\pan\UcPan();
-            return $pan->deletepdirFid(filelist);
+            return $pan->deletepdirFid($filelist);
         } else {
             //夸克
             $pan = new \netdisk\pan\QuarkPan();

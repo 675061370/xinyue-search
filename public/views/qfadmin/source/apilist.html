@@ -7,9 +7,14 @@
     <el-form :inline="true">
         <el-form-item>
             <el-button icon="el-icon-plus" size="small" @click="clickAdd" plain>添加</el-button>
-            <el-button icon="el-icon-paperclip" size="small" @click="window.open('/api/other/web_search?title=仙逆&is_show=1', '_blank')" plain>夸克测试前台数据</el-button>
-            <el-button icon="el-icon-paperclip" size="small" @click="window.open('/api/other/web_search?title=仙逆&is_show=1&is_type=2', '_blank')" plain>百度测试前台数据</el-button>
-            
+            <el-button icon="el-icon-paperclip" size="small"
+                @click="window.open('/api/other/web_search?title=仙逆&is_show=1', '_blank')" plain>夸克测试前台数据</el-button>
+            <el-button icon="el-icon-paperclip" size="small"
+                @click="window.open('/api/other/web_search?title=仙逆&is_show=1&is_type=2', '_blank')"
+                plain>百度测试前台数据</el-button>
+            <el-button icon="el-icon-paperclip" size="small"
+                @click="window.open('/api/other/web_search?title=仙逆&is_show=1&is_type=3', '_blank')"
+                plain>UC测试前台数据</el-button>
         </el-form-item>
     </el-form>
     <el-table :data="dataList" v-loading="loading">
@@ -18,6 +23,7 @@
         <el-table-column label="网盘类型" width="100" prop="name">
             <template slot-scope="scope">
                 <span v-if="scope.row.pantype==2">百度网盘</span>
+                <span v-else-if="scope.row.pantype==3">UC网盘</span>
                 <span v-else>夸克网盘</span>
             </template>
         </el-table-column>
@@ -30,20 +36,20 @@
                 <span v-else>接口</span>
             </template>
         </el-table-column>
-        <el-table-column prop="count" label="获取资源数"  width="150" align="center">
+        <el-table-column prop="count" label="获取资源数" width="150" align="center">
         </el-table-column>
         <el-table-column label="是否开启" width="100" align="center">
             <template slot-scope="scope">
-                <el-switch v-model="scope.row.status==1?true:false"
-                    @change="clickStatus(scope.row)">
+                <el-switch v-model="scope.row.status==1?true:false" @change="clickStatus(scope.row)">
                 </el-switch>
             </template>
         </el-table-column>
-        <el-table-column prop="weight" label="排序"  width="100" align="center">
+        <el-table-column prop="weight" label="排序" width="100" align="center">
         </el-table-column>
         <el-table-column label="操作" width="200">
             <template slot-scope="scope">
-                <el-link type="primary" @click="clickEdit(scope.row)" :underline="false">编辑</el-link>&nbsp;&nbsp;&nbsp;&nbsp;
+                <el-link type="primary" @click="clickEdit(scope.row)"
+                    :underline="false">编辑</el-link>&nbsp;&nbsp;&nbsp;&nbsp;
                 <el-link type="danger" @click="clickDelete(scope.row)" :underline="false">删除</el-link>
             </template>
         </el-table-column>
@@ -51,16 +57,18 @@
 
 
     <!-- 添加框 -->
-    <el-dialog title="添加线路" :visible.sync="dialogFormAdd" width="750px" :modal-append-to-body='false' append-to-body :close-on-click-modal='false'>
+    <el-dialog title="添加线路" :visible.sync="dialogFormAdd" width="750px" :modal-append-to-body='false' append-to-body
+        :close-on-click-modal='false'>
         <el-form :model="formAdd" :rules="rules" ref="formAdd">
 
             <el-form-item prop="pantype" label="网盘类型" :label-width="formLabelWidth">
                 <el-radio-group v-model="formAdd.pantype">
                     <el-radio :label="0">夸克网盘</el-radio>
                     <el-radio :label="2">百度网盘</el-radio>
+                    <el-radio :label="3">UC网盘</el-radio>
                 </el-radio-group>
             </el-form-item>
-            
+
             <el-form-item prop="name" label="线路名称" :label-width="formLabelWidth">
                 <el-input size="medium" autocomplete="off" v-model="formAdd.name"></el-input>
             </el-form-item>
@@ -78,7 +86,8 @@
                     <el-radio label="html">网页爬虫</el-radio>
                 </el-radio-group>
                 <p style="color: red;" v-if="formAdd.type=='html'">不推荐！网页爬虫：配置复杂，请自行看描述；功能由AI编写，如无法获取也没法😄</p>
-                <p style="color: red;" v-else-if="formAdd.type=='tg'">国内服务器无法使用；比如：https://t.me/s/NewQuark  就填写NewQuark即可</p>
+                <p style="color: red;" v-else-if="formAdd.type=='tg'">国内服务器无法使用；比如：https://t.me/s/NewQuark 就填写NewQuark即可
+                </p>
             </el-form-item>
 
             <el-form-item prop="url" label="TG频道" :label-width="formLabelWidth" v-if="formAdd.type === 'tg'">
@@ -105,14 +114,16 @@
         "User-Agent": "..."
     }' />
                 </el-form-item>
-    
+
                 <el-form-item prop="fixed_params" label="接口参数" :label-width="formLabelWidth">
-                    <el-input type="textarea" v-model="formAdd.fixed_params" :rows="3" placeholder='{"search": "{keyword}"}'></el-input>
+                    <el-input type="textarea" v-model="formAdd.fixed_params" :rows="3"
+                        placeholder='{"search": "{keyword}"}'></el-input>
                     <span style="color: #999;">将search改为实际的搜索字段即可，{keyword}请勿修改</span>
                 </el-form-item>
 
                 <el-form-item prop="field_map" label="字段映射" :label-width="formLabelWidth">
-                    <el-input type="textarea" v-model="formAdd.field_map" :rows="7" placeholder='{"title": "xxx", "url": "xxx"}'></el-input>
+                    <el-input type="textarea" v-model="formAdd.field_map" :rows="7"
+                        placeholder='{"title": "xxx", "url": "xxx"}'></el-input>
                     <span style="color: #999;">结构参数名请勿修改，仅将中文修改为真实接口的字段名即可；数组字段一般是data或者data.list</span>
                 </el-form-item>
             </block>
@@ -168,7 +179,7 @@
                 </el-form-item>
 
             </block>
-            
+
             <el-form-item prop="weight" label="排序" :label-width="formLabelWidth">
                 <el-input-number v-model="formAdd.weight" :min="0" :max="999" size="medium" style="width: 120px;"
                     controls-position="right" />
@@ -183,12 +194,14 @@
         </div>
     </el-dialog>
     <!-- 修改框 -->
-    <el-dialog title="修改线路" :visible.sync="dialogFormEdit" width="750px" :modal-append-to-body='false' append-to-body :close-on-click-modal='false'>
+    <el-dialog title="修改线路" :visible.sync="dialogFormEdit" width="750px" :modal-append-to-body='false' append-to-body
+        :close-on-click-modal='false'>
         <el-form :model="formEdit" :rules="rules" ref="formEdit">
             <el-form-item prop="pantype" label="网盘类型" :label-width="formLabelWidth">
                 <el-radio-group v-model="formEdit.pantype">
                     <el-radio :label="0">夸克网盘</el-radio>
                     <el-radio :label="2">百度网盘</el-radio>
+                    <el-radio :label="3">UC网盘</el-radio>
                 </el-radio-group>
             </el-form-item>
             <el-form-item prop="name" label="线路名称" :label-width="formLabelWidth">
@@ -208,6 +221,8 @@
                     <el-radio label="html">网页爬虫</el-radio>
                 </el-radio-group>
                 <p style="color: red;" v-if="formEdit.type=='html'">不推荐！网页爬虫：配置复杂，请自行看描述；功能由AI编写，如无法获取也没法😄</p>
+                <p style="color: red;" v-else-if="formEdit.type=='tg'">国内服务器无法使用；比如：https://t.me/s/NewQuark
+                    就填写NewQuark即可</p>
             </el-form-item>
 
             <el-form-item prop="url" label="TG频道" :label-width="formLabelWidth" v-if="formEdit.type === 'tg'">
@@ -221,7 +236,7 @@
                 <el-input size="medium" autocomplete="off" v-model="formEdit.url"></el-input>
             </el-form-item>
 
-            <block  v-if="formEdit.type === 'api'">
+            <block v-if="formEdit.type === 'api'">
                 <el-form-item prop="method" label="请求方式" :label-width="formLabelWidth">
                     <el-radio-group v-model="formEdit.method">
                         <el-radio label="GET">GET</el-radio>
@@ -236,12 +251,14 @@
                 </el-form-item>
 
                 <el-form-item prop="fixed_params" label="接口参数" :label-width="formLabelWidth">
-                    <el-input type="textarea" v-model="formEdit.fixed_params" :rows="3" placeholder='{"search": "{keyword}"}'></el-input>
+                    <el-input type="textarea" v-model="formEdit.fixed_params" :rows="3"
+                        placeholder='{"search": "{keyword}"}'></el-input>
                     <span style="color: #999;">将search改为实际的搜索字段即可，{keyword}请勿修改</span>
                 </el-form-item>
 
                 <el-form-item prop="field_map" label="字段映射" :label-width="formLabelWidth">
-                    <el-input type="textarea" v-model="formEdit.field_map" :rows="7" placeholder='{"title": "xxx", "url": "xxx"}'></el-input>
+                    <el-input type="textarea" v-model="formEdit.field_map" :rows="7"
+                        placeholder='{"title": "xxx", "url": "xxx"}'></el-input>
                     <span style="color: #999;">结构参数名请勿修改，仅将中文修改为真实接口的字段名即可；数组字段一般是data或者data.list</span>
                 </el-form-item>
             </block>
@@ -297,7 +314,7 @@
                 </el-form-item>
 
             </block>
-            
+
             <el-form-item prop="weight" label="排序" :label-width="formLabelWidth">
                 <el-input-number v-model="formEdit.weight" :min="0" :max="999" size="medium" style="width: 120px;"
                     controls-position="right" />
@@ -330,7 +347,7 @@
                     formEdit: {
                     },
                     rules: {
-                        name: [ { required: true, message: '请输入分类名称', trigger: 'blur' }],
+                        name: [{ required: true, message: '请输入分类名称', trigger: 'blur' }],
                     },
                 }
             },
@@ -401,8 +418,8 @@
         "url": "资源地址"
     }
 }`
-                     };
-                     
+                    };
+
                     that.dialogFormAdd = true;
                 },
                 clickDelete(row) {
@@ -441,7 +458,7 @@
                         .then(function (response) {
                             if (response.data.code == CODE_SUCCESS) {
                                 that.formEdit = response.data.data;
-                                that.formEdit.status = that.formEdit.status==1?true:false;
+                                that.formEdit.status = that.formEdit.status == 1 ? true : false;
                                 that.dialogFormEdit = true;
                             } else {
                                 that.$message.error(response.data.message);
@@ -491,7 +508,7 @@
                             that.$message.error('服务器内部错误');
                         });
                 },
-  
+
             }
         })
     </script>

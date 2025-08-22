@@ -49,18 +49,23 @@ class UcPan extends BasePan
 
     public function transfer($pwd_id)
     {
-        //获取要转存UC资源的stoken
-        $res = $this->getStoken($pwd_id);
-        if($res['status'] !== 200) return jerr2($res['message']);
-        $infoData = $res['data'];
-        
-        if($this->isType == 1){
-            $urls['title'] = $infoData['token_info']['title'];
-            $urls['share_url'] = $this->url;
-            return jok2('检验成功', $urls);
+        if(empty($this->stoken)){
+            //获取要转存UC资源的stoken
+            $res = $this->getStoken($pwd_id);
+            if($res['status'] !== 200) return jerr2($res['message']);
+            $infoData = $res['data'];
+            
+            if($this->isType == 1){
+                $urls['title'] = $infoData['token_info']['title'];
+                $urls['share_url'] = $this->url;
+                $urls['stoken'] = $infoData['token_info']['stoken'];
+                return jok2('检验成功', $urls);
+            }
+            $stoken = $infoData['token_info']['stoken'];
+            $stoken = str_replace(' ', '+', $stoken);
+        }else{
+            $stoken = str_replace(' ', '+', $this->stoken);
         }
-        $stoken = $infoData['token_info']['stoken'];
-        $stoken = str_replace(' ', '+', $stoken);
 
         //获取要转存UC资源的详细内容
         $res = $this->getShare($pwd_id,$stoken);
@@ -246,9 +251,9 @@ class UcPan extends BasePan
      */
     public function getShareBtn($fid_list,$title)
     {
-        if(!empty($this->ad_fid)){
-            $fid_list[] = $this->ad_fid;
-        }
+        // if(!empty($this->ad_fid)){
+        //     $fid_list[] = $this->ad_fid;
+        // }
         $urlData =  array(
             'fid_list' => $fid_list, 
             'expired_type' => $this->expired_type, 

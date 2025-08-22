@@ -1,6 +1,7 @@
 {include file="news/common/header"}
 <meta name="referrer" content="never">
 </head>
+
 <body>
     <div class="headBg" style="background-image: url({$config.home_bg});"></div>
     <div id="app" v-cloak>
@@ -12,14 +13,15 @@
                     <img class="logo" src="{$config.logo}" alt="{$config.app_description}"></img>
                     {/notempty}
                     {if condition="$config.app_name && $config.app_name_hide!=1"}
-                     <span class="title">{$config.app_name}</span>
+                    <span class="title">{$config.app_name}</span>
                     {/if}
                 </div>
                 {notempty name="config.app_subname"}
-                 <div class="subTitle">{$config.app_subname}</div> 
+                <div class="subTitle">{$config.app_subname}</div>
                 {/notempty}
                 <div class="search">
-                    <input type="text" v-model="keyword" placeholder="输入关键字进行搜索" @keyup.enter="searchBtn" confirm-type="search" @confirm="searchBtn">
+                    <input type="text" v-model="keyword" placeholder="输入关键字进行搜索" @keyup.enter="searchBtn"
+                        confirm-type="search" @confirm="searchBtn">
                     <div class="btn" @click="searchBtn">
                         <i class="iconfont icon-sousuo"></i>
                     </div>
@@ -29,45 +31,51 @@
                 {if !empty($newList)}
                 <div class="block">
                     <div class="nav">
-                         {notempty name="config.home_new_img"}
+                        {notempty name="config.home_new_img"}
                         <img src="{$config.home_new_img}" alt="最新更新"></img>
                         {/notempty}
                         最新更新
                     </div>
                     <div class="content">
-                        {if $config.ranking_type == 1 } 
+                        {if $config.ranking_type == 1 }
                         <div class="list">
                             {volist name="newList" id="vos"}
-                            {if condition="strpos($_SERVER['HTTP_USER_AGENT'], 'Mobile') === false || $key < $config.ranking_m_num"}
-                            <a href="/d/{$vos.id}.html" target="_blank" class="item">
+                            {if condition="strpos($_SERVER['HTTP_USER_AGENT'], 'Mobile') === false || $key <
+                                $config.ranking_m_num"} <a href="/d/{$vos.id}.html" target="_blank" class="item">
                                 <div class="img">
+                                    {if isset($vos.src) && $vos.src != ''}
                                     <img src="{$vos.src}" alt="{$vos.title}" />
                                     <span>Loading...</span>
+                                    {else}
+                                    <span class="titleLoading">
+                                        {$vos.title|mb_substr=0,20,'utf-8'}{if mb_strlen($vos.title,'utf-8') >
+                                        20}...{/if}
+                                    </span>
+                                    {/if}
                                 </div>
                                 <p>{$vos.title}</p>
-                            </a>
-                            {/if}
-                            {/volist}
+                                </a>
+                                {/if}
+                                {/volist}
                         </div>
-                        {else /} 
+                        {else /}
                         <div class="list">
                             {volist name="newList" id="vos"}
-                            {if condition="strpos($_SERVER['HTTP_USER_AGENT'], 'Mobile') === false || $key < $config.ranking_m_num"}
-                            <a href="/d/{$vos.id}.html" target="_blank" class="item">
+                            {if condition="strpos($_SERVER['HTTP_USER_AGENT'], 'Mobile') === false || $key <
+                                $config.ranking_m_num"} <a href="/d/{$vos.id}.html" target="_blank" class="item">
                                 <p>
                                     <span>{$key+1}</span>
                                     {$vos.title}
                                 </p>
-                            </a>
-                            {/if}
-                            {/volist}
+                                </a>
+                                {/if}
+                                {/volist}
                         </div>
                         {/if}
-                        
                     </div>
                 </div>
                 {/if}
-                
+
                 {volist name="hotList" id="vo"}
                 <div class="block">
                     <div class="nav">
@@ -77,40 +85,51 @@
                         {$vo.name}
                     </div>
                     <div class="content">
-                        {if $config.ranking_type == 1 } 
+                        {if $config.ranking_type == 1 }
                         <div class="list">
                             {volist name="vo.list" id="vos"}
-                            {if condition="strpos($_SERVER['HTTP_USER_AGENT'], 'Mobile') === false || $key < $config.ranking_m_num"}
-                            <a href="/s/{$vos.title}.html" target="_blank" class="item">
+                            {if condition="strpos($_SERVER['HTTP_USER_AGENT'], 'Mobile') === false || $key <
+                                $config.ranking_m_num"} <a
+                                href="{if isset($vos.id) && $vos.id != ''}/d/{$vos.id}.html{else}/s/{$vos.title}.html{/if}"
+                                target="_blank" class="item">
                                 <div class="img">
+                                    {if isset($vos.src) && $vos.src != ''}
                                     <img src="{$vos.src}" alt="{$vos.title}" />
                                     <span>Loading...</span>
+                                    {else}
+                                    <span class="titleLoading">
+                                        {$vos.title|mb_substr=0,20,'utf-8'}{if mb_strlen($vos.title,'utf-8') >
+                                        20}...{/if}
+                                    </span>
+                                    {/if}
                                 </div>
                                 <p>{$vos.title}</p>
-                            </a>
-                            {/if}
-                            {/volist}
+                                </a>
+                                {/if}
+                                {/volist}
                         </div>
-                        {else /} 
+                        {else /}
                         <div class="list">
-                            {volist name="vo.list" id="vos"}
-                            {if condition="strpos($_SERVER['HTTP_USER_AGENT'], 'Mobile') === false || $key < $config.ranking_m_num"}
-                            <a href="/s/{$vos.title}.html" target="_blank" class="item">
+                            {volist name="vo.list" id="vos" key="key"}
+                            {if condition="strpos($_SERVER['HTTP_USER_AGENT'], 'Mobile') === false || $key <
+                                $config.ranking_m_num"} <a
+                                href="{if isset($vos.id) && $vos.id != ''}/d/{$vos.id}.html{else}/s/{$vos.title}.html{/if}"
+                                target="_blank" class="item">
                                 <p>
                                     <span>{$key+1}</span>
                                     {$vos.title}
                                 </p>
-                            </a>
-                            {/if}
-                            {/volist}
+                                </a>
+                                {/if}
+                                {/volist}
                         </div>
                         {/if}
-                        
+
                     </div>
                 </div>
                 {/volist}
-                
-                
+
+
             </div>
         </div>
         {include file="news/common/foot"}
@@ -119,12 +138,16 @@
     <script type="text/javascript" charset="utf-8">
         app.rankList = JSON.parse('<?php echo json_encode($rankList, JSON_UNESCAPED_UNICODE); ?>');
         for (const item of app.rankList) {
-            axios.get('/api/tool/ranking',{
+            if (item.is_sys != 1) {
+                continue;
+            }
+            axios.get('/api/tool/ranking', {
                 params: {
-                  channel: item.name
+                    channel: item.name
                 }
             })
         }
     </script>
 </body>
+
 </html>
