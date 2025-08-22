@@ -329,11 +329,11 @@ CREATE TABLE `qf_source_category`  (
 -- ----------------------------
 -- Records of qf_source_category
 -- ----------------------------
-INSERT INTO `qf_source_category` VALUES (1, '短剧', '', 999, 0, 1, 1, 1725114376, 1726299215);
-INSERT INTO `qf_source_category` VALUES (2, '电影', '', 998, 0, 1, 1, 1725114387, 1726303157);
-INSERT INTO `qf_source_category` VALUES (3, '电视剧', '', 997, 0, 1, 1, 1725114393, 1726303158);
-INSERT INTO `qf_source_category` VALUES (4, '动漫', '', 996, 0, 1, 1, 1725114400, 1726303159);
-INSERT INTO `qf_source_category` VALUES (5, '综艺', '', 995, 0, 1, 1, 1725114408, 1726303160);
+INSERT INTO `qf_source_category` VALUES (1, '短剧', '', 999, 0, 1, 1, 0, 1725114376, 1726299215);
+INSERT INTO `qf_source_category` VALUES (2, '电影', '', 998, 0, 1, 1, 0, 1725114387, 1726303157);
+INSERT INTO `qf_source_category` VALUES (3, '电视剧', '', 997, 0, 1, 1, 0, 1725114393, 1726303158);
+INSERT INTO `qf_source_category` VALUES (4, '动漫', '', 996, 0, 1, 1, 0, 1725114400, 1726303159);
+INSERT INTO `qf_source_category` VALUES (5, '综艺', '', 995, 0, 1, 1, 0, 1725114408, 1726303160);
 
 -- ----------------------------
 -- Table structure for qf_source_log
