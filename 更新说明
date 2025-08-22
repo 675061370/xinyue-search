@@ -1,3 +1,21 @@
+3.2升级3.5 重装 或 更新文件和表 涉及更新文件如下(好像就这些了)
+app/admin/controller/SourceCategory.php
+app/api/controller/Other.php
+app/index/controller/Index.php
+extend/netdisk/Transfer.php
+extend/netdisk/pan/UcPan.php
+public/views/index/news/common/static/css/app.css
+public/views/index/news/common/head.html
+public/views/index/news/detail.html
+public/views/index/news/index.html
+public/views/index/news/list.html
+public/views/qfadmin/source/apilist.html
+public/views/qfadmin/source/category.html
+INSERT INTO `qf_conf` VALUES ('70', 'ban_keywords', '', '关键词屏蔽', '屏蔽搜索关键词，如：庆余年,凡人修仙传', '0', '1', NULL, '1', '1', '1', '1', '1755842460', '1755842580');
+ALTER TABLE qf_source_category ADD COLUMN is_type INT(11) NOT NULL DEFAULT 0 COMMENT '0: 网络, 1: 本地';
+
+
+
 3.1升级3.2 重装 或 更新文件和表 涉及更新文件如下
 
 app/common.php
