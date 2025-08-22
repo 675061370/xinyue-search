@@ -22,24 +22,42 @@ class Source extends QfShop
         $this->searchFilter = [];
         $this->insertFields = [
             //允许添加的字段列表
-            "source_category_id","title","description","url","status","is_delete","sort","is_top","vod_content","is_type"
+            "source_category_id",
+            "title",
+            "description",
+            "url",
+            "status",
+            "is_delete",
+            "sort",
+            "is_top",
+            "vod_content",
+            "is_type"
         ];
         $this->updateFields = [
             //允许更新的字段列表
-            "source_category_id","title","description","url","status","is_delete","sort","is_top","vod_content","is_type"
+            "source_category_id",
+            "title",
+            "description",
+            "url",
+            "status",
+            "is_delete",
+            "sort",
+            "is_top",
+            "vod_content",
+            "is_type"
         ];
         $this->insertRequire = [
             //添加时必须填写的字段
             // "字段名称"=>"该字段不能为空"
-            "title"=>"资源名称必须填写",
-            "url"=>"资源地址必须填写",
+            "title" => "资源名称必须填写",
+            "url" => "资源地址必须填写",
         ];
         $this->updateRequire = [
             //修改时必须填写的字段
             // "字段名称"=>"该字段不能为空"
-            "source_id"=>"资源ID必须填写",
-            "title"=>"资源名称必须填写",
-            "url"=>"资源地址必须填写",
+            "source_id" => "资源ID必须填写",
+            "title" => "资源名称必须填写",
+            "url" => "资源地址必须填写",
         ];
         $this->model = new SourceModel();
         $this->SourceLogModel = new SourceLogModel();
@@ -60,9 +78,9 @@ class Source extends QfShop
         }
         //从请求中获取筛选数据的数组
         $map = $this->getDataFilterFromRequest();
-        $map[] = ['is_delete','=',0];
-        if(!empty(input('source_category_id'))){
-            $map[] = ['source_category_id','=',input('source_category_id')];
+        $map[] = ['is_delete', '=', 0];
+        if (!empty(input('source_category_id'))) {
+            $map[] = ['source_category_id', '=', input('source_category_id')];
         }
         empty(input('keyword')) ?: $map[] = ['title|description', 'like', '%' . input('keyword') . '%'];
         //从请求中获取排序方式
@@ -154,22 +172,23 @@ class Source extends QfShop
             return jerr($this->pk . "必须填写", 400);
         }
 
-        if (isInteger($this->pk_value)){
+        if (isInteger($this->pk_value)) {
             //根据主键获取一行数据
             $item = $this->getRowByPk();
             if (empty($item)) {
                 return jerr("数据查询失败", 404);
             }
             $this->model->where($this->pk, $this->pk_value)->delete();
-        }else{
+        } else {
             $list = explode(',', $this->pk_value);
             $this->model->where($this->pk, 'in', $list)->delete();
         }
         return jok('删除成功');
     }
-    
+
     // 判断文件编码
-    function detectFileEncoding($filename) {
+    function detectFileEncoding($filename)
+    {
         $handle = fopen($filename, 'r');
         $firstLine = fread($handle, 1024); // 读取文件的开头一部分内容
         fclose($handle);
@@ -183,8 +202,8 @@ class Source extends QfShop
             return 'UTF-8'; // 或者根据需要返回其他默认编码
         }
     }
-        
-    
+
+
     /**
      * Excel导入
      *
@@ -203,10 +222,10 @@ class Source extends QfShop
                     ->check(['file' => $file]);
                 $saveName = Filesystem::putFile('excel', $file, 'excel.csv');
 
-                ini_set("memory_limit",-1);
-                
-                $file_name = app()->getRootPath()."public/uploads/".$saveName;
-                
+                ini_set("memory_limit", -1);
+
+                $file_name = app()->getRootPath() . "public/uploads/" . $saveName;
+
                 $extension = pathinfo($file_name, PATHINFO_EXTENSION);
                 if ($extension == 'csv') {
                     return jerr('转成xlsx格式吧');
@@ -224,10 +243,10 @@ class Source extends QfShop
                 } else {
                     return jerr('不支持的文件类型');
                 }
-                
+
                 //载入文件
                 $objExcel = $PHPReader->load($file_name);
-                $excel_array = $objExcel ->getSheet(0)->toArray();
+                $excel_array = $objExcel->getSheet(0)->toArray();
                 array_shift($excel_array);  //删除第一个数组(标题);
                 $data = [];
                 $i = 0;
@@ -240,8 +259,8 @@ class Source extends QfShop
                     $existing_data[$record['title'] . '_' . $record['is_type']] = true;
                 }
 
-                 //删除这个文件
-                unlink("./uploads/".$saveName);
+                //删除这个文件
+                unlink("./uploads/" . $saveName);
 
                 foreach ($excel_array as $k => $v) {
                     $patterns = '/^\d+\.|\d+\-/';
@@ -259,8 +278,8 @@ class Source extends QfShop
                             break;
                         }
                     }
-                    
-                    $is_type = $url?determineIsType($url):0;
+
+                    $is_type = $url ? determineIsType($url) : 0;
 
                     $key = $title . '_' . $is_type;
 
@@ -269,7 +288,7 @@ class Source extends QfShop
                         $data[$k]['title'] = $title;
                         $data[$k]['url'] = $url;
                         $data[$k]["is_type"] = $is_type;
-                        $data[$k]['source_category_id'] = input('source_category_id')??0;
+                        $data[$k]['source_category_id'] = input('source_category_id') ?? 0;
                         $data[$k]['update_time'] = time();
                         $data[$k]['create_time'] = time();
 
@@ -278,14 +297,13 @@ class Source extends QfShop
                         $i++;
                     }
                 }
-                
+
 
                 $this->model->insertAll($data);
-                if($i == 0){
+                if ($i == 0) {
                     return jok('无可导入的资源，请检查表格格式');
                 }
-                return jok('导入成功'.$i.'个资源');
-                
+                return jok('导入成功' . $i . '个资源');
             } catch (ValidateException $e) {
                 return jerr($e->getMessage());
             }
@@ -294,8 +312,8 @@ class Source extends QfShop
         }
     }
 
-    
-    
+
+
     /**
      * 导出
      *
@@ -355,29 +373,28 @@ class Source extends QfShop
         if ($error) {
             return $error;
         }
-        if(empty(input("type")) || empty(input("urls"))){
+        if (empty(input("type")) || empty(input("urls"))) {
             return jerr('参数不能为空');
         }
-        
-        $source_category_id = input('source_category_id')??0;
-        
+
+        $source_category_id = input('source_category_id') ?? 0;
+
         $allData = parsePanLinks(input("urls"));
-        
+
         $quarkPlugin = new QuarkPlugin();
-        if(input("type")==2){
+        if (input("type") == 2) {
             //转存分享导入
-            $res = $quarkPlugin->transfer($allData,$source_category_id);
-        }else{
+            $res = $quarkPlugin->transfer($allData, $source_category_id);
+        } else {
             // 直接导入
-            $res = $quarkPlugin->import($allData,$source_category_id);
+            $res = $quarkPlugin->import($allData, $source_category_id);
         }
-        
-        return jok('已提交任务，稍后查看结果2',$allData);
+
+        return jok('已提交任务，稍后查看结果2', $allData);
     }
 
     /**
      * 全部转存 
-     * 转存心悦搜剧资源
      * @return void
      */
     public function transferAll()
@@ -386,7 +403,7 @@ class Source extends QfShop
         if ($error) {
             return $error;
         }
-        if(empty(input('source_category_id'))){
+        if (empty(input('source_category_id'))) {
             return jerr('参数异常');
         }
         $quarkPlugin = new QuarkPlugin();
@@ -406,12 +423,11 @@ class Source extends QfShop
             return $error;
         }
         $quarkPlugin = new QuarkPlugin();
-        $result = $quarkPlugin->getFiles(input('type')??0,input('pdir_fid')??0);
+        $result = $quarkPlugin->getFiles(input('type') ?? 0, input('pdir_fid') ?? 0);
 
-        if($result['code'] != 200){
+        if ($result['code'] != 200) {
             return jerr($result['message']);
         }
-        return jok('获取成功',$result['data']);
+        return jok('获取成功', $result['data']);
     }
-    
 }

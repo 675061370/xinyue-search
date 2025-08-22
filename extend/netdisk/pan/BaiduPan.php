@@ -1,12 +1,13 @@
 <?php
+
 namespace netdisk\pan;
 
 class BaiduPan extends BasePan
 {
 
-    public function getFiles($pdir_fid=0)
+    public function getFiles($pdir_fid = 0)
     {
-        if($pdir_fid === 0){
+        if ($pdir_fid === 0) {
             $pdir_fid = '/';
         }
         $cookie = Config('qfshop.baidu_cookie');
@@ -17,8 +18,8 @@ class BaiduPan extends BasePan
         if (is_numeric($res)) {
             return jerr2($network->getErrorMessage($res));
         }
-        
-        return jok2('获取成功',$res);
+
+        return jok2('获取成功', $res);
     }
 
     public function transfer($pwd_id)
@@ -54,19 +55,19 @@ class BaiduPan extends BasePan
         // 解析返回的参数
         list($shareId, $userId, $fsIds, $fileNames, $isDirs) = $transferParams;
 
-        if($this->isType == 1){
+        if ($this->isType == 1) {
             $urls['title'] = $fileNames[0];
             $urls['share_url'] = $this->url;
             return jok2('检验成功', $urls);
         }
 
         $folderName = Config('qfshop.baidu_file'); //默认存储路径
-        if($this->expired_type == 2){
+        if ($this->expired_type == 2) {
             $folderName = Config('qfshop.baidu_file_time'); //临时资源路径
         }
 
-        if(empty($folderName)){
-            $folderName = '/心悦转存文件';  // 未设置时默认目录
+        if (empty($folderName)) {
+            $folderName = '/默认转存文件';  // 未设置时默认目录
         }
 
         // 检查目录名是否包含非法字符
@@ -112,10 +113,10 @@ class BaiduPan extends BasePan
                 $fsIdList[] = $file['fs_id'];
                 $filePath = '/' . $folderName . '/' . $file['server_filename'];
                 $filePaths[] = $filePath;
-                
+
                 // 检查文件名是否包含广告内容
                 $containsAd = $this->containsAdKeywords($file['server_filename']);
-                
+
                 // 如果是目录，需要检查目录内的文件
                 if ($file['isdir'] == 1) {
                     // 获取子目录内容
@@ -182,7 +183,7 @@ class BaiduPan extends BasePan
             return jerr2('资源内容为空或所有转存的文件都包含广告内容，已全部删除');
         }
 
-         // 创建分享
+        // 创建分享
         $expiry = 0; // 0为永久
         // $password = substr(str_shuffle('abcdefghijklmnopqrstuvwxyz'), 0, 4); // 随机4位提取码
         $password = '6666'; // 随机4位提取码
@@ -192,8 +193,8 @@ class BaiduPan extends BasePan
             return jerr2($network->getErrorMessage($shareLink));
         }
 
-        if(!empty($password)){
-            $shareLink = $shareLink. '?pwd='. $password;
+        if (!empty($password)) {
+            $shareLink = $shareLink . '?pwd=' . $password;
         }
         // 转存成功
         return jok2("文件转存成功", [
@@ -213,22 +214,22 @@ class BaiduPan extends BasePan
     private function containsAdKeywords($filename)
     {
         $banned = Config('qfshop.quark_banned') ?? ''; // 如果出现这些字样就删除
-        
+
         // 广告关键词列表
         $adKeywords = [];
         if (!empty($banned)) {
             $adKeywords = array_map('trim', explode(',', $banned));
         }
-        
+
         // 转为小写进行比较
         $lowercaseFilename = mb_strtolower($filename);
-        
+
         foreach ($adKeywords as $keyword) {
             if (mb_strpos($lowercaseFilename, mb_strtolower($keyword)) !== false) {
                 return true;
             }
         }
-        
+
         return false;
     }
 
