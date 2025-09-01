@@ -16,12 +16,14 @@
         <div style="float:right">
             <el-form-item style="width:120px;">
                 <el-select size="small" v-model="search.source_category_id" placeholder="筛选分类">
-                    <el-option v-for="item in category" :key="item.source_category_id" :label="item.name" :value="item.source_category_id">
+                    <el-option v-for="item in category" :key="item.source_category_id" :label="item.name"
+                        :value="item.source_category_id">
                     </el-option>
                 </el-select>
             </el-form-item>
             <el-form-item>
-                <el-input placeholder="输入关键词搜索" size="small" v-model="search.keyword" @keyup.enter.native="getList_search"></el-input>
+                <el-input placeholder="输入关键词搜索" size="small" v-model="search.keyword"
+                    @keyup.enter.native="getList_search"></el-input>
             </el-form-item>
             <el-form-item>
                 <el-button type="primary" icon="el-icon-search" size="small" @click="getList_search" plain>搜索
@@ -30,7 +32,7 @@
             </el-form-item>
         </div>
     </el-form>
-    <el-table :data="dataList.data" @selection-change="changeSelection"  v-loading="loading">
+    <el-table :data="dataList.data" @selection-change="changeSelection" v-loading="loading">
         <el-table-column type="selection" width="50">
         </el-table-column>
         <el-table-column prop="source_id" label="ID" width="80">
@@ -75,7 +77,8 @@
         <el-form :model="formAdd" :rules="rules" ref="formAdd">
             <el-form-item prop="source_category_id" label="资源分类" :label-width="formLabelWidth">
                 <el-select size="medium" v-model="formAdd.source_category_id" placeholder="请选择分类">
-                    <el-option v-for="item in category" :key="item.source_category_id" :label="item.name" :value="item.source_category_id">
+                    <el-option v-for="item in category" :key="item.source_category_id" :label="item.name"
+                        :value="item.source_category_id">
                     </el-option>
                 </el-select>
             </el-form-item>
@@ -86,10 +89,12 @@
                 <el-input size="medium" autocomplete="off" placeholder="请输入资源地址" v-model="formAdd.url"></el-input>
             </el-form-item>
             <el-form-item label="关键词搜索" :label-width="formLabelWidth">
-                <el-input type="textarea" :rows="5" size="medium" autocomplete="off" placeholder="一行一个名称" v-model="formAdd.description"></el-input>
+                <el-input type="textarea" :rows="5" size="medium" autocomplete="off" placeholder="一行一个名称"
+                    v-model="formAdd.description"></el-input>
             </el-form-item>
             <el-form-item label="资源介绍" :label-width="formLabelWidth">
-                <el-input type="textarea" :rows="5" size="medium" autocomplete="off" placeholder="" v-model="formAdd.vod_content"></el-input>
+                <el-input type="textarea" :rows="5" size="medium" autocomplete="off" placeholder=""
+                    v-model="formAdd.vod_content"></el-input>
             </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -114,38 +119,35 @@
                 <el-input size="medium" autocomplete="off" placeholder="请输入资源地址" v-model="formEdit.url"></el-input>
             </el-form-item>
             <el-form-item label="关键词搜索" :label-width="formLabelWidth">
-                <el-input type="textarea" :rows="5" size="medium" autocomplete="off" placeholder="一行一个名称" v-model="formEdit.description"></el-input>
+                <el-input type="textarea" :rows="5" size="medium" autocomplete="off" placeholder="一行一个名称"
+                    v-model="formEdit.description"></el-input>
             </el-form-item>
             <el-form-item label="资源介绍" :label-width="formLabelWidth">
-                <el-input type="textarea" :rows="5" size="medium" autocomplete="off" placeholder="" v-model="formEdit.vod_content"></el-input>
+                <el-input type="textarea" :rows="5" size="medium" autocomplete="off" placeholder=""
+                    v-model="formEdit.vod_content"></el-input>
             </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
             <el-button type="primary" @click="postEdit()">确认修改</el-button>
         </div>
     </el-dialog>
-    
+
     <!-- 夸克导入数据 -->
     <el-dialog title="导入资源" :visible.sync="dialogImport" :modal-append-to-body='false' append-to-body
         :close-on-click-modal='false' width="600px">
         <el-form :model="Importform">
-            <el-form-item prop="source_category_id" label="资源分类"  label-width="90px">
+            <el-form-item prop="source_category_id" label="资源分类" label-width="90px">
                 <el-select size="medium" v-model="Importform.source_category_id" placeholder="请选择分类" clearable>
                     <el-option v-for="item in category" :key="item.source_category_id" :label="item.name"
                         :value="item.source_category_id">
                     </el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label=""  label-width="90px">
-                <el-upload class="upload-demo" :data="Importform" name="file" 
-                ref="ImportUpload"
-                drag 
-                :auto-upload="false"
-                limit="1"
-                :on-exceed="handleExceed"
-                :on-success="handleAvatarSuccess"
-                action="/admin/source/imports" 
-                accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">
+            <el-form-item label="" label-width="90px">
+                <el-upload class="upload-demo" :data="Importform" name="file" ref="ImportUpload" drag
+                    :auto-upload="false" limit="1" :on-exceed="handleExceed" :on-success="handleAvatarSuccess"
+                    action="/admin/source/imports"
+                    accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">
                     <i class="el-icon-upload"></i>
                     <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
                 </el-upload>
@@ -156,20 +158,22 @@
             <el-button type="primary" @click="ImportPost()">提交</el-button>
         </div>
     </el-dialog>
-    
+
     <!-- 批量导入数据 -->
     <el-dialog title="导入资源" :visible.sync="dialogBatch" :modal-append-to-body='false' append-to-body
         :close-on-click-modal='false' width="790px">
         <el-form :model="Batchform">
-            <el-form-item prop="type" label="选择方式"  label-width="70px">
+            <el-form-item prop="type" label="选择方式" label-width="70px">
                 <el-radio-group v-model="Batchform.type">
-                  <el-radio-button :label="1">直接导入</el-radio-button>
-                  <el-radio-button :label="2">转存分享导入</el-radio-button>
+                    <el-radio-button :label="1">直接导入</el-radio-button>
+                    <el-radio-button :label="2">转存分享导入</el-radio-button>
                 </el-radio-group>
                 <p style="color: #999;" v-if='Batchform.type==1'>直接导入：链接校验有效后直接入库；Tips：该功能不会检测是否重复；</p>
                 <p style="color: #999;" v-else-if='Batchform.type==2'>将资源转存到自己网盘后分享入库；Tips：该功能不会检测是否重复；</p>
-                <span style="color: #999;" v-if='Batchform.type==1'>支持<font color=orangered>夸克、阿里、UC、百度</font>的网盘资源(一次最多可以上传500条资源)</span>
-                <span style="color: #999;" v-else-if='Batchform.type==2'>支持<font color=orangered>夸克、阿里、UC、百度</font>的网盘资源(一次最多可以上传500条资源)</span>
+                <span style="color: #999;" v-if='Batchform.type==1'>支持<font color=orangered>夸克、阿里、UC、百度、迅雷</font>
+                    的网盘资源(一次最多可以上传500条资源)</span>
+                <span style="color: #999;" v-else-if='Batchform.type==2'>支持<font color=orangered>夸克、阿里、UC、百度、迅雷</font>
+                    的网盘资源(一次最多可以上传500条资源)</span>
             </el-form-item>
             <el-form-item prop="source_category_id" label="资源分类" label-width="70px" v-if="Batchform.type">
                 <el-select size="medium" v-model="Batchform.source_category_id" placeholder="请选择分类" clearable>
@@ -177,26 +181,21 @@
                         :value="item.source_category_id">
                     </el-option>
                 </el-select>
-                
+
             </el-form-item>
-            
+
             <el-form-item prop="urls" label="资源分类" label-width="70px" v-if="Batchform.type">
-                <el-input
-                  type="textarea"
-                  placeholder="资源示例：
+                <el-input type="textarea" placeholder="资源示例：
 一条资源一行
 https://pan.quark.cn/s/xxxxxxxx
 https://www.alipan.com/s/xxxxxxxxx
 https://drive.uc.cn/s/xxxxxxxxxxx
-https://pan.baidu.com/s/xxxxxx?pwd=xxxx"
-                  v-model="Batchform.urls"
-                  rows="20"
-                  show-word-limit
-                >
+https://pan.baidu.com/s/xxxxxx?pwd=xxxx
+https://pan.xunlei.com/s/xxxxxx?pwd=xxxx" v-model="Batchform.urls" rows="20" show-word-limit>
                 </el-input>
             </el-form-item>
-            
-  
+
+
         </el-form>
         <div slot="footer" class="dialog-footer">
             <el-button type="primary" @click="BatchPost()">提交</el-button>
@@ -235,11 +234,11 @@ https://pan.baidu.com/s/xxxxxx?pwd=xxxx"
                     },
                     dialogImport: false,
                     Importform: {
-                        
+
                     },
 
                     category: [],
-                    
+
                     dialogBatch: false,
                     Batchform: {},
                 }
@@ -365,7 +364,7 @@ https://pan.baidu.com/s/xxxxxx?pwd=xxxx"
                     this.form.page = page;
                     this.getList();
                 },
-                getcategory(){
+                getcategory() {
                     var that = this;
                     axios.post('/admin/source_category/getList', Object.assign({}, PostBase))
                         .then(function (response) {
@@ -401,16 +400,16 @@ https://pan.baidu.com/s/xxxxxx?pwd=xxxx"
                             that.$message.error('服务器内部错误');
                         });
                 },
-                setcategory(){
+                setcategory() {
                     for (let item of this.dataList.data) {
                         for (let items of this.category) {
-                            if(item.source_category_id == items.source_category_id){
+                            if (item.source_category_id == items.source_category_id) {
                                 item.source_category_id_name = items.name
                             }
                         }
                     }
                 },
-                
+
                 //导入数据
                 ImportShow() {
                     this.Importform = {
@@ -433,22 +432,22 @@ https://pan.baidu.com/s/xxxxxx?pwd=xxxx"
                     }
                     this.$refs.ImportUpload.clearFiles();
                 },
-                ImportPost(){
+                ImportPost() {
                     this.Importform = Object.assign(this.Importform, PostBase)
                     this.$nextTick(() => {
                         this.$refs.ImportUpload.submit();
                     })
                 },
-                
+
                 //批量导入数据
                 ImportBatch() {
                     this.Batchform = {}
                     this.dialogBatch = true
                 },
-                BatchPost(){
+                BatchPost() {
                     var that = this;
-                    if(!that.Batchform.type) return that.$message.error('请选择导入方式');
-                    if(!that.Batchform.urls) return that.$message.error('请输入资源地址');
+                    if (!that.Batchform.type) return that.$message.error('请选择导入方式');
+                    if (!that.Batchform.urls) return that.$message.error('请输入资源地址');
                     axios.post('/admin/source/transfer', Object.assign({}, PostBase, that.Batchform))
                         .then(function (res) {
                         })
@@ -460,10 +459,10 @@ https://pan.baidu.com/s/xxxxxx?pwd=xxxx"
                         type: 'success'
                     });
                 },
-                
+
 
                 //数据导出
-                getExport(){
+                getExport() {
                     var that = this;
                     var filters = Object.assign({}, PostBase, that.search);
                     var url = '/admin/source/excel?';

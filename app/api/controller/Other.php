@@ -52,7 +52,7 @@ class Other extends QfShop
             flush();
             exit;
         }
-        $is_type = input('is_type', 0); //0夸克  2百度 3Uc
+        $is_type = input('is_type', 0); //0夸克  2百度 3Uc 4迅雷
         $is_show = input('is_show', 0); //0加密网址  1显示网址
 
         // 查找一条可用线路
@@ -282,6 +282,7 @@ class Other extends QfShop
             0 => 'quark',   // 夸克
             2 => 'baidu',    // 百度
             3 => 'uc',    // UC
+            4 => 'xunlei',    // 迅雷
         ];
 
         if (!isset($panType[$type]) || $maxCount <= 0) {
@@ -377,6 +378,15 @@ class Other extends QfShop
                     else if($type === 3 && preg_match('/https:\/\/drive\.uc\.cn\/s\/[a-zA-Z0-9]+/', $stringValue, $urlMatch)) {
                         $row['url'] = trim($urlMatch[0]);
                     } 
+                    // 从字符串中提取迅雷云盘链接
+                    else if ($type === 4 && preg_match('/https:\/\/pan\.xunlei\.com\/s\/[a-zA-Z0-9_-]+(\?pwd=[a-zA-Z0-9]+)?/', $stringValue, $urlMatch)) {
+                        $row['url'] = trim($urlMatch[0]);
+
+                        // 检查URL中是否已有pwd参数，如果没有但字符串中有pwd字段，则添加
+                        if (!strpos($row['url'], '?pwd=') && preg_match('/["\'](pwd|code)["\']\s*:\s*["\']([^"\']+)["\']/', $stringValue, $pwdMatches)) {
+                            $row['url'] .= '?pwd=' . $pwdMatches[2];
+                        }
+                    }
                     // 从字符串中提取百度网盘链接
                     else if ($type === 2 && preg_match('/https:\/\/pan\.baidu\.com\/s\/[a-zA-Z0-9_-]+(\?pwd=[a-zA-Z0-9]+)?/', $stringValue, $urlMatch)) {
                         $row['url'] = trim($urlMatch[0]);
@@ -411,6 +421,7 @@ class Other extends QfShop
             0 => 'quark',   // 夸克
             2 => 'baidu',    // 百度
             3 => 'uc',    // UC
+            4 => 'xunlei',    // 迅雷
         ];
 
         if (!isset($panType[$type]) || $maxCount <= 0) {
@@ -445,6 +456,8 @@ class Other extends QfShop
             if ($type === 0 && preg_match('/https:\/\/pan\.quark\.cn\/s\/[a-zA-Z0-9]+/', $htmlContent, $urlMatch)) {
                 $parsedItem['url'] = trim($urlMatch[0]);
             }else if ($type === 3 && preg_match('/https:\/\/drive\.uc\.cn\/s\/[a-zA-Z0-9]+/', $htmlContent, $urlMatch)) {
+                $parsedItem['url'] = trim($urlMatch[0]);
+            } else if ($type === 4 && preg_match('/https:\/\/pan\.xunlei\.com\/s\/[a-zA-Z0-9_-]+(\?pwd=[a-zA-Z0-9]+)?/', $htmlContent, $urlMatch)) {
                 $parsedItem['url'] = trim($urlMatch[0]);
             } else if ($type === 2 && preg_match('/https:\/\/pan\.baidu\.com\/s\/[a-zA-Z0-9_-]+(\?pwd=[a-zA-Z0-9]+)?/', $htmlContent, $urlMatch)) {
                 $parsedItem['url'] = trim($urlMatch[0]);
@@ -493,6 +506,7 @@ class Other extends QfShop
             0 => '/https:\/\/pan\.quark\.cn\/s\/[a-zA-Z0-9]+/', // 夸克
             2 => '/https:\/\/pan\.baidu\.com\/s\/[a-zA-Z0-9_-]+(\?pwd=[a-zA-Z0-9]+)?/', // 百度（包含提取码）
             3 => '/https:\/\/drive\.uc\.cn\/s\/[a-zA-Z0-9]+/', // UC
+            4 => '/https:\/\/pan\.xunlei\.com\/s\/[a-zA-Z0-9_-]+(\?pwd=[a-zA-Z0-9]+)?/', // 迅雷
         ];
 
         // 获取DOM并设置XPath查询

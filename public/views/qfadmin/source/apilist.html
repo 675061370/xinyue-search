@@ -15,6 +15,9 @@
             <el-button icon="el-icon-paperclip" size="small"
                 @click="window.open('/api/other/web_search?title=仙逆&is_show=1&is_type=3', '_blank')"
                 plain>UC测试前台数据</el-button>
+            <el-button icon="el-icon-paperclip" size="small"
+                @click="window.open('/api/other/web_search?title=仙逆&is_show=1&is_type=4', '_blank')"
+                plain>迅雷测试前台数据</el-button>
         </el-form-item>
     </el-form>
     <el-table :data="dataList" v-loading="loading">
@@ -24,6 +27,7 @@
             <template slot-scope="scope">
                 <span v-if="scope.row.pantype==2">百度网盘</span>
                 <span v-else-if="scope.row.pantype==3">UC网盘</span>
+                <span v-else-if="scope.row.pantype==4">迅雷云盘</span>
                 <span v-else>夸克网盘</span>
             </template>
         </el-table-column>
@@ -66,6 +70,7 @@
                     <el-radio :label="0">夸克网盘</el-radio>
                     <el-radio :label="2">百度网盘</el-radio>
                     <el-radio :label="3">UC网盘</el-radio>
+                    <el-radio :label="4">迅雷云盘</el-radio>
                 </el-radio-group>
             </el-form-item>
 
@@ -202,6 +207,7 @@
                     <el-radio :label="0">夸克网盘</el-radio>
                     <el-radio :label="2">百度网盘</el-radio>
                     <el-radio :label="3">UC网盘</el-radio>
+                    <el-radio :label="4">迅雷云盘</el-radio>
                 </el-radio-group>
             </el-form-item>
             <el-form-item prop="name" label="线路名称" :label-width="formLabelWidth">

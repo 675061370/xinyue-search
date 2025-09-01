@@ -4,7 +4,7 @@
 <head>
     <title>{$node.node_title}</title>
     <style>
-        textarea{
+        textarea {
             height: 300px;
         }
     </style>
@@ -19,16 +19,17 @@
                     <div style="font-size:14px;color:#666;">
                         <el-form :model="form">
                             <el-form-item label="设置cookie">
-                              <el-input style="width: 100%;" v-model="form.quark_cookie" placeholder="请输入">
-                                <el-button slot="prepend" @click="getFile(0)">账号检测</el-button>
-                              </el-input>
-                              <span class="f_tips">cookie修改后，请保存后再选择转存目录和检测</span>
+                                <el-input style="width: 100%;" v-model="form.quark_cookie" placeholder="请输入">
+                                    <el-button slot="prepend" @click="getFile(0)">账号检测</el-button>
+                                </el-input>
+                                <span class="f_tips">cookie修改后，请保存后再选择转存目录和检测</span>
                             </el-form-item>
                             <el-form-item label="默认转存目录">
                                 <el-input style="width: 100%" v-model="form.quark_file" placeholder="请输入或选择">
                                     <div slot="prepend" style="position: relative;">
                                         <p>请选择</p>
-                                        <el-cascader style="opacity: 0; height: 38px; position: absolute;inset: 0;" v-model="form.quark_file" :props="quark_props"></el-cascader>
+                                        <el-cascader style="opacity: 0; height: 38px; position: absolute;inset: 0;"
+                                            v-model="form.quark_file" :props="quark_props"></el-cascader>
                                     </div>
                                 </el-input>
                             </el-form-item>
@@ -36,12 +37,13 @@
                                 <el-input style="width: 100%" v-model="form.quark_file_time" placeholder="请输入或选择">
                                     <div slot="prepend" style="position: relative;">
                                         <p>请选择</p>
-                                        <el-cascader style="opacity: 0; height: 38px; position: absolute;inset: 0;" v-model="form.quark_file_time" :props="quark_props"></el-cascader>
+                                        <el-cascader style="opacity: 0; height: 38px; position: absolute;inset: 0;"
+                                            v-model="form.quark_file_time" :props="quark_props"></el-cascader>
                                     </div>
                                 </el-input>
                             </el-form-item>
                             <el-form-item>
-                              <el-button type="primary" @click="onSubmit">保存</el-button>
+                                <el-button type="primary" @click="onSubmit">保存</el-button>
                             </el-form-item>
                         </el-form>
                     </div>
@@ -55,16 +57,17 @@
                     <div style="font-size:14px;color:#666;">
                         <el-form :model="form">
                             <el-form-item label="设置Token">
-                              <el-input style="width: 100%;" v-model="form.Authorization" placeholder="请输入">
-                                <el-button slot="prepend" @click="getFile(1)">账号检测</el-button>
-                              </el-input>
-                              <span class="f_tips">token修改后，请保存后再选择转存目录和检测</span>
+                                <el-input style="width: 100%;" v-model="form.Authorization" placeholder="请输入">
+                                    <el-button slot="prepend" @click="getFile(1)">账号检测</el-button>
+                                </el-input>
+                                <span class="f_tips">token修改后，请保存后再选择转存目录和检测</span>
                             </el-form-item>
                             <el-form-item label="默认转存目录">
                                 <el-input style="width: 100%" v-model="form.ali_file" placeholder="请输入或选择">
                                     <div slot="prepend" style="position: relative;">
                                         <p>请选择</p>
-                                        <el-cascader style="opacity: 0; height: 38px; position: absolute;inset: 0;" v-model="form.ali_file" :props="ali_props"></el-cascader>
+                                        <el-cascader style="opacity: 0; height: 38px; position: absolute;inset: 0;"
+                                            v-model="form.ali_file" :props="ali_props"></el-cascader>
                                     </div>
                                 </el-input>
                             </el-form-item>
@@ -72,15 +75,17 @@
                                 <el-input style="width: 100%" v-model="form.ali_file_time" placeholder="请输入或选择">
                                     <div slot="prepend" style="position: relative;">
                                         <p>请选择</p>
-                                        <el-cascader style="opacity: 0; height: 38px; position: absolute;inset: 0;" v-model="form.ali_file_time" :props="ali_props"></el-cascader>
+                                        <el-cascader style="opacity: 0; height: 38px; position: absolute;inset: 0;"
+                                            v-model="form.ali_file_time" :props="ali_props"></el-cascader>
                                     </div>
                                 </el-input>
                             </el-form-item>
                             <el-form-item>
-                              <el-button type="primary" @click="onSubmit">保存</el-button>
+                                <el-button type="primary" @click="onSubmit">保存</el-button>
                             </el-form-item>
                         </el-form>
-                        <p>Tips：转存目录不能为空，为空将无法转存; <font color=orangered>阿里网盘禁止香港及海外服务器调用分享接口</font></p>
+                        <p>Tips：转存目录不能为空，为空将无法转存; <font color=orangered>阿里网盘禁止香港及海外服务器调用分享接口</font>
+                        </p>
                     </div>
                 </el-card>
             </el-tab-pane>
@@ -93,7 +98,7 @@
                         <el-form :model="form">
                             <el-form-item label="设置cookie">
                                 <el-input style="width: 100%;" v-model="form.baidu_cookie" placeholder="请输入">
-                                <el-button slot="prepend" @click="getFile(2)">账号检测</el-button>
+                                    <el-button slot="prepend" @click="getFile(2)">账号检测</el-button>
                                 </el-input>
                                 <span class="f_tips">cookie修改后，请保存后再选择转存目录和检测</span>
                             </el-form-item>
@@ -101,7 +106,8 @@
                                 <el-input style="width: 100%;" v-model="form.baidu_file" placeholder="请输入或选择">
                                     <div slot="prepend" style="position: relative;">
                                         <p>请选择</p>
-                                        <el-cascader style="opacity: 0; height: 38px; position: absolute;inset: 0;" v-model="form.baidu_file" :props="baidu_props"></el-cascader>
+                                        <el-cascader style="opacity: 0; height: 38px; position: absolute;inset: 0;"
+                                            v-model="form.baidu_file" :props="baidu_props"></el-cascader>
                                     </div>
                                 </el-input>
                             </el-form-item>
@@ -109,12 +115,13 @@
                                 <el-input style="width: 100%;" v-model="form.baidu_file_time" placeholder="请输入或选择">
                                     <div slot="prepend" style="position: relative;">
                                         <p>请选择</p>
-                                        <el-cascader style="opacity: 0; height: 38px; position: absolute;inset: 0;" v-model="form.baidu_file_time" :props="baidu_props"  ></el-cascader>
+                                        <el-cascader style="opacity: 0; height: 38px; position: absolute;inset: 0;"
+                                            v-model="form.baidu_file_time" :props="baidu_props"></el-cascader>
                                     </div>
                                 </el-input>
                             </el-form-item>
                             <el-form-item>
-                            <el-button type="primary" @click="onSubmit">保存</el-button>
+                                <el-button type="primary" @click="onSubmit">保存</el-button>
                             </el-form-item>
                         </el-form>
                     </div>
@@ -128,16 +135,17 @@
                     <div style="font-size:14px;color:#666;">
                         <el-form :model="form">
                             <el-form-item label="设置cookie">
-                              <el-input style="width: 100%;" v-model="form.uc_cookie" placeholder="请输入">
-                                <el-button slot="prepend" @click="getFile(3)">账号检测</el-button>
-                              </el-input>
-                              <span class="f_tips">cookie修改后，请保存后再选择转存目录和检测</span>
+                                <el-input style="width: 100%;" v-model="form.uc_cookie" placeholder="请输入">
+                                    <el-button slot="prepend" @click="getFile(3)">账号检测</el-button>
+                                </el-input>
+                                <span class="f_tips">cookie修改后，请保存后再选择转存目录和检测</span>
                             </el-form-item>
                             <el-form-item label="默认转存目录">
                                 <el-input style="width: 100%" v-model="form.uc_file" placeholder="请输入或选择">
                                     <div slot="prepend" style="position: relative;">
                                         <p>请选择</p>
-                                        <el-cascader style="opacity: 0; height: 38px; position: absolute;inset: 0;" v-model="form.uc_file" :props="uc_props"></el-cascader>
+                                        <el-cascader style="opacity: 0; height: 38px; position: absolute;inset: 0;"
+                                            v-model="form.uc_file" :props="uc_props"></el-cascader>
                                     </div>
                                 </el-input>
                             </el-form-item>
@@ -145,12 +153,13 @@
                                 <el-input style="width: 100%" v-model="form.uc_file_time" placeholder="请输入或选择">
                                     <div slot="prepend" style="position: relative;">
                                         <p>请选择</p>
-                                        <el-cascader style="opacity: 0; height: 38px; position: absolute;inset: 0;" v-model="form.uc_file_time" :props="uc_props"></el-cascader>
+                                        <el-cascader style="opacity: 0; height: 38px; position: absolute;inset: 0;"
+                                            v-model="form.uc_file_time" :props="uc_props"></el-cascader>
                                     </div>
                                 </el-input>
                             </el-form-item>
                             <el-form-item>
-                              <el-button type="primary" @click="onSubmit">保存</el-button>
+                                <el-button type="primary" @click="onSubmit">保存</el-button>
                             </el-form-item>
                         </el-form>
                     </div>
@@ -162,23 +171,33 @@
                         <span>迅雷云盘</span>
                     </div>
                     <div style="font-size:14px;color:#666;">
-                        <p>Tips：<font color=orangered>迅雷云盘暂不支持</font></p>
                         <el-form :model="form">
-                            <el-form-item label="设置cookie">
-                              <el-input style="width: 100%;" v-model="form.xunlei_cookie" placeholder="请输入">
-                              </el-input>
-                              <span class="f_tips">cookie修改后，请保存后再选择转存目录和检测</span>
+                            <el-form-item label="设置refresh_token">
+                                <el-input style="width: 100%;" v-model="form.xunlei_cookie" placeholder="请输入">
+                                    <el-button slot="prepend" @click="getFile(4)">账号检测</el-button>
+                                </el-input>
+                                <span class="f_tips">refresh_token修改后，请保存后再选择转存目录和检测，如何获取看文档吧</span>
                             </el-form-item>
                             <el-form-item label="默认转存目录">
                                 <el-input style="width: 100%" v-model="form.xunlei_file" placeholder="请输入或选择">
+                                    <div slot="prepend" style="position: relative;">
+                                        <p>请选择</p>
+                                        <el-cascader style="opacity: 0; height: 38px; position: absolute;inset: 0;"
+                                            v-model="form.xunlei_file" :props="xunlei_props"></el-cascader>
+                                    </div>
                                 </el-input>
                             </el-form-item>
                             <el-form-item label="临时资源目录">
                                 <el-input style="width: 100%" v-model="form.xunlei_file_time" placeholder="请输入或选择">
+                                    <div slot="prepend" style="position: relative;">
+                                        <p>请选择</p>
+                                        <el-cascader style="opacity: 0; height: 38px; position: absolute;inset: 0;"
+                                            v-model="form.xunlei_file_time" :props="xunlei_props"></el-cascader>
+                                    </div>
                                 </el-input>
                             </el-form-item>
                             <el-form-item>
-                              <el-button type="primary" @click="onSubmit">保存</el-button>
+                                <el-button type="primary" @click="onSubmit">保存</el-button>
                             </el-form-item>
                         </el-form>
                     </div>
@@ -193,7 +212,7 @@
             data() {
                 return {
                     activeName: '0',
-                    configKeys: ['quark_cookie', 'quark_file', 'quark_file_time','baidu_cookie', 'baidu_file', 'baidu_file_time','Authorization', 'ali_file', 'ali_file_time','uc_cookie', 'uc_file', 'uc_file_time','xunlei_cookie', 'xunlei_file', 'xunlei_file_time'],
+                    configKeys: ['quark_cookie', 'quark_file', 'quark_file_time', 'baidu_cookie', 'baidu_file', 'baidu_file_time', 'Authorization', 'ali_file', 'ali_file_time', 'uc_cookie', 'uc_file', 'uc_file_time', 'xunlei_cookie', 'xunlei_file', 'xunlei_file_time'],
                     form: {
                         quark_file: ''
                     },
@@ -202,124 +221,155 @@
                         lazy: true,
                         emitPath: false,
                         checkStrictly: true,
-                        lazyLoad (node, resolve) {
+                        lazyLoad(node, resolve) {
                             const { level, value } = node;
                             let that = this;
                             axios.post('/admin/source/getFiles', Object.assign({
                                 type: 0,
                                 pdir_fid: value || 0
                             }, PostBase))
-                            .then(function (res) {
-                                if (res.data.code == 200) {
-                                    // 只显示文件夹
-                                    const nodes = (res.data.data || [])
-                                        .map(item => ({
-                                            value: item.fid,
-                                            label: item.file_name,
-                                            disabled: !item.dir,
-                                        }));
-                                    resolve(nodes);
-                                } else {
+                                .then(function (res) {
+                                    if (res.data.code == 200) {
+                                        // 只显示文件夹
+                                        const nodes = (res.data.data || [])
+                                            .map(item => ({
+                                                value: item.fid,
+                                                label: item.file_name,
+                                                disabled: !item.dir,
+                                            }));
+                                        resolve(nodes);
+                                    } else {
+                                        resolve([]);
+                                    }
+                                })
+                                .catch(function (error) {
+                                    console.error(error);
                                     resolve([]);
-                                }
-                            })
-                            .catch(function (error) {
-                                console.error(error);
-                                resolve([]);
-                            });
+                                });
                         }
                     },
                     baidu_props: {
                         lazy: true,
                         emitPath: false,
                         checkStrictly: true,
-                        lazyLoad (node, resolve) {
+                        lazyLoad(node, resolve) {
                             const { level, value } = node;
                             let that = this;
                             axios.post('/admin/source/getFiles', Object.assign({
                                 type: 2,
                                 pdir_fid: value || 0
                             }, PostBase))
-                            .then(function (res) {
-                                if (res.data.code == 200) {
-                                    // 只显示文件夹
-                                    const nodes = (res.data.data || [])
-                                        .map(item => ({
-                                            value: item.path,
-                                            label: item.server_filename,
-                                            disabled: !item.isdir,
-                                        }));
-                                    resolve(nodes);
-                                } else {
+                                .then(function (res) {
+                                    if (res.data.code == 200) {
+                                        // 只显示文件夹
+                                        const nodes = (res.data.data || [])
+                                            .map(item => ({
+                                                value: item.path,
+                                                label: item.server_filename,
+                                                disabled: !item.isdir,
+                                            }));
+                                        resolve(nodes);
+                                    } else {
+                                        resolve([]);
+                                    }
+                                })
+                                .catch(function (error) {
+                                    console.error(error);
                                     resolve([]);
-                                }
-                            })
-                            .catch(function (error) {
-                                console.error(error);
-                                resolve([]);
-                            });
+                                });
                         }
                     },
                     ali_props: {
                         lazy: true,
                         emitPath: false,
                         checkStrictly: true,
-                        lazyLoad (node, resolve) {
+                        lazyLoad(node, resolve) {
                             const { level, value } = node;
                             let that = this;
                             axios.post('/admin/source/getFiles', Object.assign({
                                 type: 1,
                                 pdir_fid: value || 0
                             }, PostBase))
-                            .then(function (res) {
-                                if (res.data.code == 200) {
-                                    // 只显示文件夹
-                                    const nodes = (res.data.data || [])
-                                        .map(item => ({
-                                            value: item.file_id,
-                                            label: item.name,
-                                            disabled: item.type!='folder',
-                                        }));
-                                    resolve(nodes);
-                                } else {
+                                .then(function (res) {
+                                    if (res.data.code == 200) {
+                                        // 只显示文件夹
+                                        const nodes = (res.data.data || [])
+                                            .map(item => ({
+                                                value: item.file_id,
+                                                label: item.name,
+                                                disabled: item.type != 'folder',
+                                            }));
+                                        resolve(nodes);
+                                    } else {
+                                        resolve([]);
+                                    }
+                                })
+                                .catch(function (error) {
+                                    console.error(error);
                                     resolve([]);
-                                }
-                            })
-                            .catch(function (error) {
-                                console.error(error);
-                                resolve([]);
-                            });
+                                });
                         }
                     },
                     uc_props: {
                         lazy: true,
                         emitPath: false,
                         checkStrictly: true,
-                        lazyLoad (node, resolve) {
+                        lazyLoad(node, resolve) {
                             const { level, value } = node;
                             let that = this;
                             axios.post('/admin/source/getFiles', Object.assign({
                                 type: 3,
                                 pdir_fid: value || 0
                             }, PostBase))
-                            .then(function (res) {
-                                if (res.data.code == 200) {
-                                    // 只显示文件夹
-                                    const nodes = (res.data.data || [])
-                                        .map(item => ({
-                                            value: item.fid,
-                                            label: item.file_name,
-                                            disabled: !item.dir,
-                                        }));
-                                    resolve(nodes);
-                                } else {
+                                .then(function (res) {
+                                    if (res.data.code == 200) {
+                                        // 只显示文件夹
+                                        const nodes = (res.data.data || [])
+                                            .map(item => ({
+                                                value: item.fid,
+                                                label: item.file_name,
+                                                disabled: !item.dir,
+                                            }));
+                                        resolve(nodes);
+                                    } else {
+                                        resolve([]);
+                                    }
+                                })
+                                .catch(function (error) {
+                                    console.error(error);
                                     resolve([]);
-                                }
-                            })
-                            .catch(function (error) {
-                                console.error(error);
-                                resolve([]);
-                            });
+                                });
+                        }
+                    },
+                    xunlei_props: {
+                        lazy: true,
+                        emitPath: false,
+                        checkStrictly: true,
+                        lazyLoad(node, resolve) {
+                            const { level, value } = node;
+                            let that = this;
+                            axios.post('/admin/source/getFiles', Object.assign({
+                                type: 4,
+                                pdir_fid: value || 0
+                            }, PostBase))
+                                .then(function (res) {
+                                    if (res.data.code == 200) {
+                                        // 只显示文件夹
+                                        const nodes = (res.data.data || [])
+                                            .map(item => ({
+                                                value: item.id,
+                                                label: item.name,
+                                                disabled: item.kind !== 'drive#folder',
+                                            }));
+                                        resolve(nodes);
+                                    } else {
+                                        resolve([]);
+                                    }
+                                })
+                                .catch(function (error) {
+                                    console.error(error);
+                                    resolve([]);
+                                });
                         }
                     },
                 };
@@ -328,7 +378,7 @@
                 this.getData();
             },
             methods: {
-                getData(){
+                getData() {
                     let that = this
                     axios.post('/admin/conf/getBaseConfig', Object.assign({}, PostBase))
                         .then(function (response) {
@@ -346,7 +396,7 @@
                             that.$message.error('服务器内部错误');
                         });
                 },
-                onSubmit(){
+                onSubmit() {
                     let that = this
                     axios.post('/admin/conf/updateBaseConfig', Object.assign({}, PostBase, that.form))
                         .then(function (response) {
@@ -365,7 +415,7 @@
                         });
                 },
 
-                getFile(type){
+                getFile(type) {
                     let that = this
                     axios.post('/admin/source/getFiles', Object.assign({
                         type

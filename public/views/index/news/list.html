@@ -8,7 +8,7 @@
         <div class="searchBox searchList">
             <div class="search">
                 <div class="select" @click="selectBtn" v-if="currentSource === 1">
-                    <span>{{is_type==2?'百度':is_type==3?'UC':'夸克'}}</span>
+                    <span>{{ is_type==2 ? '百度' : is_type==3 ? 'UC' : is_type==4 ? '迅雷' : '夸克' }}</span>
                     <i class="iconfont icon-xiala" style="font-size: 3vw"></i>
                 </div>
                 <div class="select" @click="selectBtn" v-else>
@@ -224,12 +224,22 @@
             var list = JSON.parse(jsonData);
             const item = list[index];
             if (app.pc_type == 1) {
-                window.open(item.url);
+                safeJump(item.url);
             } else {
                 item.showUrl = item.url
                 app.dialogUrl = true;
                 showUrlFun(item);
             }
+        }
+
+        function safeJump(url, target = '_blank') {
+            const a = document.createElement('a');
+            a.href = url;
+            a.rel = 'noreferrer';
+            a.target = target;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
         }
 
         function getUrlBtn(element) {

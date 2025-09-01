@@ -110,7 +110,7 @@
                         </div>
                         {else /}
                         <div class="list">
-                            {volist name="vo.list" id="vos" key="key"}
+                            {volist name="vo.list" id="vos"}
                             {if condition="strpos($_SERVER['HTTP_USER_AGENT'], 'Mobile') === false || $key <
                                 $config.ranking_m_num"} <a
                                 href="{if isset($vos.id) && $vos.id != ''}/d/{$vos.id}.html{else}/s/{$vos.title}.html{/if}"

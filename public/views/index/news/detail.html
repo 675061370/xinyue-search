@@ -141,12 +141,22 @@
             jsonData = jsonData.replace(/[\x00-\x1F\x7F]/g, '');
             var item = JSON.parse(jsonData);
             if (app.pc_type == 1) {
-                window.open(item.url);
+                safeJump(item.url);
             } else {
                 item.showUrl = item.url
                 app.dialogUrl = true;
                 showUrlFun(item);
             }
+        }
+
+        function safeJump(url, target = '_blank') {
+            const a = document.createElement('a');
+            a.href = url;
+            a.rel = 'noreferrer';
+            a.target = target;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
         }
 
         function showUrlFun(item) {

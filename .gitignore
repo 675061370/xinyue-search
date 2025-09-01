@@ -5,3 +5,5 @@ nginx.htaccess
 .env
 /public/install/install.lock
 /extend/netdisk/pan/access_token.json
+/extend/netdisk/pan/xunlei_captcha.json
+/extend/netdisk/pan/xunlei_token.json

@@ -28,6 +28,10 @@ class Transfer
             //UC
             $pan = new \netdisk\pan\UcPan();
             return $pan->getFiles($pdir_fid);
+        } else if ($type == 4) {
+            //迅雷
+            $pan = new \netdisk\pan\XunleiPan();
+            return $pan->getFiles($pdir_fid);
         } else {
             //夸克
             $pan = new \netdisk\pan\QuarkPan();
@@ -66,7 +70,7 @@ class Transfer
             'pan.baidu.com' => 2,
             'drive.uc.cn' => 3,
             'fast.uc.cn' => 3,
-            // 'pan.xunlei.com' => 4,
+            'pan.xunlei.com' => 4,
         ];
 
         $url_type = -1;  // 默认值为 -1
@@ -95,6 +99,10 @@ class Transfer
             //UC
             $pan = new \netdisk\pan\UcPan($config);
             return $pan->transfer(strtok($pwd_id, '#'));
+        } else if ($url_type == 4) {
+            //迅雷
+            $pan = new \netdisk\pan\XunleiPan($config);
+            return $pan->transfer(strtok($pwd_id, '#'));
         } else {
             return jerr2("资源地址格式有误");
         }
@@ -114,6 +122,10 @@ class Transfer
         } else if ($type == 3) {
             //UC
             $pan = new \netdisk\pan\UcPan();
+            return $pan->deletepdirFid($filelist);
+        } else if ($type == 4) {
+            //迅雷
+            $pan = new \netdisk\pan\XunleiPan();
             return $pan->deletepdirFid($filelist);
         } else {
             //夸克

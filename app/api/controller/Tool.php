@@ -124,11 +124,11 @@ class Tool extends QfShop
                 try {
                     foreach ($res['data']['hits']['hit']['item'] as $key => $value) {
                         $data[] = array(
-                            "title" => $value['title'],
-                            "src" => $value['src'],
-                            "ranking" => $value['ranking'],
-                            "hot_score" => $value['hot_score'],
-                            "desc" => $value['desc'],
+                            "title" => $value['title']??'',
+                            "src" => $value['src']??'',
+                            "ranking" => $value['ranking']??'',
+                            "hot_score" => $value['hot_score']??'',
+                            "desc" => $value['desc']??'',
                         );
                     }
                 } catch (Exception $error) {
