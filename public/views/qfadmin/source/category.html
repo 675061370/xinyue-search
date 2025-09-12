@@ -8,12 +8,6 @@
         <el-form-item>
             <el-button icon="el-icon-plus" size="small" @click="clickAdd" plain>添加</el-button>
         </el-form-item>
-        <el-form-item>
-            <el-button icon="el-icon-warning-outline" size="small" @click="dayShow=true" plain>如何每日更新？</el-button>
-        </el-form-item>
-        <el-form-item>
-            <el-button icon="el-icon-warning-outline" size="small" @click="allShow=true" plain>如何全部转存？</el-button>
-        </el-form-item>
     </el-form>
     <el-table :data="dataList" @selection-change="changeSelection" v-loading="loading">
         <el-table-column type="selection" width="50">
@@ -53,8 +47,6 @@
         </el-table-column>
         <el-table-column label="操作" width="200">
             <template slot-scope="scope">
-                <el-link type="primary" @click="s2Btn(scope.row)"
-                    :underline="false">一键转存</el-link>&nbsp;&nbsp;&nbsp;&nbsp;
                 <el-link type="primary" @click="clickEdit(scope.row)"
                     :underline="false">编辑</el-link>&nbsp;&nbsp;&nbsp;&nbsp;
                 <el-link type="danger" @click="clickDelete(scope.row)" :underline="false">删除</el-link>
@@ -101,31 +93,6 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
             <el-button type="primary" @click="postEdit()">确认修改</el-button>
-        </div>
-    </el-dialog>
-    <!-- 每日更新 -->
-    <el-dialog title="每日更新" :visible.sync="dayShow" width="500px" :modal-append-to-body='false' append-to-body
-        :close-on-click-modal='false'>
-        <div style="margin-bottom: 20px;font-size:14px;color:#666;line-height: 2">
-            <font color=orangered>功能暂停使用</font>
-            <p>自动更新：<font color=orangered>转存当日及昨天的资源数据；</font>
-            </p>
-            <font color=orangered>将此接口添加到计划任务中，计划任务每日执行一次即可；</font>
-            <p>接口地址：{{domain}}/api/source/day</p>
-            <p>Tips：添加计划任务后方可生效；名称重复的资源会跳过转存；</p>
-            <p>宝塔任务类型：访问URL-GET</p>
-        </div>
-    </el-dialog>
-
-    <!-- 全部更新 -->
-    <el-dialog title="全部转存" :visible.sync="allShow" width="500px" :modal-append-to-body='false' append-to-body
-        :close-on-click-modal='false'>
-        <div style="margin-bottom: 20px;font-size:14px;color:#666;line-height: 2">
-            <font color=orangered>功能暂停使用</font>
-            <p>全部转存：<font color=orangered>一键转存所有资源到自己的网盘及系统中</font>
-            </p>
-            <font color=orangered>全部转存速度比较慢，提交后请耐心等待；名称重复的资源会跳过转存；</font>
-            <p>全部转存需要按类别转存：见下方列表一键转存按钮</p>
         </div>
     </el-dialog>
 
@@ -307,34 +274,6 @@
                             that.$message.error('服务器内部错误');
                             console.log(error);
                         });
-                },
-
-
-                s2Btn(row) {
-                    let that = this
-                    if (row.source_category_id != 1) return that.$message.error('当前版本仅支持短剧');
-                    this.$confirm('全部转存速度比较慢，提交后请耐心等待,该操作不可暂停, 是否继续?', '提示', {
-                        confirmButtonText: '确定',
-                        cancelButtonText: '取消',
-                        type: 'warning'
-                    }).then(() => {
-                        axios.post('/admin/source/transferAll', Object.assign({}, PostBase, {
-                            source_category_id: row.source_category_id
-                        }))
-                            .then(function (res) {
-                                if (res.data.code == 200) {
-                                } else {
-                                    that.$message.error(res.data.message);
-                                }
-                            })
-                            .catch(function (error) {
-                            });
-                        that.$message({
-                            message: "已提交任务，稍后查看结果",
-                            type: 'success'
-                        });
-                    }).catch(() => { });
-
                 },
             }
         })
